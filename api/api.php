@@ -51,6 +51,47 @@ switch ($action) {
         }
         break;
 
+    case 'fetch_url':
+        $target_url = isset($_GET['url']) ? trim($_GET['url']) : '';
+        if (empty($target_url) || !filter_var($target_url, FILTER_VALIDATE_URL)) {
+            http_response_code(400);
+            echo json_encode(['error' => 'URL invalide ou manquante']);
+            exit;
+        }
+
+        $scheme = parse_url($target_url, PHP_URL_SCHEME);
+        if (!in_array(strtolower($scheme), ['http', 'https'])) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Protocole non autorisé']);
+            exit;
+        }
+
+        $context = stream_context_create([
+            'http' => [
+                'timeout' => 8,
+                'user_agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ToolSuite-Reader/1.0',
+                'header' => "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\n"
+            ],
+            'ssl' => [
+                'verify_peer' => false,
+                'verify_peer_name' => false
+            ]
+        ]);
+
+        $html = @file_get_contents($target_url, false, $context);
+        if ($html === false) {
+            http_response_code(502);
+            echo json_encode(['error' => 'Impossible de récupérer la page distante']);
+            exit;
+        }
+
+        echo json_encode([
+            'success' => true,
+            'url' => $target_url,
+            'html' => $html
+        ]);
+        break;
+
     default:
         http_response_code(400);
         echo json_encode(['error' => 'Action inconnue']);

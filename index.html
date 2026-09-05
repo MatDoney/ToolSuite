@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ToolSuite - Suite de 30 Outils Web Gratuits, Locaux & Sécurisés</title>
-  <meta name="description" content="ToolSuite : Suite tout-en-un de 30 outils web professionnels, 100% locaux, gratuits et confidentiels. PDF, OCR, images, DevTools, comparateur de texte, calculs financiers, fuseaux horaires et marketing sans aucun téléversement serveur.">
+  <title>ToolSuite - Suite de 42 Outils Web Gratuits, Locaux & Sécurisés</title>
+  <meta name="description" content="ToolSuite : Suite tout-en-un de 42 outils web professionnels, 100% locaux, gratuits et confidentiels. PDF, OCR, images, DevTools, comparateur de texte, calculs financiers, fuseaux horaires et marketing sans aucun téléversement serveur.">
   <meta name="keywords" content="outils web, fusion pdf, compression image, convertisseur webp, ocr gratuit, json formatter, regex tester, calculateur pourcentage, fuseaux horaires, anonymat, sans serveur">
-  <meta property="og:title" content="ToolSuite - 30 Outils Web Gratuits, 100% Locaux & Sécurisés">
-  <meta property="og:description" content="Suite complète de 30 outils pour PDF, images, texte, dev, temps, finance et réseaux sociaux avec traitement direct dans votre navigateur sans téléversement.">
+  <meta property="og:title" content="ToolSuite - 42 Outils Web Gratuits, 100% Locaux & Sécurisés">
+  <meta property="og:description" content="Suite complète de 42 outils pour PDF, images, texte, dev, temps, finance et réseaux sociaux avec traitement direct dans votre navigateur sans téléversement.">
   <meta property="og:type" content="website">
   
   <!-- Stylesheets -->
@@ -17,6 +17,7 @@
 
   <!-- Libraries (Local with CDN Fallback) -->
   <script src="js/vendor/pdf-lib.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script src="js/vendor/jszip.min.js"></script>
   <script src="js/vendor/marked.min.js"></script>
   <script src="js/vendor/qrcode.min.js"></script>
@@ -37,7 +38,7 @@
         <div class="brand-icon">⚡</div>
         <div class="brand-text">
           <h1>ToolSuite</h1>
-          <span>30 Outils Web Pro</span>
+          <span>42 Outils Web Pro</span>
         </div>
       </div>
 
@@ -49,7 +50,7 @@
               <a class="nav-link active" data-nav-category="all">
                 <span class="icon">🏠</span>
                 <span>Tous les outils</span>
-                <span class="nav-badge">30</span>
+                <span class="nav-badge">42</span>
               </a>
             </li>
           </ul>
@@ -62,7 +63,7 @@
               <a class="nav-link" data-nav-category="doc">
                 <span class="icon">📑</span>
                 <span>Documents & PDF</span>
-                <span class="nav-badge">5</span>
+                <span class="nav-badge">17</span>
               </a>
             </li>
             <li>
@@ -206,12 +207,12 @@
             <span class="hero-badge">⚡ Suite Tout-en-un • Traitement Local & Privé</span>
             <h1 class="hero-title">Tous vos outils du quotidien, réunis en un seul endroit.</h1>
             <p class="hero-desc">
-              30 outils professionnels pour vos documents, images, code, rédaction et tâches du quotidien. 
+              42 outils professionnels pour vos documents, images, code, rédaction et tâches du quotidien. 
               Vos données sont traitées directement dans votre navigateur, avec une rapidité instantanée et une confidentialité totale.
             </p>
             <div class="hero-stats">
               <div class="hero-stat-item">
-                <span class="hero-stat-number">30</span>
+                <span class="hero-stat-number">42</span>
                 <span class="hero-stat-label">Outils Disponibles</span>
               </div>
               <div class="hero-stat-item">
@@ -227,8 +228,8 @@
 
           <!-- Category Filter Bar -->
           <div class="category-filter-bar">
-            <button class="filter-btn active" data-category="all">⚡ Tous les outils (30)</button>
-            <button class="filter-btn" data-category="doc">📑 Documents & PDF (5)</button>
+            <button class="filter-btn active" data-category="all">⚡ Tous les outils (42)</button>
+            <button class="filter-btn" data-category="doc">📑 Documents & PDF (17)</button>
             <button class="filter-btn" data-category="image">🖼️ Images & Médias (5)</button>
             <button class="filter-btn" data-category="dev">⚙️ DevTools (4)</button>
             <button class="filter-btn" data-category="util">🛠️ Utilitaires (4)</button>
@@ -246,7 +247,7 @@
           <!-- Dashboard Footer -->
           <footer style="margin-top: 3.5rem; padding: 1.5rem 0 1rem; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; color: var(--text-muted); font-size: 0.8rem;">
             <div>
-              <span>ToolSuite © 2026 • 30 Outils Web Gratuits, Locaux & Sécurisés</span>
+              <span>ToolSuite © 2026 • 42 Outils Web Gratuits, Locaux & Sécurisés</span>
             </div>
             <div style="display: flex; gap: 1.25rem;">
               <a href="mentions-legales.html" style="color: var(--text-muted); text-decoration: none;">⚖️ Mentions Légales & Confidentialité</a>
@@ -2217,6 +2218,666 @@
           </div>
         </section>
 
+        <!-- ================= 31. CAVIARDAGE PDF (REDACT) ================= -->
+        <section id="view-tool-pdf-redact" class="tool-view-wrapper">
+          <div class="tool-header-bar">
+            <div class="tool-breadcrumbs">
+              <button class="back-to-dash-btn">← Tableau de bord</button>
+              <span class="breadcrumb-sep">/</span>
+              <span class="breadcrumb-current">Documents & PDF</span>
+            </div>
+            <div class="tool-view-title-group">
+              <h2>Caviardage Sécurisé de PDF (Redact)</h2>
+              <p>Tracez des rectangles noirs sur les informations sensibles. Le texte sous-jacent est physiquement détruit du document.</p>
+            </div>
+          </div>
+
+          <div class="card" style="margin-bottom: 1.5rem;">
+            <div class="dropzone" id="redact-dropzone">
+              <input type="file" id="redact-input" accept="application/pdf">
+              <div class="dropzone-icon">⬛</div>
+              <div class="dropzone-title">Déposez votre document PDF à caviarder</div>
+              <div class="dropzone-subtitle">Suppression définitive et irréversible des données sensibles</div>
+            </div>
+          </div>
+
+          <div id="redact-controls-panel" style="display: none;">
+            <div class="redact-toolbar">
+              <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <label for="redact-page-select" style="font-size: 0.85rem; font-weight: 600;">Page :</label>
+                <select id="redact-page-select" class="form-control" style="width: auto; padding: 4px 10px;"></select>
+                <span id="redact-info" style="font-size: 0.85rem; color: var(--text-muted);"></span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <button class="btn btn-secondary btn-sm" id="redact-undo-btn">↶ Annuler dernier tracé</button>
+                <button class="btn btn-secondary btn-sm" id="redact-clear-btn">🗑️ Effacer la page</button>
+                <button class="btn btn-primary btn-sm" id="redact-apply-btn">🔒 Appliquer le caviardage définitif & Télécharger</button>
+              </div>
+            </div>
+
+            <div style="text-align: center; overflow-x: auto; padding: 1rem 0;">
+              <div class="redact-canvas-wrapper">
+                <canvas id="redact-canvas" class="redact-canvas"></canvas>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= 32. GESTIONNAIRE DE MOTS DE PASSE PDF ================= -->
+        <section id="view-tool-pdf-password" class="tool-view-wrapper">
+          <div class="tool-header-bar">
+            <div class="tool-breadcrumbs">
+              <button class="back-to-dash-btn">← Tableau de bord</button>
+              <span class="breadcrumb-sep">/</span>
+              <span class="breadcrumb-current">Documents & PDF</span>
+            </div>
+            <div class="tool-view-title-group">
+              <h2>Gestionnaire de Mots de Passe PDF</h2>
+              <p>Déverrouillez un document protégé dont vous connaissez le mot de passe ou sécurisez un PDF avec un mot de passe fort.</p>
+            </div>
+          </div>
+
+          <div class="split-pane-container">
+            <!-- Déverrouillage -->
+            <div class="pane-card">
+              <div class="pane-header">
+                <span class="pane-title">🔓 Déverrouiller un PDF protégé</span>
+              </div>
+              <div class="pane-body">
+                <div class="dropzone" id="pdf-unlock-dropzone">
+                  <input type="file" id="pdf-unlock-input" accept="application/pdf">
+                  <div class="dropzone-icon">🔓</div>
+                  <div class="dropzone-title">Déposez le PDF verrouillé</div>
+                  <div class="dropzone-subtitle">Pour retirer définitivement la saisie du code</div>
+                </div>
+
+                <div id="pdf-unlock-form" style="display: none; margin-top: 1.25rem;">
+                  <div style="font-size: 0.85rem; margin-bottom: 0.5rem; color: var(--text-secondary);">
+                    Fichier : <strong id="pdf-unlock-filename"></strong>
+                  </div>
+                  <div class="form-group">
+                    <label for="pdf-unlock-pwd">Mot de passe actuel :</label>
+                    <input type="password" id="pdf-unlock-pwd" class="form-control" placeholder="Entrez le mot de passe du document">
+                  </div>
+                  <button class="btn btn-primary btn-block" id="pdf-unlock-btn" style="margin-top: 0.75rem;">
+                    🔓 Retirer la protection & Télécharger
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Verrouillage -->
+            <div class="pane-card">
+              <div class="pane-header">
+                <span class="pane-title">🔒 Verrouiller / Sécuriser un PDF</span>
+              </div>
+              <div class="pane-body">
+                <div class="dropzone" id="pdf-lock-dropzone">
+                  <input type="file" id="pdf-lock-input" accept="application/pdf">
+                  <div class="dropzone-icon">🔒</div>
+                  <div class="dropzone-title">Déposez le PDF à protéger</div>
+                  <div class="dropzone-subtitle">Ajouter une protection par mot de passe</div>
+                </div>
+
+                <div id="pdf-lock-form" style="display: none; margin-top: 1.25rem;">
+                  <div style="font-size: 0.85rem; margin-bottom: 0.5rem; color: var(--text-secondary);">
+                    Fichier : <strong id="pdf-lock-filename"></strong>
+                  </div>
+                  <div class="form-group">
+                    <label for="pdf-lock-pwd">Définir un mot de passe :</label>
+                    <input type="password" id="pdf-lock-pwd" class="form-control" placeholder="Saisissez un mot de passe sécurisé">
+                  </div>
+                  <button class="btn btn-primary btn-block" id="pdf-lock-btn" style="margin-top: 0.75rem;">
+                    🔒 Protéger et Télécharger
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= 33. APLATISSEMENT PDF (FLATTENING) ================= -->
+        <section id="view-tool-pdf-flatten" class="tool-view-wrapper">
+          <div class="tool-header-bar">
+            <div class="tool-breadcrumbs">
+              <button class="back-to-dash-btn">← Tableau de bord</button>
+              <span class="breadcrumb-sep">/</span>
+              <span class="breadcrumb-current">Documents & PDF</span>
+            </div>
+            <div class="tool-view-title-group">
+              <h2>Aplatissement de PDF (Flattening)</h2>
+              <p>Figez les formulaires remplis, signatures et annotations en calques statiques pour empêcher toute altération ultérieure.</p>
+            </div>
+          </div>
+
+          <div class="card" style="margin-bottom: 1.5rem;">
+            <div class="dropzone" id="pdf-flatten-dropzone">
+              <input type="file" id="pdf-flatten-input" accept="application/pdf">
+              <div class="dropzone-icon">📋</div>
+              <div class="dropzone-title">Déposez votre document PDF à figer</div>
+              <div class="dropzone-subtitle">Rend les champs de formulaires (AcroForms) et calques non éditables</div>
+            </div>
+          </div>
+
+          <div class="card" id="pdf-flatten-panel" style="display: none;">
+            <div style="font-size: 0.9rem; margin-bottom: 1rem; color: var(--text-secondary);">
+              Fichier sélectionné : <strong id="pdf-flatten-filename"></strong>
+            </div>
+
+            <div class="form-group">
+              <label style="font-weight: 600; margin-bottom: 0.5rem; display: block;">Méthode d'aplatissement :</label>
+              <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                <label style="display: flex; align-items: flex-start; gap: 0.5rem; cursor: pointer;">
+                  <input type="radio" name="flatten-mode" value="form" checked style="margin-top: 3px;">
+                  <div>
+                    <strong>Aplatir les formulaires et champs interactifs (AcroForms)</strong>
+                    <div style="font-size: 0.8rem; color: var(--text-muted);">Conserve le texte vectoriel net et verrouille les valeurs saisies. Idéal pour les contrats et formulaires administratifs.</div>
+                  </div>
+                </label>
+                <label style="display: flex; align-items: flex-start; gap: 0.5rem; cursor: pointer;">
+                  <input type="radio" name="flatten-mode" value="raster" style="margin-top: 3px;">
+                  <div>
+                    <strong>Aplatissement intégral en images haute résolution (Rasterisation)</strong>
+                    <div style="font-size: 0.8rem; color: var(--text-muted);">Convertit chaque page en image fixe. Sécurité maximale contre l'extraction de texte, calques cachés ou métadonnées.</div>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <button class="btn btn-primary btn-lg" id="pdf-flatten-action-btn" style="margin-top: 1rem;">
+              ⚡ Aplatir le document & Télécharger
+            </button>
+          </div>
+        </section>
+
+        <!-- ================= 34. RÉORGANISATION & ROTATION PDF ================= -->
+        <section id="view-tool-pdf-reorder" class="tool-view-wrapper">
+          <div class="tool-header-bar">
+            <div class="tool-breadcrumbs">
+              <button class="back-to-dash-btn">← Tableau de bord</button>
+              <span class="breadcrumb-sep">/</span>
+              <span class="breadcrumb-current">Documents & PDF</span>
+            </div>
+            <div class="tool-view-title-group">
+              <h2>Réorganisation visuelle et Rotation de Pages</h2>
+              <p>Changez l'ordre des pages en glisser-déposer, supprimez les pages inutiles et faites pivoter les pages à l'envers.</p>
+            </div>
+          </div>
+
+          <div class="card" style="margin-bottom: 1.5rem;">
+            <div class="dropzone" id="pdf-reorder-dropzone">
+              <input type="file" id="pdf-reorder-input" accept="application/pdf">
+              <div class="dropzone-icon">🔄</div>
+              <div class="dropzone-title">Déposez un fichier PDF pour réorganiser ses pages</div>
+              <div class="dropzone-subtitle">Affichage en miniatures avec glisser-déposer (Drag & Drop)</div>
+            </div>
+          </div>
+
+          <div id="pdf-reorder-panel" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem;">
+              <span style="font-size: 0.85rem; color: var(--text-muted);">Glissez les cartes pour réordonner, cliquez sur ⟲ / ⟳ pour pivoter ou ✕ pour supprimer.</span>
+              <button class="btn btn-primary" id="pdf-reorder-save-btn">
+                💾 Enregistrer & Télécharger le PDF réorganisé
+              </button>
+            </div>
+
+            <div class="pdf-reorder-grid" id="pdf-reorder-grid"></div>
+          </div>
+        </section>
+
+        <!-- ================= 35. RECADRAGE DE MARGES (CROP TOOL) ================= -->
+        <section id="view-tool-pdf-crop" class="tool-view-wrapper">
+          <div class="tool-header-bar">
+            <div class="tool-breadcrumbs">
+              <button class="back-to-dash-btn">← Tableau de bord</button>
+              <span class="breadcrumb-sep">/</span>
+              <span class="breadcrumb-current">Documents & PDF</span>
+            </div>
+            <div class="tool-view-title-group">
+              <h2>Recadrage de Marges PDF (Crop Tool)</h2>
+              <p>Réglez ou détectez automatiquement les marges blanches pour adapter le document aux smartphones et liseuses.</p>
+            </div>
+          </div>
+
+          <div class="card" style="margin-bottom: 1.5rem;">
+            <div class="dropzone" id="pdf-crop-dropzone">
+              <input type="file" id="pdf-crop-input" accept="application/pdf">
+              <div class="dropzone-icon">✂️</div>
+              <div class="dropzone-title">Déposez votre document PDF à rogner</div>
+              <div class="dropzone-subtitle">Découpez les marges superflues</div>
+            </div>
+          </div>
+
+          <div id="pdf-crop-panel" style="display: none;">
+            <div class="split-pane-container">
+              <!-- Contrôles des marges -->
+              <div class="pane-card">
+                <div class="pane-header">
+                  <span class="pane-title">⚙️ Réglage des marges</span>
+                  <button class="btn btn-secondary btn-sm" id="crop-auto-detect-btn">🪄 Détection auto</button>
+                </div>
+                <div class="pane-body">
+                  <div class="form-group">
+                    <label for="crop-margin-top">Marge Haut (%) :</label>
+                    <input type="range" id="crop-margin-top" min="0" max="45" value="0" class="form-control">
+                  </div>
+                  <div class="form-group">
+                    <label for="crop-margin-bottom">Marge Bas (%) :</label>
+                    <input type="range" id="crop-margin-bottom" min="0" max="45" value="0" class="form-control">
+                  </div>
+                  <div class="form-group">
+                    <label for="crop-margin-left">Marge Gauche (%) :</label>
+                    <input type="range" id="crop-margin-left" min="0" max="45" value="0" class="form-control">
+                  </div>
+                  <div class="form-group">
+                    <label for="crop-margin-right">Marge Droite (%) :</label>
+                    <input type="range" id="crop-margin-right" min="0" max="45" value="0" class="form-control">
+                  </div>
+
+                  <button class="btn btn-primary btn-block" id="crop-action-btn" style="margin-top: 1rem;">
+                    ✂️ Rogner et Télécharger le PDF
+                  </button>
+                </div>
+              </div>
+
+              <!-- Prévisualisation avec cadre de rognage -->
+              <div class="pane-card">
+                <div class="pane-header">
+                  <span class="pane-title">👁️ Aperçu de la découpe</span>
+                </div>
+                <div class="pane-body" style="display: flex; justify-content: center; align-items: center; min-height: 380px;">
+                  <div class="crop-preview-box">
+                    <canvas id="crop-preview-canvas" style="display: block; max-width: 100%; height: auto;"></canvas>
+                    <div id="crop-overlay-rect" class="crop-overlay-rect"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= 36. EXTRACTEUR D'IMAGES PDF ================= -->
+        <section id="view-tool-pdf-extract-img" class="tool-view-wrapper">
+          <div class="tool-header-bar">
+            <div class="tool-breadcrumbs">
+              <button class="back-to-dash-btn">← Tableau de bord</button>
+              <span class="breadcrumb-sep">/</span>
+              <span class="breadcrumb-current">Documents & PDF</span>
+            </div>
+            <div class="tool-view-title-group">
+              <h2>Extracteur d'Images Intégrées</h2>
+              <p>Parcourez l'ensemble de votre PDF pour extraire toutes les illustrations et photos en haute définition, ou téléchargez-les en ZIP.</p>
+            </div>
+          </div>
+
+          <div class="card" style="margin-bottom: 1.5rem;">
+            <div class="dropzone" id="pdf-extract-img-dropzone">
+              <input type="file" id="pdf-extract-img-input" accept="application/pdf">
+              <div class="dropzone-icon">🖼️</div>
+              <div class="dropzone-title">Déposez un fichier PDF pour en extraire les images</div>
+              <div class="dropzone-subtitle">Extraction directe sans perte de qualité</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem;">
+              <div>
+                <span class="pane-title">Images trouvées</span>
+                <span id="pdf-extract-count" style="margin-left: 0.5rem; font-size: 0.85rem; color: var(--text-muted);">En attente de fichier...</span>
+              </div>
+              <button class="btn btn-primary" id="pdf-extract-zip-btn" disabled>
+                📦 Télécharger toutes les images (.ZIP)
+              </button>
+            </div>
+
+            <div class="pdf-extracted-gallery" id="pdf-extracted-gallery">
+              <div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 2rem;">
+                Déposez un PDF ci-dessus pour inspecter et extraire ses illustrations.
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= 37. OUTIL DE SIGNATURE PDF ================= -->
+        <section id="view-tool-pdf-signature" class="tool-view-wrapper">
+          <div class="tool-header-bar">
+            <div class="tool-breadcrumbs">
+              <button class="back-to-dash-btn">← Tableau de bord</button>
+              <span class="breadcrumb-sep">/</span>
+              <span class="breadcrumb-current">Documents & PDF</span>
+            </div>
+            <div class="tool-view-title-group">
+              <h2>Signature Électronique de PDF</h2>
+              <p>Dessinez votre signature, tapez votre nom en cursive ou importez un scan transparent, puis positionnez-la librement sur le document.</p>
+            </div>
+          </div>
+
+          <div class="split-pane-container">
+            <!-- 1. Création de la signature -->
+            <div class="pane-card">
+              <div class="pane-header">
+                <span class="pane-title">✍️ 1. Créer votre signature</span>
+              </div>
+              <div class="pane-body">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                  <span style="font-size: 0.8rem; font-weight: 600;">Tracez à la souris ou au doigt :</span>
+                  <div style="display: flex; gap: 0.4rem;">
+                    <button class="btn btn-secondary btn-sm" id="sig-color-black" style="padding: 2px 8px;">Noir</button>
+                    <button class="btn btn-secondary btn-sm" id="sig-color-blue" style="padding: 2px 8px; color: #3b82f6;">Bleu</button>
+                    <button class="btn btn-secondary btn-sm" id="sig-clear-btn" style="padding: 2px 8px;">Effacer</button>
+                  </div>
+                </div>
+
+                <div class="signature-canvas-box">
+                  <canvas id="signature-canvas" class="signature-canvas"></canvas>
+                </div>
+
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
+                  <label for="sig-type-input" style="font-size: 0.8rem; font-weight: 600;">Ou tapez votre nom (police cursive) :</label>
+                  <div style="display: flex; gap: 0.5rem; margin-top: 0.35rem;">
+                    <input type="text" id="sig-type-input" class="form-control" placeholder="ex: Jean Dupont">
+                    <select id="sig-type-font" class="form-control" style="width: 140px;">
+                      <option value="cursive">Cursive</option>
+                      <option value="Brush Script MT">Brush</option>
+                      <option value="Lucida Handwriting">Lucida</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
+                  <label for="sig-upload-input" style="font-size: 0.8rem; font-weight: 600;">Ou importez un fichier image :</label>
+                  <input type="file" id="sig-upload-input" accept="image/png, image/jpeg" class="form-control" style="margin-top: 0.35rem;">
+                  <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.25rem;">Le fond blanc est automatiquement rendu transparent.</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 2. Placement sur le PDF -->
+            <div class="pane-card">
+              <div class="pane-header">
+                <span class="pane-title">📑 2. Charger le PDF & Positionner</span>
+                <button class="btn btn-primary btn-sm" id="pdf-apply-signature-btn">
+                  ✍️ Appliquer & Télécharger
+                </button>
+              </div>
+              <div class="pane-body">
+                <div class="dropzone" id="pdf-signature-dropzone" style="margin-bottom: 1rem;">
+                  <input type="file" id="pdf-signature-input" accept="application/pdf">
+                  <div class="dropzone-icon">📄</div>
+                  <div class="dropzone-title">Déposez le PDF à signer</div>
+                  <div class="dropzone-subtitle">Sélectionnez le document</div>
+                </div>
+
+                <div id="pdf-signature-panel" style="display: none;">
+                  <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
+                    <label for="sig-page-select" style="font-size: 0.85rem; font-weight: 600;">Page à signer :</label>
+                    <select id="sig-page-select" class="form-control" style="width: auto; padding: 4px 10px;"></select>
+                    <span style="font-size: 0.75rem; color: var(--text-muted);">Glissez la signature bleue sur le document pour la placer.</span>
+                  </div>
+
+                  <div style="position: relative; overflow-x: auto; text-align: center; background: #1a1e26; padding: 1rem; border-radius: var(--radius-sm);">
+                    <div class="signature-stamp-wrapper">
+                      <canvas id="signature-stage-canvas" style="display: block; max-width: 100%; height: auto;"></canvas>
+                      <div id="signature-movable-box" class="signature-movable-box" style="display: none;">
+                        <img id="signature-stamp-img" style="width: 100%; height: 100%; object-fit: contain; pointer-events: none;" alt="Signature">
+                        <div class="signature-resize-handle"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= 38. FILIGRANE PDF (WATERMARK) ================= -->
+        <section id="view-tool-pdf-watermark" class="tool-view-wrapper">
+          <div class="tool-header-bar">
+            <div class="tool-breadcrumbs">
+              <button class="back-to-dash-btn">← Tableau de bord</button>
+              <span class="breadcrumb-sep">/</span>
+              <span class="breadcrumb-current">Documents & PDF</span>
+            </div>
+            <div class="tool-view-title-group">
+              <h2>Générateur de Filigrane PDF (Watermark)</h2>
+              <p>Ajoutez un tampon ou filigrane semi-transparent ("CONFIDENTIEL", "COPIE", "BROUILLON") en diagonale sur chaque page.</p>
+            </div>
+          </div>
+
+          <div class="card" style="margin-bottom: 1.5rem;">
+            <div class="dropzone" id="pdf-watermark-dropzone">
+              <input type="file" id="pdf-watermark-input" accept="application/pdf">
+              <div class="dropzone-icon">💧</div>
+              <div class="dropzone-title">Déposez votre document PDF à filigraner</div>
+              <div class="dropzone-subtitle">Personnalisation du texte, de la couleur, de l'opacité et de l'angle</div>
+            </div>
+          </div>
+
+          <div class="card" id="pdf-watermark-panel" style="display: none;">
+            <div class="grid-2-col" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
+              <div class="form-group">
+                <label for="watermark-text-input">Texte du filigrane :</label>
+                <input type="text" id="watermark-text-input" class="form-control" value="CONFIDENTIEL">
+              </div>
+              <div class="form-group">
+                <label for="watermark-color">Couleur du texte :</label>
+                <input type="color" id="watermark-color" class="form-control" value="#ef4444" style="height: 42px; padding: 4px;">
+              </div>
+              <div class="form-group">
+                <label for="watermark-opacity">Opacité (%) :</label>
+                <input type="range" id="watermark-opacity" min="5" max="90" value="25" class="form-control">
+              </div>
+              <div class="form-group">
+                <label for="watermark-angle">Angle de rotation (degrés) :</label>
+                <input type="range" id="watermark-angle" min="-90" max="90" value="45" class="form-control">
+              </div>
+            </div>
+
+            <button class="btn btn-primary btn-lg" id="pdf-watermark-action-btn" style="margin-top: 1.25rem;">
+              💧 Appliquer le filigrane & Télécharger
+            </button>
+          </div>
+        </section>
+
+        <!-- ================= 39. NUMÉROTATION DE PAGES PDF ================= -->
+        <section id="view-tool-pdf-numbering" class="tool-view-wrapper">
+          <div class="tool-header-bar">
+            <div class="tool-breadcrumbs">
+              <button class="back-to-dash-btn">← Tableau de bord</button>
+              <span class="breadcrumb-sep">/</span>
+              <span class="breadcrumb-current">Documents & PDF</span>
+            </div>
+            <div class="tool-view-title-group">
+              <h2>Numérotation Automatique de Pages</h2>
+              <p>Insérez des numéros de pages clairs et élégants dans l'en-tête ou le pied de page de vos documents PDF.</p>
+            </div>
+          </div>
+
+          <div class="card" style="margin-bottom: 1.5rem;">
+            <div class="dropzone" id="pdf-numbering-dropzone">
+              <input type="file" id="pdf-numbering-input" accept="application/pdf">
+              <div class="dropzone-icon">🔢</div>
+              <div class="dropzone-title">Déposez votre document PDF à numéroter</div>
+              <div class="dropzone-subtitle">Personnalisation du format, de la position et de la page de couverture</div>
+            </div>
+          </div>
+
+          <div class="card" id="pdf-numbering-panel" style="display: none;">
+            <div class="grid-2-col" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
+              <div class="form-group">
+                <label for="numbering-format-select">Format d'affichage :</label>
+                <select id="numbering-format-select" class="form-control">
+                  <option value="page-of">Page {n} / {total}</option>
+                  <option value="sur">{n} sur {total}</option>
+                  <option value="simple">{n}</option>
+                  <option value="dash">- {n} -</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="numbering-pos-select">Emplacement sur la page :</label>
+                <select id="numbering-pos-select" class="form-control">
+                  <option value="bottom-center">Bas - Centré (recommandé)</option>
+                  <option value="bottom-right">Bas - À droite</option>
+                  <option value="bottom-left">Bas - À gauche</option>
+                  <option value="top-right">Haut - À droite</option>
+                  <option value="top-center">Haut - Centré</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="margin-top: 1rem;">
+              <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                <input type="checkbox" id="numbering-skip-first" checked>
+                <span>Ignorer la première page (Page de couverture)</span>
+              </label>
+            </div>
+
+            <button class="btn btn-primary btn-lg" id="pdf-numbering-action-btn" style="margin-top: 1.25rem;">
+              🔢 Insérer les numéros & Télécharger
+            </button>
+          </div>
+        </section>
+
+        <!-- ================= 40. URL VERS PDF ================= -->
+        <section id="view-tool-url2pdf" class="tool-view-wrapper">
+          <div class="tool-header-bar">
+            <div class="tool-breadcrumbs">
+              <button class="back-to-dash-btn">← Tableau de bord</button>
+              <span class="breadcrumb-sep">/</span>
+              <span class="breadcrumb-current">Documents & PDF</span>
+            </div>
+            <div class="tool-view-title-group">
+              <h2>Conversion URL Web vers PDF</h2>
+              <p>Convertissez n'importe quel article ou tutoriel web en document PDF épuré de toute publicité pour l'archivage ou l'impression.</p>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="form-group">
+              <label for="url2pdf-input">Adresse de la page web :</label>
+              <div style="display: flex; gap: 0.75rem;">
+                <input type="url" id="url2pdf-input" class="form-control" placeholder="https://exemple.com/mon-article">
+                <button class="btn btn-primary" id="url2pdf-action-btn" style="white-space: nowrap;">
+                  🌐 Convertir en PDF & Télécharger
+                </button>
+              </div>
+              <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.4rem;">
+                Le contenu est extrait en mode lecture (titre, texte, paragraphes), sans bannières publicitaires ni menus superflus.
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= 41. PDF VERS EXCEL ================= -->
+        <section id="view-tool-pdf2excel" class="tool-view-wrapper">
+          <div class="tool-header-bar">
+            <div class="tool-breadcrumbs">
+              <button class="back-to-dash-btn">← Tableau de bord</button>
+              <span class="breadcrumb-sep">/</span>
+              <span class="breadcrumb-current">Documents & PDF</span>
+            </div>
+            <div class="tool-view-title-group">
+              <h2>Extraction de Tableaux PDF vers Excel</h2>
+              <p>Détectez les grilles et tableaux dans votre PDF et exportez-les directement en format Excel (.xls) ou CSV UTF-8.</p>
+            </div>
+          </div>
+
+          <div class="card" style="margin-bottom: 1.5rem;">
+            <div class="dropzone" id="pdf-excel-dropzone">
+              <input type="file" id="pdf-excel-input" accept="application/pdf">
+              <div class="dropzone-icon">📊</div>
+              <div class="dropzone-title">Déposez votre facture ou rapport PDF avec tableau</div>
+              <div class="dropzone-subtitle">Extraction automatique des lignes et colonnes</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem;">
+              <div>
+                <span class="pane-title">Aperçu du tableau extrait</span>
+                <span id="pdf-table-status" style="margin-left: 0.5rem; font-size: 0.85rem; color: var(--text-muted);">En attente de fichier...</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <label for="pdf-table-delimiter" style="font-size: 0.8rem; font-weight: 600;">Séparateur :</label>
+                <select id="pdf-table-delimiter" class="form-control" style="width: auto; padding: 4px 8px;">
+                  <option value=";">Point-virgule (Excel FR)</option>
+                  <option value=",">Virgule (CSV US)</option>
+                  <option value="&#9;">Tabulation</option>
+                </select>
+                <button class="btn btn-secondary btn-sm" id="pdf-table-download-csv" disabled>📥 Télécharger CSV</button>
+                <button class="btn btn-primary btn-sm" id="pdf-table-download-xls" disabled>📊 Exporter Excel (.xls)</button>
+              </div>
+            </div>
+
+            <div class="pdf-table-preview-container" id="pdf-table-preview-container">
+              <div style="padding: 2.5rem; text-align: center; color: var(--text-muted);">
+                Déposez un PDF avec des tableaux ou listes de données pour voir l'aperçu dynamique ici.
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= 42. IMAGES VERS PDF ================= -->
+        <section id="view-tool-img2pdf" class="tool-view-wrapper">
+          <div class="tool-header-bar">
+            <div class="tool-breadcrumbs">
+              <button class="back-to-dash-btn">← Tableau de bord</button>
+              <span class="breadcrumb-sep">/</span>
+              <span class="breadcrumb-current">Documents & PDF</span>
+            </div>
+            <div class="tool-view-title-group">
+              <h2>Images multiples vers PDF</h2>
+              <p>Rassemblez vos photos, scans et graphiques (JPG, PNG, WebP) en un document PDF unique et optimisé.</p>
+            </div>
+          </div>
+
+          <div class="card" style="margin-bottom: 1.5rem;">
+            <div class="dropzone" id="img2pdf-dropzone">
+              <input type="file" id="img2pdf-input" multiple accept="image/jpeg, image/png, image/webp">
+              <div class="dropzone-icon">🖼️</div>
+              <div class="dropzone-title">Glissez vos images ici (sélection multiple)</div>
+              <div class="dropzone-subtitle">Formats supportés : JPEG, PNG, WebP</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem;">
+              <div>
+                <span class="pane-title">Images sélectionnées</span>
+                <span id="img2pdf-count" style="margin-left: 0.5rem; font-size: 0.85rem; color: var(--text-muted);">0 image</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+                <div style="display: flex; align-items: center; gap: 0.4rem;">
+                  <label for="img2pdf-page-size" style="font-size: 0.8rem; font-weight: 600;">Format :</label>
+                  <select id="img2pdf-page-size" class="form-control" style="width: auto; padding: 4px 8px;">
+                    <option value="fit">Ajusté à l'image</option>
+                    <option value="a4-portrait">A4 Portrait</option>
+                    <option value="a4-landscape">A4 Paysage</option>
+                  </select>
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.4rem;">
+                  <label for="img2pdf-margin" style="font-size: 0.8rem; font-weight: 600;">Marges :</label>
+                  <select id="img2pdf-margin" class="form-control" style="width: auto; padding: 4px 8px;">
+                    <option value="0">Aucune (0px)</option>
+                    <option value="20">Petites (20px)</option>
+                    <option value="40">Moyennes (40px)</option>
+                  </select>
+                </div>
+                <button class="btn btn-primary" id="img2pdf-compile-btn" disabled>
+                  📄 Compiler en PDF & Télécharger
+                </button>
+              </div>
+            </div>
+
+            <div class="img2pdf-grid" id="img2pdf-grid">
+              <div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 1.5rem;">
+                Aucune image ajoutée
+              </div>
+            </div>
+          </div>
+        </section>
+
       </main>
 
     </div>
@@ -2228,7 +2889,7 @@
     <div class="search-modal">
       <div class="search-modal-header">
         <span>🔍</span>
-        <input type="text" id="search-modal-input" class="search-modal-input" placeholder="Rechercher parmi les 30 outils...">
+        <input type="text" id="search-modal-input" class="search-modal-input" placeholder="Rechercher parmi les 42 outils...">
         <span class="search-shortcut">ESC</span>
       </div>
       <div class="search-modal-results" id="search-modal-results"></div>
@@ -2253,6 +2914,7 @@
   <script src="js/tools/finance-tools.js"></script>
   <script src="js/tools/marketing-tools.js"></script>
   <script src="js/tools/wheel-tool.js"></script>
+  <script src="js/tools/pdf-advanced-tools.js"></script>
   <script src="js/app.js"></script>
 
 </body>

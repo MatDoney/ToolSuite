@@ -16,7 +16,7 @@
 
 ## 🌟 Présentation
 
-**ToolSuite** est une suite complète de **30 outils web professionnels** regroupés au sein d'une interface utilisateur moderne, sobre, réactive et ergonomique. 
+**ToolSuite** est une suite complète de **42 outils web professionnels** regroupés au sein d'une interface utilisateur moderne, sobre, réactive et ergonomique. 
 
 Elle couvre la manipulation de documents, le traitement d'images, les utilitaires pour développeurs, la rédaction de texte, la productivité & la gestion du temps, les calculs financiers rapides et les réseaux sociaux.
 
@@ -24,14 +24,26 @@ L'ensemble des calculs, conversions et traitements s'effectue **directement et l
 
 ---
 
-## 🛠️ Les 30 Outils Intégrés
+## 🛠️ Les 42 Outils Intégrés
 
-### 📑 1. Manipulation de Documents (PDF & Texte) — 5 outils
+### 📑 1. Manipulation de Documents (PDF & Texte) — 17 outils
 - **Fusion de PDF** : Combinez plusieurs documents PDF en un seul fichier. Réorganisez l'ordre des pages et des fichiers par de simples boutons monter/descendre avant la fusion (`pdf-lib`).
 - **Séparation de PDF** : Extrayez des pages ciblées ou découpez vos documents par plages souples (ex: `1-3, 5, 8-10`).
 - **Compresseur de PDF** : Réduisez la taille de vos documents PDF pour l'envoi par e-mail ou l'archivage avec calcul en direct de l'espace économisé.
 - **Extracteur de texte (OCR)** : Transformez scans et images en texte éditable grâce à la reconnaissance optique de caractères en local (`Tesseract.js`), avec barre de progression et sélecteur multilingue (Français, Anglais, Espagnol, Allemand).
 - **Convertisseur Markdown** : Éditeur en temps réel double volet avec rendu instantané, coloration du code, tableaux, export en code HTML propre et impression / génération PDF directe.
+- **Caviardage Sécurisé (Redact)** : Dessinez des rectangles noirs sur les informations sensibles (noms, IBAN, numéros confidentiels) pour les détruire physiquement du code source du document par rasterisation haute définition, sans masquer simplement le texte.
+- **Gestionnaire de Mots de Passe PDF** : Verrouillez et sécurisez un PDF avec un mot de passe ou retirez la protection d'un fichier déverrouillé pour éviter de ressaisir le code à chaque ouverture.
+- **Aplatissement (Flattening)** : Figez les formulaires remplis (AcroForms), signatures et calques interactifs pour que les champs ne soient plus cliquables et deviennent une image fixe inaltérable.
+- **Réorganisation visuelle et Rotation** : Interface visuelle en miniatures avec glisser-déposer (Drag & Drop) pour réorganiser les pages, les supprimer ou pivoter les scans à l'envers (90°, 180°, 270°).
+- **Recadrage de marges (Crop Tool)** : Détectez automatiquement ou réglez manuellement les marges blanches superflues pour adapter vos documents aux liseuses ou smartphones.
+- **Extracteur d'Images Intégrées** : Parcourez l'ensemble du PDF pour extraire toutes les illustrations et photos en haute définition, avec téléchargement individuel ou en archive groupée `.ZIP`.
+- **Signature Électronique de PDF** : Dessinez votre signature au doigt ou à la souris, tapez votre nom en calligraphie cursive ou importez un scan transparent, puis positionnez et dimensionnez librement la signature sur n'importe quelle page.
+- **Générateur de Filigrane (Watermark)** : Ajoutez un tampon textuel ("CONFIDENTIEL", "BROUILLON") ou une marque semi-transparente en diagonale ou centré avec réglage précis de l'opacité et de l'angle.
+- **Numérotation automatique de pages** : Insérez des numéros de page élégants dans les en-têtes ou pieds de page (`1`, `Page 1 / 10`, `1 sur N`, `- 1 -`), avec exclusion optionnelle de la couverture.
+- **URL vers PDF (Mode Lecture)** : Convertissez n'importe quelle page web ou article de blog en document PDF propre et épuré de toute publicité pour l'archivage.
+- **Extraction de Tableaux vers Excel** : Analysez les données tabulaires d'un document PDF pour les exporter instantanément en classeur Excel (`.xls`) ou fichier `.csv` UTF-8 avec BOM.
+- **Images multiples vers PDF** : Compilez plusieurs photos, captures et scans (JPG, PNG, WebP) en un seul document PDF ordonné, ajusté ou au format standard A4.
 
 ### 🖼️ 2. Traitement d'Images et Médias — 5 outils
 - **Convertisseur de formats universel** : Convertissez instantanément vos fichiers JPG, PNG, BMP vers le format moderne ultra-léger **WebP** ou en conteneur vectoriel **SVG**.
@@ -77,7 +89,7 @@ L'ensemble des calculs, conversions et traitements s'effectue **directement et l
 ## 💡 Expérience Utilisateur & Design
 
 - **Palette Visuelle Épurée & Professionnelle** : Design sobre aux tons ardoise/charbon neutres (`#0f141c`), typographie moderne Inter, contrastes doux et mode clair commutable d'un clic.
-- **Recherche Rapide Globale (`Ctrl + K`)** : Barre de recherche instantanée avec navigation au clavier (`↑`, `↓`, `Entrée`, `Échap`) pour accéder à l'un des 30 outils en moins d'une seconde.
+- **Recherche Rapide Globale (`Ctrl + K`)** : Barre de recherche instantanée avec navigation au clavier (`↑`, `↓`, `Entrée`, `Échap`) pour accéder à l'un des 42 outils en moins d'une seconde.
 - **Filtrage Thématique Instantané** : Barre d'onglets de filtrage par catégories pour naviguer sans effort entre documents, images, code, rédaction, temps, finance et marketing.
 - **Zéro Rechargement** : Navigation fluide avec mémorisation de l'outil actif.
 - **Feedback Interactif** : Système de notifications Toast animées pour chaque action (copie dans le presse-papier, téléchargement, erreurs).
@@ -93,16 +105,17 @@ L'ensemble des calculs, conversions et traitements s'effectue **directement et l
 ├── mentions-legales.html       # Mentions Légales & RGPD conformes LCEN (version HTML)
 ├── mentions-legales.php        # Mentions Légales & RGPD conformes LCEN (version PHP)
 ├── api/
-│   └── api.php                 # API PHP d'information système et diagnostic environnement
+│   └── api.php                 # API PHP d'information système et extraction web (fetch_url)
 ├── css/
 │   ├── style.css               # Design system de base, thèmes sombre/clair, grille responsive
 │   ├── components.css          # Composants réutilisables (boutons, formulaires, modales, toasts)
-│   └── tools.css               # Styles dédiés aux 30 outils (diff, timeline, kanban, canvas, etc.)
+│   └── tools.css               # Styles dédiés aux 42 outils (diff, timeline, kanban, canvas, etc.)
 ├── js/
 │   ├── ui.js                   # Helpers d'interface (Toasts, copie, drag & drop, formats)
-│   ├── app.js                  # Catalogue des 30 outils, moteur de recherche Ctrl+K et routage
+│   ├── app.js                  # Catalogue des 42 outils, moteur de recherche Ctrl+K et routage
 │   └── tools/
 │       ├── pdf-tools.js        # Fusion, séparation et compression de PDF (PDF-Lib)
+│       ├── pdf-advanced-tools.js # 12 Outils avancés PDF (Caviardage, signature, rotation, filigrane, etc.)
 │       ├── ocr-tool.js         # Extraction de texte OCR (Tesseract.js)
 │       ├── markdown-tool.js    # Éditeur Markdown et export HTML/PDF (Marked.js)
 │       ├── image-tools.js      # Convertisseur de formats, compresseur et pack Favicon (JSZip)
@@ -124,7 +137,7 @@ L'ensemble des calculs, conversions et traitements s'effectue **directement et l
 
 ### Option A : Lancement direct sans serveur (recommandé pour test rapide)
 1. Double-cliquez simplement sur le fichier `index.html` pour l'ouvrir dans n'importe quel navigateur moderne (**Google Chrome**, **Mozilla Firefox**, **Microsoft Edge**, **Brave**, **Safari**).
-2. Aucun serveur ni installation de paquet n'est requis : l'intégralité des 30 outils fonctionne immédiatement.
+2. Aucun serveur ni installation de paquet n'est requis : l'intégralité des 42 outils fonctionne immédiatement.
 
 ### Option B : Lancement sous serveur PHP (XAMPP, WAMP, Laragon ou CLI)
 Si vous disposez d'un environnement PHP :
@@ -146,10 +159,11 @@ Si vous disposez d'un environnement PHP :
 - **HTML5 Canvas 2D** : graphiques financiers vectoriels, animation physique de la roue et traitement d'image pixel par pixel.
 - **PHP** : scripts natifs pour l'hébergement serveur standard et API utilitaire.
 - **Bibliothèques autonomes chargées via CDN** :
-  - [PDF-Lib](https://pdf-lib.js.org/) (manipulation PDF locale)
+  - [PDF-Lib](https://pdf-lib.js.org/) (manipulation et modification de PDF locale)
+  - [PDF.js](https://mozilla.github.io/pdf.js/) (moteur de rendu, visualisation et extraction vectorielle de PDF)
   - [Tesseract.js](https://tesseract.projectnaptha.com/) (moteur OCR client-side)
   - [Marked.js](https://marked.js.org/) (compilateur Markdown haute performance)
-  - [JSZip](https://stuk.github.io/jszip/) (création d'archives ZIP à la volée pour Favicons et Instagram)
+  - [JSZip](https://stuk.github.io/jszip/) (création d'archives ZIP à la volée pour Favicons, images PDF et Instagram)
   - [QRCode.js](https://davidshimjs.github.io/qrcodejs/) (génération vectorielle de QR Codes)
 
 ---
@@ -168,6 +182,6 @@ Ce projet est distribué sous la **[Licence libre MIT](LICENSE)** (Massachusetts
 Cette licence open-source permissive vous garantit une liberté totale pour :
 - 🚀 **Auto-héberger librement** : Installez et déployez ToolSuite sur vos propres serveurs, machines locales, NAS ou VPS.
 - 🛠️ **Modifier & Adapter** : Personnalisez l'interface, ajoutez de nouveaux outils ou ajustez les fonctionnalités à vos besoins.
-- 💼 **Usage personnel & commercial** : Utilisez les 30 outils librement, sans frais ni redevance, pour des besoins individuels, associatifs ou professionnels.
+- 💼 **Usage personnel & commercial** : Utilisez les 42 outils librement, sans frais ni redevance, pour des besoins individuels, associatifs ou professionnels.
 - 📢 **Redistribuer** : Partagez ou forkez le projet en conservant la notice de copyright et la licence MIT originale.
 

@@ -55,6 +55,126 @@ const TOOLS_CATALOG = [
     icon: '📝',
     iconClass: 'icon-doc'
   },
+  {
+    id: 'tool-pdf-redact',
+    name: 'Outil de caviardage (Redact)',
+    category: 'doc',
+    categoryLabel: 'Documents & PDF',
+    desc: 'Masquez et détruisez physiquement les données sensibles (noms, IBAN) du code source du PDF.',
+    tag: 'Sécurité • Destruction physique',
+    icon: '🔲',
+    iconClass: 'icon-doc'
+  },
+  {
+    id: 'tool-pdf-password',
+    name: 'Gestionnaire de mots de passe',
+    category: 'doc',
+    categoryLabel: 'Documents & PDF',
+    desc: 'Verrouillez un PDF par mot de passe ou retirez définitivement la protection d\'un fichier déverrouillé.',
+    tag: 'Chiffrement • Déverrouillage',
+    icon: '🔐',
+    iconClass: 'icon-doc'
+  },
+  {
+    id: 'tool-pdf-flatten',
+    name: 'Aplatissement de PDF (Flatten)',
+    category: 'doc',
+    categoryLabel: 'Documents & PDF',
+    desc: 'Figez les formulaires interactifs, annotations et calques pour les transformer en contenu fixe non modifiable.',
+    tag: 'AcroForms • Image fixe',
+    icon: '📄',
+    iconClass: 'icon-doc'
+  },
+  {
+    id: 'tool-pdf-reorder',
+    name: 'Réorganisation visuelle & Rotation',
+    category: 'doc',
+    categoryLabel: 'Documents & PDF',
+    desc: 'Changez l\'ordre des pages par glisser-déposer, redressez les pages inversées ou supprimez des pages.',
+    tag: 'Drag & Drop • Rotation 360°',
+    icon: '🔄',
+    iconClass: 'icon-doc'
+  },
+  {
+    id: 'tool-pdf-crop',
+    name: 'Recadrage de marges (Crop)',
+    category: 'doc',
+    categoryLabel: 'Documents & PDF',
+    desc: 'Découpez les marges blanches superflues d\'un PDF pour l\'adapter aux liseuses et smartphones.',
+    tag: 'Auto-détection • Marges',
+    icon: '✂️',
+    iconClass: 'icon-doc'
+  },
+  {
+    id: 'tool-pdf-extract-img',
+    name: 'Extracteur d\'images',
+    category: 'doc',
+    categoryLabel: 'Documents & PDF',
+    desc: 'Extrayez automatiquement toutes les images incorporées dans un PDF et téléchargez-les en archive ZIP.',
+    tag: 'Haute résolution • Export ZIP',
+    icon: '🖼️',
+    iconClass: 'icon-doc'
+  },
+  {
+    id: 'tool-pdf-signature',
+    name: 'Outil de signature',
+    category: 'doc',
+    categoryLabel: 'Documents & PDF',
+    desc: 'Dessinez votre signature, importez un scan ou tapez votre nom en cursive et apposez-la sur le document.',
+    tag: 'Dessin • Scan • Cursive',
+    icon: '✍️',
+    iconClass: 'icon-doc'
+  },
+  {
+    id: 'tool-pdf-watermark',
+    name: 'Générateur de filigrane',
+    category: 'doc',
+    categoryLabel: 'Documents & PDF',
+    desc: 'Appliquez un filigrane textuel ("CONFIDENTIEL", "BROUILLON") ou un logo semi-transparent sur vos pages.',
+    tag: 'Opacité • Rotation 45°',
+    icon: '💧',
+    iconClass: 'icon-doc'
+  },
+  {
+    id: 'tool-pdf-numbering',
+    name: 'Numérotation automatique',
+    category: 'doc',
+    categoryLabel: 'Documents & PDF',
+    desc: 'Insérez des numéros de page dans les en-têtes ou pieds de page avec choix du format ("1/10", "Page 1 sur N").',
+    tag: 'En-têtes • Pieds de page',
+    icon: '🔢',
+    iconClass: 'icon-doc'
+  },
+  {
+    id: 'tool-url2pdf',
+    name: 'URL vers PDF (Mode Lecture)',
+    category: 'doc',
+    categoryLabel: 'Documents & PDF',
+    desc: 'Convertissez n\'importe quel article web en document PDF épuré sans publicité, idéal pour l\'archivage.',
+    tag: 'Archivage web • Sans pub',
+    icon: '🌐',
+    iconClass: 'icon-doc'
+  },
+  {
+    id: 'tool-pdf2excel',
+    name: 'PDF vers Excel (Tableaux)',
+    category: 'doc',
+    categoryLabel: 'Documents & PDF',
+    desc: 'Repérez automatiquement les structures de lignes et colonnes dans un PDF et exportez en CSV ou Excel.',
+    tag: 'Extraction tabulaire • CSV / XLS',
+    icon: '📊',
+    iconClass: 'icon-doc'
+  },
+  {
+    id: 'tool-img2pdf',
+    name: 'Images vers PDF (Multi-images)',
+    category: 'doc',
+    categoryLabel: 'Documents & PDF',
+    desc: 'Assemblez plusieurs photos et images (JPG, PNG, WebP) au sein d\'un document PDF unique bien cadré.',
+    tag: 'Multi-images • A4 / Ajusté',
+    icon: '📷',
+    iconClass: 'icon-doc'
+  },
 
   // 2. Traitement d'Images & Médias
   {
@@ -541,6 +661,7 @@ const App = {
   initTools() {
     // Initialize all tool modules once
     try { if (window.PDFTools) PDFTools.init(); } catch (e) { console.error(e); }
+    try { if (window.PdfAdvancedTools) PdfAdvancedTools.init(); } catch (e) { console.error(e); }
     try { if (window.OCRTool) OCRTool.init(); } catch (e) { console.error(e); }
     try { if (window.MarkdownTool) MarkdownTool.init(); } catch (e) { console.error(e); }
     try { if (window.ImageTools) ImageTools.init(); } catch (e) { console.error(e); }

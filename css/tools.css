@@ -862,3 +862,318 @@
   background: var(--bg-card);
 }
 
+/* ==========================================================================
+   12 ADVANCED PDF TOOLS STYLES
+   ========================================================================== */
+
+/* 1. Caviardage (Redact) */
+.redact-canvas-wrapper {
+  position: relative;
+  display: inline-block;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background: #2a2e37;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  margin: 0 auto;
+}
+
+.redact-canvas {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  cursor: crosshair;
+}
+
+.redact-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+/* 2. Visual Reorganize & Rotate (Drag & Drop) */
+.pdf-reorder-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 1.25rem;
+  padding: 1rem;
+  background: var(--border-subtle);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  min-height: 280px;
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.pdf-thumb-card {
+  position: relative;
+  background: var(--bg-card);
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: grab;
+  transition: all var(--transition-fast);
+  user-select: none;
+}
+
+.pdf-thumb-card:hover {
+  border-color: var(--accent-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.pdf-thumb-card.dragging {
+  opacity: 0.4;
+  border-style: dashed;
+}
+
+.pdf-thumb-card.drag-over {
+  border-color: var(--accent-emerald);
+  transform: scale(1.03);
+}
+
+.pdf-thumb-canvas {
+  width: 100%;
+  height: auto;
+  max-height: 200px;
+  object-fit: contain;
+  border-radius: 2px;
+  background: #ffffff;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+  transition: transform 0.2s ease;
+}
+
+.pdf-thumb-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pdf-thumb-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: var(--radius-xs);
+  background: var(--border-color);
+  color: var(--text-secondary);
+}
+
+.pdf-thumb-actions {
+  display: flex;
+  gap: 4px;
+  width: 100%;
+  justify-content: center;
+}
+
+/* 3. Crop tool */
+.crop-preview-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #1e222b;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  overflow: hidden;
+  min-height: 380px;
+}
+
+.crop-preview-box {
+  position: relative;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+.crop-overlay-rect {
+  position: absolute;
+  border: 2px dashed #3b82f6;
+  background: rgba(59, 130, 246, 0.1);
+  pointer-events: none;
+  transition: all 0.15s ease;
+}
+
+/* 4. Extract Images Gallery */
+.pdf-extracted-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.pdf-extracted-item {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.pdf-extracted-thumb {
+  width: 100%;
+  height: 150px;
+  object-fit: contain;
+  background: #14171d;
+  padding: 0.5rem;
+}
+
+.pdf-extracted-info {
+  padding: 0.65rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--border-color);
+}
+
+/* 5. Signature Tool */
+.signature-canvas-box {
+  background: #ffffff;
+  border: 2px dashed var(--border-color);
+  border-radius: var(--radius-sm);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  margin: 0.75rem 0;
+  overflow: hidden;
+}
+
+.signature-canvas {
+  cursor: crosshair;
+  background: transparent;
+  display: block;
+}
+
+.signature-stamp-wrapper {
+  position: relative;
+  display: inline-block;
+  margin: 0 auto;
+  border: 1px solid var(--border-color);
+  background: #ffffff;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+}
+
+.signature-movable-box {
+  position: absolute;
+  border: 2px dashed #2563eb;
+  background: rgba(37, 99, 235, 0.08);
+  cursor: move;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
+.signature-resize-handle {
+  position: absolute;
+  bottom: -5px;
+  right: -5px;
+  width: 12px;
+  height: 12px;
+  background: #2563eb;
+  border-radius: 50%;
+  cursor: nwse-resize;
+}
+
+/* 6. Watermark Preview */
+.watermark-stage {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #1a1e26;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 1.5rem;
+  min-height: 400px;
+}
+
+/* 7. PDF to Excel Extraction Table */
+.pdf-table-preview-container {
+  overflow-x: auto;
+  max-height: 450px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+}
+
+.pdf-extracted-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+  font-family: var(--font-mono);
+}
+
+.pdf-extracted-table th, 
+.pdf-extracted-table td {
+  padding: 6px 10px;
+  border: 1px solid var(--border-color);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.pdf-extracted-table th {
+  background: var(--border-subtle);
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.pdf-extracted-table tr:hover td {
+  background: var(--bg-card-hover);
+}
+
+/* 8. Images to PDF List */
+.img2pdf-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 0.85rem;
+  padding: 0.75rem;
+  background: var(--border-subtle);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  min-height: 160px;
+  max-height: 380px;
+  overflow-y: auto;
+}
+
+.img2pdf-card {
+  position: relative;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 0.4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.img2pdf-thumb {
+  width: 100%;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 2px;
+}
+
+.img2pdf-card-actions {
+  display: flex;
+  gap: 4px;
+  width: 100%;
+  justify-content: space-between;
+}
+
+
