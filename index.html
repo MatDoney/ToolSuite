@@ -45,7 +45,7 @@
               <a class="nav-link active" data-nav-category="all">
                 <span class="icon">🏠</span>
                 <span>Tous les outils</span>
-                <span class="nav-badge">15</span>
+                <span class="nav-badge">16</span>
               </a>
             </li>
           </ul>
@@ -65,7 +65,7 @@
               <a class="nav-link" data-nav-category="image">
                 <span class="icon">🖼️</span>
                 <span>Images & Médias</span>
-                <span class="nav-badge">4</span>
+                <span class="nav-badge">5</span>
               </a>
             </li>
             <li>
@@ -79,7 +79,7 @@
               <a class="nav-link" data-nav-category="util">
                 <span class="icon">🛠️</span>
                 <span>Utilitaires</span>
-                <span class="nav-badge">3</span>
+                <span class="nav-badge">4</span>
               </a>
             </li>
           </ul>
@@ -110,6 +110,12 @@
               <a class="nav-link" data-nav-tool="tool-bg-remover">
                 <span class="icon">🪄</span>
                 <span>Suppresseur Fond</span>
+              </a>
+            </li>
+            <li>
+              <a class="nav-link" data-nav-tool="tool-color-palette">
+                <span class="icon">🎨</span>
+                <span>Palette Couleurs</span>
               </a>
             </li>
             <li>
@@ -186,11 +192,11 @@
 
           <!-- Category Filter Bar -->
           <div class="category-filter-bar">
-            <button class="filter-btn active" data-category="all">⚡ Tous les outils (15)</button>
+            <button class="filter-btn active" data-category="all">⚡ Tous les outils (16)</button>
             <button class="filter-btn" data-category="doc">📑 Documents & PDF (5)</button>
-            <button class="filter-btn" data-category="image">🖼️ Images & Médias (4)</button>
+            <button class="filter-btn" data-category="image">🖼️ Images & Médias (5)</button>
             <button class="filter-btn" data-category="dev">⚙️ DevTools (4)</button>
-            <button class="filter-btn" data-category="util">🛠️ Utilitaires (3)</button>
+            <button class="filter-btn" data-category="util">🛠️ Utilitaires (4)</button>
           </div>
 
           <!-- Tools Cards Grid -->
@@ -1179,21 +1185,25 @@
             <input type="file" id="palette-input" accept="image/*">
             <div class="dropzone-icon">🎯</div>
             <div class="dropzone-title">Glissez une image pour en extraire les couleurs</div>
-            <div class="dropzone-subtitle">Photo, logo, illustration, capture d'écran</div>
+            <div class="dropzone-subtitle">Photo, logo, illustration, capture d'écran (PNG, JPG, WebP...)</div>
+            <button type="button" class="btn btn-secondary btn-sm" id="palette-sample-btn" style="margin-top: 0.75rem;">🖼️ Tester avec une image d'exemple</button>
           </div>
 
           <div id="palette-workspace" style="display: none;">
             <div style="display: flex; gap: 1rem; align-items: center; justify-content: space-between; flex-wrap: wrap;">
-              <h3 style="font-size: 1.1rem; font-weight: 700;">Couleurs dominantes (Cliquez pour copier)</h3>
-              <div style="display: flex; gap: 0.5rem;">
-                <button class="btn btn-secondary btn-sm" id="palette-copy-css-btn">Copier les variables CSS</button>
-                <button class="btn btn-secondary btn-sm" id="palette-copy-json-btn">Copier en JSON</button>
+              <h3 style="font-size: 1.1rem; font-weight: 700;">Couleurs dominantes (Cliquez pour copier le code HEX)</h3>
+              <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                <button class="btn btn-primary btn-sm" id="palette-copy-hex-btn">📋 Copier tous les HEX</button>
+                <button class="btn btn-secondary btn-sm" id="palette-copy-css-btn">Variables CSS</button>
+                <button class="btn btn-secondary btn-sm" id="palette-copy-json-btn">JSON</button>
+                <button class="btn btn-secondary btn-sm" id="palette-eyedropper-btn">🔍 Pipette</button>
               </div>
             </div>
 
             <div style="display: flex; gap: 1.5rem; margin-top: 1rem; align-items: flex-start; flex-wrap: wrap;">
-              <div style="max-width: 260px; background: var(--bg-card); padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
-                <img id="palette-img-preview" style="max-width: 100%; border-radius: var(--radius-xs); object-fit: contain;" alt="Image analysée">
+              <div style="max-width: 260px; background: var(--bg-card); padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color); text-align: center;">
+                <img id="palette-img-preview" style="max-width: 100%; max-height: 220px; border-radius: var(--radius-xs); object-fit: contain;" alt="Image analysée">
+                <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem;">Image source analysée</div>
               </div>
 
               <div style="flex: 1; min-width: 280px;">
@@ -1214,7 +1224,7 @@
     <div class="search-modal">
       <div class="search-modal-header">
         <span>🔍</span>
-        <input type="text" id="search-modal-input" class="search-modal-input" placeholder="Rechercher parmi les 15 outils...">
+        <input type="text" id="search-modal-input" class="search-modal-input" placeholder="Rechercher parmi les 16 outils...">
         <span class="search-shortcut">ESC</span>
       </div>
       <div class="search-modal-results" id="search-modal-results"></div>

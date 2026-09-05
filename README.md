@@ -11,7 +11,7 @@
 
 ## 🌟 Présentation
 
-**ToolSuite** est une suite complète de **15 outils web professionnels** regroupés au sein d'une interface utilisateur moderne, réactive et ergonomique. 
+**ToolSuite** est une suite complète de **16 outils web professionnels** regroupés au sein d'une interface utilisateur moderne, sobre, réactive et ergonomique. 
 
 Elle couvre la manipulation de documents, le traitement d'images, les utilitaires pour développeurs et les outils pratiques du quotidien.
 
@@ -19,7 +19,7 @@ L'ensemble des calculs, conversions et traitements s'effectue **directement et l
 
 ---
 
-## 🛠️ Les 15 Outils Intégrés
+## 🛠️ Les 16 Outils Intégrés
 
 ### 📑 1. Manipulation de Documents (PDF & Texte)
 - **Fusion de PDF** : Combinez plusieurs documents PDF en un seul fichier. Réorganisez l'ordre des pages et des fichiers par de simples boutons monter/descendre avant la fusion (`pdf-lib`).
@@ -33,6 +33,7 @@ L'ensemble des calculs, conversions et traitements s'effectue **directement et l
 - **Compresseur d'images** : Ajustez la qualité (1 à 100%) et l'échelle (25%, 50%, 75%, 100%) avec un comparateur visuel côte à côte et un badge de réduction du poids (jusqu'à -85%).
 - **Générateur de Favicon** : Importez un logo unique pour produire automatiquement toutes les tailles requises (16x16, 32x32, 48x48, 180x180 Apple Touch, 192x192, 512x512 Android/PWA). Téléchargement en archive `.ZIP` complète (`JSZip`) avec extrait HTML `<head>` prêt à copier.
 - **Suppresseur d'arrière-plan** : Détourage interactif avec baguette magique chromatique, curseur de tolérance, détection automatique des 4 coins, adoucissement alpha des contours (feathering) et gomme manuelle avec export PNG transparent.
+- **Extracteur de palette de couleurs** : Échantillonnez n'importe quelle image pour extraire les 8 couleurs dominantes avec codes HEX, RGB, pipette sélective et export des variables CSS (`:root`) ou JSON.
 
 ### ⚙️ 3. Outils pour Développeurs (DevTools)
 - **Formateur & Validateur JSON** : Indentation automatique (2 ou 4 espaces), minification en 1 ligne, diagnostic précis des erreurs de syntaxe (ligne / caractère) et vue arborescente colorisée.
@@ -43,13 +44,13 @@ L'ensemble des calculs, conversions et traitements s'effectue **directement et l
 ### 📱 4. Utilitaires Pratiques du Quotidien
 - **Générateur de QR Codes dynamiques** : Modes dédiés pour URL, réseaux Wi-Fi (SSID + mot de passe sécurisé), cartes de contact vCard, menus de restaurant ou texte brut. Personnalisation des couleurs et export en PNG ou SVG.
 - **Générateur de mots de passe forts** : Longueur paramétrable (6 à 64 caractères), filtres de complexité (majuscules, minuscules, chiffres, symboles, exclusion des caractères ambigus) et calcul en temps réel de l'entropie de Shannon.
-- **Extracteur de palette de couleurs** : Échantillonnez n'importe quelle image pour extraire les 8 couleurs dominantes avec codes HEX, RGB et export des variables CSS (`:root`) ou JSON.
+- **Extracteur de palette de couleurs** : Téléchargez une photo, illustration ou capture d'écran pour en extraire instantanément la palette chromatique harmonieuse avec copie directe en 1 clic.
 
 ---
 
 ## 💡 Expérience Utilisateur & Design
 
-- **Palette Visuelle** : Thème sombre Obsidian (`#090d16`) avec touches néon (Indigo, Violet, Cyan, Émeraude) et mode clair commutable d'un clic.
+- **Palette Visuelle Épurée & Professionnelle** : Design sobre aux tons ardoise/charbon neutres (`#0f141c`), typographie moderne Inter, contrastes doux et mode clair commutable d'un clic.
 - **Recherche Rapide Globale (`Ctrl + K`)** : Barre de recherche instantanée avec navigation au clavier (`↑`, `↓`, `Entrée`, `Échap`) pour accéder à n'importe quel outil en moins d'une seconde.
 - **Zéro Rechargement** : Navigation fluide par onglets et liens d'accès rapide.
 - **Feedback Interactif** : Système de notifications Toast animées pour chaque action (copie dans le presse-papier, téléchargement, erreurs).
@@ -67,7 +68,7 @@ L'ensemble des calculs, conversions et traitements s'effectue **directement et l
 ├── css/
 │   ├── style.css               # Design system de base, thèmes sombre/clair, grille responsive
 │   ├── components.css          # Composants réutilisables (boutons, formulaires, modales, toasts)
-│   └── tools.css               # Styles dédiés aux 15 outils (transparence, Markdown, ombres)
+│   └── tools.css               # Styles dédiés aux 16 outils (transparence, Markdown, ombres)
 ├── js/
 │   ├── ui.js                   # Helpers d'interface (Toasts, copie, drag & drop, formats)
 │   ├── app.js                  # Catalogue des outils, moteur de recherche Ctrl+K et routage
@@ -88,7 +89,7 @@ L'ensemble des calculs, conversions et traitements s'effectue **directement et l
 
 ### Option A : Lancement direct sans serveur (recommandé pour test rapide)
 1. Ouvrez simplement le fichier `index.html` dans n'importe quel navigateur moderne (**Google Chrome**, **Mozilla Firefox**, **Microsoft Edge**, **Brave**, **Safari**).
-2. Aucun serveur n'est nécessaire : les 15 outils sont 100% opérationnels immédiatement.
+2. Aucun serveur n'est nécessaire : les 16 outils sont 100% opérationnels immédiatement.
 
 ### Option B : Lancement sous serveur PHP (XAMPP, WAMP, Laragon ou CLI)
 Si vous disposez d'un environnement PHP :

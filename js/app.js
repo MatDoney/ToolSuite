@@ -165,9 +165,10 @@ const TOOLS_CATALOG = [
     id: 'tool-color-palette',
     name: 'Extracteur de palette de couleurs',
     category: 'util',
-    categoryLabel: 'Utilitaires',
-    desc: 'Déposez une image pour extraire instantanément ses couleurs dominantes en HEX, RGB et variables CSS.',
-    tag: 'Échantillonnage • CSS',
+    categories: ['util', 'image'],
+    categoryLabel: 'Utilitaires & Images',
+    desc: 'Uploader une image pour obtenir instantanément les codes hexadécimaux et RGB de ses couleurs dominantes.',
+    tag: 'Extraction HEX • Pipette • CSS',
     icon: '🎯',
     iconClass: 'icon-util'
   }
@@ -204,7 +205,7 @@ const App = {
 
     const filtered = this.activeCategory === 'all' 
       ? TOOLS_CATALOG 
-      : TOOLS_CATALOG.filter(t => t.category === this.activeCategory);
+      : TOOLS_CATALOG.filter(t => t.category === this.activeCategory || (Array.isArray(t.categories) && t.categories.includes(this.activeCategory)));
 
     grid.innerHTML = filtered.map(tool => `
       <div class="tool-card" onclick="App.openTool('${tool.id}')">

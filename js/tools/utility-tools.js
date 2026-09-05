@@ -210,47 +210,142 @@ const UtilityTools = {
   },
 
   /* ================= 3. EXTRACTEUR DE PALETTE DE COULEURS ================= */
-  initPaletteExtractor() {
-    let currentPalette = [];
+  currentPalette: [],
 
+  initPaletteExtractor() {
     UI.setupDropzone('palette-dropzone', 'palette-input', (file) => {
-      if (file.type.startsWith('image/')) {
+      if (file.type && file.type.startsWith('image/')) {
         const reader = new FileReader();
         reader.onload = (e) => {
           const img = new Image();
           img.onload = () => {
-            document.getElementById('palette-img-preview').src = e.target.result;
-            document.getElementById('palette-workspace').style.display = 'block';
+            const preview = document.getElementById('palette-img-preview');
+            if (preview) preview.src = e.target.result;
+            const workspace = document.getElementById('palette-workspace');
+            if (workspace) workspace.style.display = 'block';
             this.extractDominantColors(img);
           };
           img.src = e.target.result;
         };
         reader.readAsDataURL(file);
       } else {
-        UI.toast('Veuillez déposer une image valide.', 'warning');
+        UI.toast('Veuillez déposer une image valide (PNG, JPG, WebP...).', 'warning');
       }
     });
 
-    const copyCssBtn = document.getElementById('palette-copy-css-btn');
-    if (copyCssBtn) {
-      copyCssBtn.addEventListener('click', () => {
-        if (currentPalette.length === 0) return;
-        const cssLines = [':root {'];
-        currentPalette.forEach((c, idx) => {
-          cssLines.push(`  --palette-color-${idx + 1}: ${c.hex}; /* ${c.rgb} */`);
-        });
-        cssLines.push('}');
-        UI.copy(cssLines.join('\n'), copyCssBtn, 'Variables CSS de la palette copiées !');
+    // Sample image test button
+    const sampleBtn = document.getElementById('palette-sample-btn');
+    if (sampleBtn) {
+      sampleBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.generateSamplePaletteImage();
       });
     }
 
+    // Eyedropper pipette tool
+    const eyedropperBtn = document.getElementById('palette-eyedropper-btn');
+    if (eyedropperBtn) {
+      if ('EyeDropper' in window) {
+        eyedropperBtn.addEventListener('click', async () => {
+          try {
+            const eyeDropper = new window.EyeDropper();
+            const result = await eyeDropper.open();
+            if (result && result.sRGBHex) {
+              const hex = result.sRGBHex.toUpperCase();
+              UI.copy(hex, null, `Couleur pipetée : ${hex}`);
+              // Add to current palette
+              this.currentPalette.unshift({
+                hex: hex,
+                rgb: this.hexToRgbString(hex)
+              });
+              this.renderPaletteGrid(this.currentPalette);
+            }
+          } catch (e) {
+            console.log('Eyedropper cancelled or failed', e);
+          }
+        });
+      } else {
+        eyedropperBtn.style.display = 'none';
+      }
+    }
+
+    // Copy all HEX
+    const copyHexBtn = document.getElementById('palette-copy-hex-btn');
+    if (copyHexBtn) {
+      copyHexBtn.addEventListener('click', () => {
+        if (!this.currentPalette || this.currentPalette.length === 0) {
+          UI.toast('Aucune palette à copier.', 'warning');
+          return;
+        }
+        const hexList = this.currentPalette.map(c => c.hex).join(', ');
+        UI.copy(hexList, copyHexBtn, 'Liste des codes HEX copiée !');
+      });
+    }
+
+    // Copy CSS Variables
+    const copyCssBtn = document.getElementById('palette-copy-css-btn');
+    if (copyCssBtn) {
+      copyCssBtn.addEventListener('click', () => {
+        if (!this.currentPalette || this.currentPalette.length === 0) {
+          UI.toast('Aucune palette à copier.', 'warning');
+          return;
+        }
+        const cssLines = [':root {'];
+        this.currentPalette.forEach((c, idx) => {
+          cssLines.push(`  --palette-color-${idx + 1}: ${c.hex}; /* ${c.rgb} */`);
+        });
+        cssLines.push('}');
+        UI.copy(cssLines.join('\n'), copyCssBtn, 'Variables CSS copiées !');
+      });
+    }
+
+    // Copy JSON
     const copyJsonBtn = document.getElementById('palette-copy-json-btn');
     if (copyJsonBtn) {
       copyJsonBtn.addEventListener('click', () => {
-        if (currentPalette.length === 0) return;
-        UI.copy(JSON.stringify(currentPalette, null, 2), copyJsonBtn, 'JSON de la palette copié !');
+        if (!this.currentPalette || this.currentPalette.length === 0) {
+          UI.toast('Aucune palette à copier.', 'warning');
+          return;
+        }
+        UI.copy(JSON.stringify(this.currentPalette, null, 2), copyJsonBtn, 'JSON de la palette copié !');
       });
     }
+  },
+
+  hexToRgbString(hex) {
+    const clean = hex.replace('#', '');
+    const r = parseInt(clean.substring(0, 2), 16) || 0;
+    const g = parseInt(clean.substring(2, 4), 16) || 0;
+    const b = parseInt(clean.substring(4, 6), 16) || 0;
+    return `rgb(${r}, ${g}, ${b})`;
+  },
+
+  generateSamplePaletteImage() {
+    const canvas = document.createElement('canvas');
+    canvas.width = 400;
+    canvas.height = 300;
+    const ctx = canvas.getContext('2d');
+
+    // Create a sunset gradient
+    const grad = ctx.createLinearGradient(0, 0, 400, 300);
+    grad.addColorStop(0, '#1e1b4b');
+    grad.addColorStop(0.3, '#4338ca');
+    grad.addColorStop(0.6, '#ec4899');
+    grad.addColorStop(0.85, '#f59e0b');
+    grad.addColorStop(1, '#10b981');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, 400, 300);
+
+    const dataUrl = canvas.toDataURL('image/png');
+    const img = new Image();
+    img.onload = () => {
+      const preview = document.getElementById('palette-img-preview');
+      if (preview) preview.src = dataUrl;
+      const workspace = document.getElementById('palette-workspace');
+      if (workspace) workspace.style.display = 'block';
+      this.extractDominantColors(img);
+    };
+    img.src = dataUrl;
   },
 
   extractDominantColors(img) {
@@ -258,7 +353,7 @@ const UtilityTools = {
     const ctx = canvas.getContext('2d');
     // Downscale for fast quantization
     const sampleWidth = 100;
-    const sampleHeight = Math.round((img.height * sampleWidth) / img.width);
+    const sampleHeight = Math.max(10, Math.round((img.naturalHeight || img.height) * sampleWidth / (img.naturalWidth || img.width)));
     canvas.width = sampleWidth;
     canvas.height = sampleHeight;
     ctx.drawImage(img, 0, 0, sampleWidth, sampleHeight);
@@ -275,7 +370,7 @@ const UtilityTools = {
 
       if (a < 128) continue; // skip transparent
 
-      // Quantize to 32 steps
+      // Quantize to 24 steps
       const qr = Math.round(r / 24) * 24;
       const qg = Math.round(g / 24) * 24;
       const qb = Math.round(b / 24) * 24;
@@ -287,13 +382,12 @@ const UtilityTools = {
       colorBuckets[key].count++;
     }
 
-    // Sort by frequency and filter distinct colors
     const sorted = Object.values(colorBuckets).sort((a, b) => b.count - a.count);
     const palette = [];
 
     const rgbToHex = (r, g, b) => {
       const toH = (n) => Math.min(255, Math.max(0, n)).toString(16).padStart(2, '0');
-      return `#${toH(r)}${toH(g)}${toH(b)}`;
+      return `#${toH(r)}${toH(g)}${toH(b)}`.toUpperCase();
     };
 
     const colorDistance = (c1, c2) => {
@@ -306,8 +400,7 @@ const UtilityTools = {
 
     for (const c of sorted) {
       if (palette.length >= 8) break;
-      // Ensure minimum color distinction
-      const isDistinct = palette.every(existing => colorDistance(c, existing) > 42);
+      const isDistinct = palette.every(existing => colorDistance(c, existing) > 38);
       if (isDistinct) {
         palette.push({
           hex: rgbToHex(c.r, c.g, c.b),
@@ -319,6 +412,7 @@ const UtilityTools = {
       }
     }
 
+    this.currentPalette = palette;
     this.renderPaletteGrid(palette);
     UI.toast(`${palette.length} couleurs dominantes extraites !`, 'success');
   },
@@ -331,18 +425,24 @@ const UtilityTools = {
     palette.forEach((color, idx) => {
       const card = document.createElement('div');
       card.className = 'color-swatch-card';
-      card.title = 'Cliquez pour copier le code HEX';
+      card.title = `Cliquez pour copier ${color.hex}`;
+
+      // Calculate perceived brightness for contrasting text
+      const brightness = (color.r * 299 + color.g * 587 + color.b * 114) / 1000;
+      const textColor = brightness > 140 ? '#000000' : '#ffffff';
 
       card.innerHTML = `
-        <div class="color-swatch-rect" style="background-color: ${color.hex};"></div>
+        <div class="color-swatch-rect" style="background-color: ${color.hex}; display: flex; align-items: flex-end; padding: 6px; justify-content: flex-end;">
+          <span style="font-size: 0.7rem; font-weight: 600; color: ${textColor}; opacity: 0.85;">${idx + 1}</span>
+        </div>
         <div class="color-swatch-meta">
-          <div class="color-hex">${color.hex.toUpperCase()}</div>
+          <div class="color-hex">${color.hex}</div>
           <div class="color-rgb">${color.rgb}</div>
         </div>
       `;
 
       card.addEventListener('click', () => {
-        UI.copy(color.hex.toUpperCase(), null, `Couleur ${color.hex.toUpperCase()} copiée !`);
+        UI.copy(color.hex, null, `Code HEX ${color.hex} copié !`);
       });
 
       grid.appendChild(card);
