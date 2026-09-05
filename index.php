@@ -22,12 +22,17 @@ $upload_max = ini_get('upload_max_filesize');
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/tools.css">
 
-  <!-- External Libraries (Loaded via CDN - Zero Node/npm required) -->
-  <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.9/dist/pdf-lib.min.js"></script>
+  <!-- Libraries (Local with CDN Fallback) -->
+  <script src="js/vendor/pdf-lib.min.js"></script>
+  <script src="js/vendor/jszip.min.js"></script>
+  <script src="js/vendor/marked.min.js"></script>
+  <script src="js/vendor/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  <script>
+    if (typeof PDFLib === 'undefined') {
+      document.write('<script src="https://cdn.jsdelivr.net/npm/pdf-lib/dist/pdf-lib.min.js"><\/script>');
+    }
+  </script>
 </head>
 <body>
 

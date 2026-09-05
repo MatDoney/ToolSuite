@@ -103,6 +103,39 @@ const PDFTools = {
     this.renderMergeFileList();
   },
 
+  getPdfLib() {
+    if (typeof PDFLib !== 'undefined') return PDFLib;
+    if (typeof window !== 'undefined' && window.PDFLib) return window.PDFLib;
+    return null;
+  },
+
+  async ensurePdfLib() {
+    const existing = this.getPdfLib();
+    if (existing) return existing;
+
+    return new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = 'js/vendor/pdf-lib.min.js';
+      script.onload = () => {
+        const loaded = this.getPdfLib();
+        if (loaded) resolve(loaded);
+        else reject(new Error("La bibliothèque PDF-Lib n'a pas pu être initialisée."));
+      };
+      script.onerror = () => {
+        const cdnScript = document.createElement('script');
+        cdnScript.src = 'https://cdn.jsdelivr.net/npm/pdf-lib/dist/pdf-lib.min.js';
+        cdnScript.onload = () => {
+          const loaded = this.getPdfLib();
+          if (loaded) resolve(loaded);
+          else reject(new Error("Impossible de charger PDF-Lib."));
+        };
+        cdnScript.onerror = () => reject(new Error("Échec de chargement de PDF-Lib (local et CDN)."));
+        document.head.appendChild(cdnScript);
+      };
+      document.head.appendChild(script);
+    });
+  },
+
   async executeMerge() {
     if (this.mergeFiles.length < 2) {
       UI.toast('Veuillez ajouter au moins 2 fichiers PDF à fusionner.', 'warning');
@@ -115,14 +148,10 @@ const PDFTools = {
     mergeBtn.disabled = true;
 
     try {
-      if (typeof PDFLib === 'undefined') {
-        throw new Error("La bibliothèque PDF-Lib n'a pas pu être chargée.");
-      }
-
+      const PDFLib = await this.ensurePdfLib();
       const mergedPdf = await PDFLib.PDFDocument.create();
 
       for (const item of this.mergeFiles) {
-        // ignoreEncryption: true enables reading PDFs with standard permissions/security
         const pdf = await PDFLib.PDFDocument.load(item.bytes, { ignoreEncryption: true });
         const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
         copiedPages.forEach((page) => mergedPdf.addPage(page));
@@ -163,15 +192,12 @@ const PDFTools = {
 
   async loadSplitPdf(file) {
     try {
-      if (typeof PDFLib === 'undefined') {
-        throw new Error("La bibliothèque PDF-Lib n'a pas pu être chargée.");
-      }
+      const PDFLib = await this.ensurePdfLib();
 
       const arrayBuffer = await file.arrayBuffer();
       this.currentSplitPdfBytes = new Uint8Array(arrayBuffer);
       this.currentSplitFileName = file.name;
 
-      // Load with ignoreEncryption: true to prevent failure on encrypted/protected PDFs
       this.currentSplitPdfDoc = await PDFLib.PDFDocument.load(this.currentSplitPdfBytes, { ignoreEncryption: true });
       const totalPages = this.currentSplitPdfDoc.getPageCount();
 
@@ -230,7 +256,7 @@ const PDFTools = {
     }
 
     try {
-      // Reload fresh source document
+      const PDFLib = await this.ensurePdfLib();
       const sourceDoc = await PDFLib.PDFDocument.load(this.currentSplitPdfBytes, { ignoreEncryption: true });
       const baseName = this.currentSplitFileName.replace(/\.pdf$/i, '');
 
@@ -325,6 +351,7 @@ const PDFTools = {
         compressBtn.disabled = true;
 
         try {
+          const PDFLib = await this.ensurePdfLib();
           const arrayBuffer = await currentCompressFile.arrayBuffer();
           const pdfDoc = await PDFLib.PDFDocument.load(new Uint8Array(arrayBuffer), { ignoreEncryption: true });
           
