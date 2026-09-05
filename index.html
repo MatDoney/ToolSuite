@@ -277,9 +277,9 @@
               </div>
               <div class="pane-body">
                 <div id="pdf-split-config-panel" style="display: none;">
-                  <div style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.25); border-radius: var(--radius-sm); padding: 1rem; margin-bottom: 1.5rem;">
-                    <div id="pdf-split-file-name" style="font-weight: 700;">Document.pdf</div>
-                    <div id="pdf-split-file-info" style="font-size: 0.85rem; color: var(--text-muted);">0 page(s)</div>
+                  <div style="background: var(--border-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.85rem 1rem; margin-bottom: 1.25rem;">
+                    <div id="pdf-split-file-name" style="font-weight: 600;">Document.pdf</div>
+                    <div id="pdf-split-file-info" style="font-size: 0.82rem; color: var(--text-muted);">0 page(s)</div>
                   </div>
 
                   <div class="form-group">
@@ -288,14 +288,19 @@
                       <span style="font-size: 0.75rem; color: var(--text-muted);">Total : <strong id="pdf-split-total-pages">0</strong> pages</span>
                     </label>
                     <input type="text" id="pdf-split-range-input" class="form-input font-code" placeholder="Ex: 1-3, 5, 8">
-                    <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.35rem;">
-                      💡 Exemples : <code>1-5</code> (pages 1 à 5), <code>1, 3, 5</code> (pages impaires), <code>2-4, 7</code>.
+                    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.35rem;">
+                      Exemples : <code>1-5</code> (pages 1 à 5), <code>1, 3, 5</code> (pages spécifiques), <code>2-4, 7</code>.
                     </div>
                   </div>
 
-                  <button class="btn btn-primary btn-lg" id="pdf-split-action-btn" style="width: 100%; margin-top: 1rem;">
-                    <span>📥</span> Extraire et Télécharger le PDF
-                  </button>
+                  <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1rem;">
+                    <button class="btn btn-primary btn-lg" id="pdf-split-action-btn" style="width: 100%;">
+                      Extraire en 1 seul PDF
+                    </button>
+                    <button class="btn btn-secondary btn-md" id="pdf-split-zip-btn" style="width: 100%;">
+                      Extraire chaque page séparément (.ZIP)
+                    </button>
+                  </div>
                 </div>
 
                 <div id="pdf-split-empty-placeholder" class="empty-state" style="text-align: center; color: var(--text-muted); padding: 3rem;">
