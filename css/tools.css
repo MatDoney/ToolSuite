@@ -423,3 +423,442 @@
   width: 0%;
   transition: width 0.2s ease;
 }
+
+/* ================= TEXT TOOLS ================= */
+/* Diff Tool */
+.diff-container {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  overflow-x: auto;
+  max-height: 520px;
+}
+
+.diff-line {
+  display: flex;
+  line-height: 1.5;
+  padding: 2px 8px;
+  border-left: 3px solid transparent;
+}
+
+.diff-line-num {
+  width: 44px;
+  text-align: right;
+  color: var(--text-muted);
+  user-select: none;
+  padding-right: 12px;
+  flex-shrink: 0;
+  font-size: 0.78rem;
+}
+
+.diff-line-prefix {
+  width: 20px;
+  text-align: center;
+  user-select: none;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.diff-line-text {
+  flex: 1;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.diff-line-add {
+  background: rgba(34, 197, 94, 0.12);
+  border-left-color: #22c55e;
+  color: var(--text-primary);
+}
+.diff-line-add .diff-line-prefix { color: #22c55e; }
+
+.diff-line-del {
+  background: rgba(239, 68, 68, 0.12);
+  border-left-color: #ef4444;
+  color: var(--text-primary);
+}
+.diff-line-del .diff-line-prefix { color: #ef4444; }
+
+.diff-line-same {
+  color: var(--text-secondary);
+}
+
+.diff-stats-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  background: var(--bg-body);
+  border: 1px solid var(--border-color);
+}
+
+/* Metric Cards (Word Counter, Split Bill, Finance) */
+.metric-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.metric-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 0.85rem;
+  text-align: center;
+}
+
+.metric-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+}
+
+.metric-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 0.25rem;
+}
+
+/* Density Table */
+.density-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.density-table th, .density-table td {
+  padding: 6px 10px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.density-bar-bg {
+  height: 6px;
+  width: 100%;
+  background: var(--border-color);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.density-bar-fill {
+  height: 100%;
+  background: var(--accent-primary);
+  border-radius: var(--radius-full);
+}
+
+/* Case Converter */
+.case-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 0.75rem;
+}
+
+.case-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  transition: border-color var(--transition-fast);
+}
+
+.case-card:hover {
+  border-color: var(--border-color-hover);
+}
+
+.case-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.case-name {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.case-output-box {
+  background: var(--bg-body);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xs);
+  padding: 0.5rem 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  word-break: break-all;
+  min-height: 38px;
+  display: flex;
+  align-items: center;
+}
+
+/* ================= PRODUCTIVITY TOOLS ================= */
+/* Timezone Planner */
+.tz-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.tz-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.88rem;
+}
+
+.tz-city-title {
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tz-hours-track {
+  display: grid;
+  grid-template-columns: repeat(24, 1fr);
+  gap: 2px;
+  background: var(--bg-body);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xs);
+  padding: 2px;
+}
+
+.tz-hour-cell {
+  text-align: center;
+  font-size: 0.68rem;
+  font-family: var(--font-mono);
+  padding: 6px 0;
+  border-radius: 2px;
+  color: var(--text-muted);
+  cursor: pointer;
+  user-select: none;
+  transition: all var(--transition-fast);
+}
+
+.tz-hour-cell:hover {
+  background: var(--bg-card-hover);
+  color: var(--text-primary);
+}
+
+.tz-hour-work {
+  background: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+  font-weight: 600;
+}
+
+.tz-hour-overlap {
+  background: rgba(34, 197, 94, 0.35);
+  color: #16a34a;
+  box-shadow: inset 0 0 0 1px #22c55e;
+}
+
+.tz-hour-selected {
+  outline: 2px solid var(--accent-primary);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* Pomodoro */
+.pomodoro-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 2rem 1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.pomodoro-digits {
+  font-size: 4.5rem;
+  font-weight: 800;
+  font-family: var(--font-mono);
+  letter-spacing: -0.04em;
+  line-height: 1;
+  margin: 1.5rem 0;
+  color: var(--text-primary);
+}
+
+.pomodoro-modes {
+  display: flex;
+  gap: 0.5rem;
+  background: var(--bg-body);
+  padding: 4px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-color);
+}
+
+.pomodoro-mode-btn {
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.pomodoro-mode-btn.active {
+  background: var(--bg-card);
+  color: var(--text-primary);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* ================= FINANCE TOOLS ================= */
+/* Compound Interest Chart */
+.chart-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 1rem;
+  width: 100%;
+  position: relative;
+}
+
+.chart-canvas {
+  width: 100%;
+  height: 280px;
+  display: block;
+}
+
+/* ================= MARKETING TOOLS ================= */
+/* Meta Preview Cards */
+.social-preview-wrap {
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--bg-card);
+  max-width: 540px;
+}
+
+.social-preview-img {
+  width: 100%;
+  height: 240px;
+  object-fit: cover;
+  background: var(--bg-body);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+}
+
+.social-preview-body {
+  padding: 0.85rem 1rem;
+}
+
+.social-preview-domain {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.25rem;
+}
+
+.social-preview-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.35;
+  margin-bottom: 0.35rem;
+}
+
+.social-preview-desc {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Instagram Grid */
+.insta-grid-container {
+  display: grid;
+  gap: 3px;
+  background: var(--border-color);
+  padding: 3px;
+  border-radius: var(--radius-xs);
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.insta-tile {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  background: var(--bg-card);
+  overflow: hidden;
+}
+
+.insta-tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.insta-badge-order {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  background: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: var(--radius-xs);
+  backdrop-filter: blur(4px);
+}
+
+/* ================= WHEEL OF FORTUNE ================= */
+.wheel-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  margin: 1rem 0;
+}
+
+.wheel-pointer {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 14px solid transparent;
+  border-right: 14px solid transparent;
+  border-top: 24px solid #ef4444;
+  z-index: 10;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
+
+.wheel-canvas {
+  max-width: 100%;
+  height: auto;
+  border-radius: 50%;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  border: 4px solid var(--border-color);
+  background: var(--bg-card);
+}
+

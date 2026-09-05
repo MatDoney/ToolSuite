@@ -1,6 +1,6 @@
 /**
  * ToolSuite - Core Application Router & Search System
- * Manages Dashboard, 15 Tools, Fast Search (Ctrl+K), and Views
+ * Manages Dashboard, 30 Tools, Fast Search (Ctrl+K), and Views
  */
 
 const TOOLS_CATALOG = [
@@ -170,6 +170,157 @@ const TOOLS_CATALOG = [
     desc: 'Uploader une image pour obtenir instantanément les codes hexadécimaux et RGB de ses couleurs dominantes.',
     tag: 'Extraction HEX • Pipette • CSS',
     icon: '🎯',
+    iconClass: 'icon-util'
+  },
+
+  // 5. Outils de Texte et Rédaction
+  {
+    id: 'tool-diff',
+    name: 'Comparateur de texte (Diff)',
+    category: 'text',
+    categoryLabel: 'Texte & Rédaction',
+    desc: 'Comparez deux textes et mettez en évidence les ajouts, suppressions et modifications à la manière de GitHub.',
+    tag: 'Diff visuel • Ligne par ligne',
+    icon: '🔍',
+    iconClass: 'icon-doc'
+  },
+  {
+    id: 'tool-word-counter',
+    name: 'Compteur de mots avancé',
+    category: 'text',
+    categoryLabel: 'Texte & Rédaction',
+    desc: 'Analysez en temps réel le nombre de mots, caractères, temps de lecture et la densité des mots-clés dominants.',
+    tag: 'Densité • Temps de lecture',
+    icon: '📊',
+    iconClass: 'icon-doc'
+  },
+  {
+    id: 'tool-case-converter',
+    name: 'Convertisseur de casse',
+    category: 'text',
+    categoryLabel: 'Texte & Rédaction',
+    desc: 'Convertissez instantanément vos textes en camelCase, snake_case, PascalCase, kebab-case et majuscules/minuscules.',
+    tag: '9 formats • Copie rapide',
+    icon: '🔤',
+    iconClass: 'icon-doc'
+  },
+  {
+    id: 'tool-text-cleaner',
+    name: 'Nettoyeur de texte',
+    category: 'text',
+    categoryLabel: 'Texte & Rédaction',
+    desc: 'Supprimez les doubles espaces, sauts de ligne superflus, balises HTML et caractères indésirables.',
+    tag: 'Purification • Économie d\'octets',
+    icon: '🧹',
+    iconClass: 'icon-doc'
+  },
+
+  // 6. Productivité et Temps
+  {
+    id: 'tool-timezone',
+    name: 'Planificateur de fuseaux horaires',
+    category: 'time',
+    categoryLabel: 'Productivité & Temps',
+    desc: 'Visualisez les heures de travail qui se chevauchent entre plusieurs pays pour planifier des réunions sans erreur.',
+    tag: 'Frise 24h • Horaires de bureau',
+    icon: '🌍',
+    iconClass: 'icon-util'
+  },
+  {
+    id: 'tool-date-calc',
+    name: 'Calculateur de dates',
+    category: 'time',
+    categoryLabel: 'Productivité & Temps',
+    desc: 'Calculez la durée exacte entre deux dates, le nombre de jours ouvrés ou projetez une date future.',
+    tag: 'Jours ouvrés • Projection',
+    icon: '📅',
+    iconClass: 'icon-util'
+  },
+  {
+    id: 'tool-pomodoro',
+    name: 'Minuteur Pomodoro',
+    category: 'time',
+    categoryLabel: 'Productivité & Temps',
+    desc: 'Minuteur de concentration minimaliste avec gestion de tâches et bruits blancs intégrés (pluie, café, vagues).',
+    tag: 'Focus • Web Audio API',
+    icon: '⏱️',
+    iconClass: 'icon-util'
+  },
+
+  // 7. Finance et Calculs Rapides
+  {
+    id: 'tool-percentage',
+    name: 'Calculateur de pourcentages',
+    category: 'finance',
+    categoryLabel: 'Finance & Calculs',
+    desc: 'Résolvez instantanément tous vos calculs de pourcentages, augmentations, réductions et remises commerciales.',
+    tag: '4 modes • Calcul instantané',
+    icon: '％',
+    iconClass: 'icon-dev'
+  },
+  {
+    id: 'tool-split-bill',
+    name: 'Partage d\'addition (Split Bill)',
+    category: 'finance',
+    categoryLabel: 'Finance & Calculs',
+    desc: 'Divisez la note d\'un restaurant ou d\'un achat de groupe en calculant le pourboire et le montant par personne.',
+    tag: 'Pourboire • Récapitulatif copiable',
+    icon: '🧾',
+    iconClass: 'icon-dev'
+  },
+  {
+    id: 'tool-compound-interest',
+    name: 'Simulateur d\'intérêts composés',
+    category: 'finance',
+    categoryLabel: 'Finance & Calculs',
+    desc: 'Simulez l\'évolution de votre épargne sur 1 à 40 ans avec graphique interactif comparant capital et intérêts.',
+    tag: 'Graphique Canvas • Projection',
+    icon: '📈',
+    iconClass: 'icon-dev'
+  },
+
+  // 8. Marketing et Réseaux Sociaux
+  {
+    id: 'tool-meta-preview',
+    name: 'Aperçu de balises Meta',
+    category: 'marketing',
+    categoryLabel: 'Marketing & Réseaux',
+    desc: 'Visualisez exactement le rendu de vos liens sur Twitter / X, LinkedIn et Facebook avec génération du code HTML.',
+    tag: 'OpenGraph • Twitter Cards',
+    icon: '📱',
+    iconClass: 'icon-image'
+  },
+  {
+    id: 'tool-utm-builder',
+    name: 'Générateur de liens UTM',
+    category: 'marketing',
+    categoryLabel: 'Marketing & Réseaux',
+    desc: 'Créez des URLs de suivi avec paramètres UTM personnalisés (source, medium, campagne) pour Google Analytics.',
+    tag: 'Tracking • Google Analytics',
+    icon: '🔗',
+    iconClass: 'icon-image'
+  },
+  {
+    id: 'tool-insta-grid',
+    name: 'Créateur de grilles Instagram',
+    category: 'marketing',
+    categoryLabel: 'Marketing & Réseaux',
+    desc: 'Découpez vos photos en 3, 6 ou 9 carrés parfaits avec numérotation d\'ordre de publication et export en archive ZIP.',
+    tag: 'Mosaïque 3x3 • Export ZIP',
+    icon: '📸',
+    iconClass: 'icon-image'
+  },
+
+  // 9. Tirage au sort
+  {
+    id: 'tool-wheel',
+    name: 'Roue de tirage au sort',
+    category: 'util',
+    categories: ['util', 'marketing'],
+    categoryLabel: 'Utilitaires & Jeux',
+    desc: 'Entrez une liste de noms ou d\'options et lancez la roue interactive avec rotation physique, bruitage et confettis.',
+    tag: 'Roue physique • Sons & Confettis',
+    icon: '🎡',
     iconClass: 'icon-util'
   }
 ];
@@ -396,6 +547,11 @@ const App = {
     try { if (window.BgRemover) BgRemover.init(); } catch (e) { console.error(e); }
     try { if (window.DevTools) DevTools.init(); } catch (e) { console.error(e); }
     try { if (window.UtilityTools) UtilityTools.init(); } catch (e) { console.error(e); }
+    try { if (window.TextTools) TextTools.init(); } catch (e) { console.error(e); }
+    try { if (window.ProductivityTools) ProductivityTools.init(); } catch (e) { console.error(e); }
+    try { if (window.FinanceTools) FinanceTools.init(); } catch (e) { console.error(e); }
+    try { if (window.MarketingTools) MarketingTools.init(); } catch (e) { console.error(e); }
+    try { if (window.WheelTool) WheelTool.init(); } catch (e) { console.error(e); }
   }
 };
 

@@ -1,0 +1,338 @@
+/**
+ * Wheel of Fortune / Random Picker Tool
+ * Roue de tirage au sort physique animée avec Canvas, sons et confettis
+ * 100% Client-side Vanilla JS
+ */
+
+const WheelTool = {
+  init() {
+    const canvas = document.getElementById('wheel-canvas');
+    const input = document.getElementById('wheel-names-input');
+    const spinBtn = document.getElementById('wheel-spin-btn');
+    const sampleBtn = document.getElementById('wheel-sample-btn');
+    const removeWinnerBtn = document.getElementById('wheel-remove-winner-btn');
+    const resultBox = document.getElementById('wheel-result-box');
+    const historyList = document.getElementById('wheel-history-list');
+
+    if (!canvas || !input || !spinBtn) return;
+
+    const ctx = canvas.getContext('2d');
+    let items = [];
+    let currentAngle = 0; // in radians
+    let isSpinning = false;
+    let lastWinner = null;
+    let lastTickAngle = 0;
+
+    // Palette for slices
+    const COLORS = [
+      '#4f46e5', '#06b6d4', '#10b981', '#f59e0b', 
+      '#ec4899', '#8b5cf6', '#3b82f6', '#14b8a6', 
+      '#f97316', '#6366f1', '#84cc16', '#d946ef'
+    ];
+
+    // Web Audio Click sound
+    let audioCtx = null;
+    const playTickSound = () => {
+      try {
+        if (!audioCtx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          audioCtx = new AudioContext();
+        }
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(120, audioCtx.currentTime + 0.04);
+        gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.04);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.05);
+      } catch (e) {}
+    };
+
+    const playWinSound = () => {
+      try {
+        if (!audioCtx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          audioCtx = new AudioContext();
+        }
+        const now = audioCtx.currentTime;
+        [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.frequency.value = freq;
+          gain.gain.setValueAtTime(0.12, now + i * 0.1);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.1 + 0.35);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now + i * 0.1);
+          osc.stop(now + i * 0.1 + 0.36);
+        });
+      } catch (e) {}
+    };
+
+    const getItems = () => {
+      return input.value
+        .split('\n')
+        .map(s => s.trim())
+        .filter(s => s.length > 0);
+    };
+
+    const drawWheel = () => {
+      items = getItems();
+      const numItems = items.length;
+      const dpr = window.devicePixelRatio || 1;
+      const size = 440;
+      canvas.width = size * dpr;
+      canvas.height = size * dpr;
+      canvas.style.width = `${size}px`;
+      canvas.style.height = `${size}px`;
+
+      ctx.save();
+      ctx.scale(dpr, dpr);
+      ctx.clearRect(0, 0, size, size);
+
+      const center = size / 2;
+      const radius = center - 12;
+
+      if (numItems === 0) {
+        ctx.fillStyle = 'var(--bg-card)';
+        ctx.beginPath();
+        ctx.arc(center, center, radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#334155';
+        ctx.lineWidth = 4;
+        ctx.stroke();
+
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = '16px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('Entrez des noms pour afficher la roue', center, center);
+        ctx.restore();
+        return;
+      }
+
+      const arc = (Math.PI * 2) / numItems;
+
+      // Draw slices
+      for (let i = 0; i < numItems; i++) {
+        const angle = currentAngle + i * arc;
+        ctx.fillStyle = COLORS[i % COLORS.length];
+
+        ctx.beginPath();
+        ctx.moveTo(center, center);
+        ctx.arc(center, center, radius, angle, angle + arc);
+        ctx.lineTo(center, center);
+        ctx.fill();
+
+        ctx.strokeStyle = '#ffffff25';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // Slice text
+        ctx.save();
+        ctx.translate(center, center);
+        ctx.rotate(angle + arc / 2);
+        ctx.textAlign = 'right';
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 15px sans-serif';
+        ctx.shadowColor = 'rgba(0,0,0,0.5)';
+        ctx.shadowBlur = 4;
+
+        // Truncate text if long
+        let label = items[i];
+        if (label.length > 18) label = label.slice(0, 16) + '…';
+        ctx.fillText(label, radius - 24, 5);
+        ctx.restore();
+      }
+
+      // Outer ring
+      ctx.strokeStyle = '#0f172a';
+      ctx.lineWidth = 6;
+      ctx.beginPath();
+      ctx.arc(center, center, radius, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Center Hub
+      ctx.fillStyle = '#0f172a';
+      ctx.beginPath();
+      ctx.arc(center, center, 32, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.arc(center, center, 32, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 14px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('🎯', center, center + 5);
+
+      ctx.restore();
+    };
+
+    const spin = () => {
+      if (isSpinning) return;
+      items = getItems();
+      if (items.length < 2) {
+        UI.toast('Veuillez entrer au moins 2 noms.', 'warning');
+        return;
+      }
+
+      isSpinning = true;
+      spinBtn.disabled = true;
+      if (removeWinnerBtn) removeWinnerBtn.style.display = 'none';
+      if (resultBox) resultBox.innerHTML = '<span style="color: var(--text-muted);">Tirage en cours...</span>';
+
+      // Random speed and duration (3 to 5 seconds)
+      const numItems = items.length;
+      const arc = (Math.PI * 2) / numItems;
+      let velocity = 0.35 + Math.random() * 0.25; // initial angular speed
+      const friction = 0.984 + Math.random() * 0.005; // deceleration
+      lastTickAngle = currentAngle;
+
+      const animate = () => {
+        currentAngle += velocity;
+        velocity *= friction;
+
+        // Play tick sound when passing slice
+        if (Math.abs(currentAngle - lastTickAngle) >= arc) {
+          playTickSound();
+          lastTickAngle = currentAngle;
+        }
+
+        drawWheel();
+
+        if (velocity > 0.002) {
+          requestAnimationFrame(animate);
+        } else {
+          isSpinning = false;
+          spinBtn.disabled = false;
+
+          // Compute winner at top (12 o'clock, which is -PI/2)
+          // Pointer is at 270 deg (1.5 * PI)
+          const normalized = (currentAngle % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
+          const pointerAngle = (Math.PI * 1.5 - normalized + Math.PI * 2) % (Math.PI * 2);
+          const winnerIndex = Math.floor(pointerAngle / arc) % numItems;
+          const winner = items[winnerIndex];
+          lastWinner = winner;
+
+          playWinSound();
+          launchConfetti();
+
+          if (resultBox) {
+            resultBox.innerHTML = `
+              <div style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase;">🎉 Gagnant(e) du tirage :</div>
+              <div style="font-size: 1.8rem; font-weight: 800; color: #22c55e; margin: 0.3rem 0;">${winner}</div>
+            `;
+          }
+
+          if (removeWinnerBtn) removeWinnerBtn.style.display = 'inline-block';
+
+          // Add to history
+          if (historyList) {
+            const time = new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            const li = document.createElement('li');
+            li.style.cssText = 'padding: 4px 8px; font-size: 0.85rem; display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color);';
+            li.innerHTML = `<strong>${winner}</strong><span style="color: var(--text-muted); font-size: 0.75rem;">${time}</span>`;
+            historyList.prepend(li);
+          }
+
+          UI.toast(`Félicitations à ${winner} !`, 'success');
+        }
+      };
+
+      requestAnimationFrame(animate);
+    };
+
+    // Confetti particles
+    const launchConfetti = () => {
+      const confettiCanvas = document.getElementById('wheel-confetti-canvas');
+      if (!confettiCanvas) return;
+      const cctx = confettiCanvas.getContext('2d');
+      const w = (confettiCanvas.width = confettiCanvas.offsetWidth);
+      const h = (confettiCanvas.height = confettiCanvas.offsetHeight);
+
+      const particles = [];
+      for (let i = 0; i < 70; i++) {
+        particles.push({
+          x: w / 2,
+          y: h / 2,
+          vx: (Math.random() - 0.5) * 12,
+          vy: (Math.random() - 0.7) * 12,
+          size: Math.random() * 7 + 4,
+          color: COLORS[Math.floor(Math.random() * COLORS.length)],
+          rotation: Math.random() * Math.PI * 2,
+          vrot: (Math.random() - 0.5) * 0.2,
+          alpha: 1
+        });
+      }
+
+      let frame = 0;
+      const runConfetti = () => {
+        cctx.clearRect(0, 0, w, h);
+        particles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.25; // gravity
+          p.rotation += p.vrot;
+          p.alpha -= 0.012;
+
+          cctx.save();
+          cctx.globalAlpha = Math.max(0, p.alpha);
+          cctx.fillStyle = p.color;
+          cctx.translate(p.x, p.y);
+          cctx.rotate(p.rotation);
+          cctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+          cctx.restore();
+        });
+
+        frame++;
+        if (frame < 80) requestAnimationFrame(runConfetti);
+        else cctx.clearRect(0, 0, w, h);
+      };
+      runConfetti();
+    };
+
+    spinBtn.addEventListener('click', spin);
+    canvas.addEventListener('click', spin);
+
+    input.addEventListener('input', () => {
+      drawWheel();
+      const count = getItems().length;
+      const countEl = document.getElementById('wheel-count');
+      if (countEl) countEl.textContent = `${count} nom(s)`;
+    });
+
+    if (sampleBtn) {
+      sampleBtn.addEventListener('click', () => {
+        input.value = 'Alice\nBob\nChloé\nDavid\nEmma\nFabien\nGrace\nHugo\nInès\nJulien';
+        drawWheel();
+        const countEl = document.getElementById('wheel-count');
+        if (countEl) countEl.textContent = '10 nom(s)';
+      });
+    }
+
+    if (removeWinnerBtn) {
+      removeWinnerBtn.addEventListener('click', () => {
+        if (!lastWinner) return;
+        const currentList = getItems();
+        const updated = currentList.filter(n => n !== lastWinner);
+        input.value = updated.join('\n');
+        drawWheel();
+        removeWinnerBtn.style.display = 'none';
+        UI.toast(`"${lastWinner}" a été retiré de la liste.`, 'info');
+      });
+    }
+
+    drawWheel();
+  }
+};
+
+window.WheelTool = WheelTool;

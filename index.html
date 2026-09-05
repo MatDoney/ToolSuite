@@ -45,7 +45,7 @@
               <a class="nav-link active" data-nav-category="all">
                 <span class="icon">🏠</span>
                 <span>Tous les outils</span>
-                <span class="nav-badge">16</span>
+                <span class="nav-badge">30</span>
               </a>
             </li>
           </ul>
@@ -79,7 +79,35 @@
               <a class="nav-link" data-nav-category="util">
                 <span class="icon">🛠️</span>
                 <span>Utilitaires</span>
+                <span class="nav-badge">5</span>
+              </a>
+            </li>
+            <li>
+              <a class="nav-link" data-nav-category="text">
+                <span class="icon">✍️</span>
+                <span>Texte & Rédaction</span>
                 <span class="nav-badge">4</span>
+              </a>
+            </li>
+            <li>
+              <a class="nav-link" data-nav-category="time">
+                <span class="icon">⏱️</span>
+                <span>Productivité & Temps</span>
+                <span class="nav-badge">3</span>
+              </a>
+            </li>
+            <li>
+              <a class="nav-link" data-nav-category="finance">
+                <span class="icon">💰</span>
+                <span>Finance & Calculs</span>
+                <span class="nav-badge">3</span>
+              </a>
+            </li>
+            <li>
+              <a class="nav-link" data-nav-category="marketing">
+                <span class="icon">📣</span>
+                <span>Marketing & Réseaux</span>
+                <span class="nav-badge">3</span>
               </a>
             </li>
           </ul>
@@ -171,12 +199,12 @@
             <span class="hero-badge">⚡ Suite Tout-en-un • Traitement Local & Privé</span>
             <h1 class="hero-title">Tous vos outils du quotidien, réunis en un seul endroit.</h1>
             <p class="hero-desc">
-              15 outils professionnels pour vos documents, images, code et tâches quotidiennes. 
+              30 outils professionnels pour vos documents, images, code, rédaction et tâches du quotidien. 
               Vos données sont traitées directement dans votre navigateur, avec une rapidité instantanée et une confidentialité totale.
             </p>
             <div class="hero-stats">
               <div class="hero-stat-item">
-                <span class="hero-stat-number">15</span>
+                <span class="hero-stat-number">30</span>
                 <span class="hero-stat-label">Outils Disponibles</span>
               </div>
               <div class="hero-stat-item">
@@ -192,11 +220,16 @@
 
           <!-- Category Filter Bar -->
           <div class="category-filter-bar">
-            <button class="filter-btn active" data-category="all">⚡ Tous les outils (16)</button>
+            <button class="filter-btn active" data-category="all">⚡ Tous les outils (30)</button>
             <button class="filter-btn" data-category="doc">📑 Documents & PDF (5)</button>
             <button class="filter-btn" data-category="image">🖼️ Images & Médias (5)</button>
             <button class="filter-btn" data-category="dev">⚙️ DevTools (4)</button>
-            <button class="filter-btn" data-category="util">🛠️ Utilitaires (4)</button>
+            <button class="filter-btn" data-category="util">🛠️ Utilitaires (5)</button>
+            <button class="filter-btn" data-category="text">✍️ Texte & Rédaction (4)</button>
+            <button class="filter-btn" data-category="time">⏱️ Productivité (3)</button>
+            <button class="filter-btn" data-category="finance">💰 Finance (3)</button>
+            <button class="filter-btn" data-category="marketing">📣 Marketing (3)</button>
+          </div> <button class="filter-btn" data-category="util">🛠️ Utilitaires (4)</button>
           </div>
 
           <!-- Tools Cards Grid -->
@@ -1213,6 +1246,960 @@
           </div>
         </section>
 
+        <!-- ================= 17. COMPARATEUR DE TEXTE (DIFF) ================= -->
+        <section id="view-tool-diff" class="tool-view-wrapper">
+          <div class="tool-header-bar">
+            <div class="tool-breadcrumbs">
+              <button class="back-to-dash-btn">← Tableau de bord</button>
+              <span class="breadcrumb-sep">/</span>
+              <span class="breadcrumb-current">Texte & Rédaction</span>
+            </div>
+            <div class="tool-view-title-group">
+              <h2>Comparateur de texte (Diff Tool)</h2>
+              <p>Mettez en évidence les ajouts et suppressions entre deux blocs de texte, à la manière des commits GitHub.</p>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 0.75rem; margin-bottom: 1rem; align-items: center; justify-content: space-between; flex-wrap: wrap;">
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+              <button class="btn btn-primary" id="diff-compare-btn">⚡ Comparer les textes</button>
+              <button class="btn btn-secondary btn-sm" id="diff-sample-btn">Exemple de code</button>
+              <button class="btn btn-secondary btn-sm" id="diff-clear-btn">Effacer</button>
+            </div>
+            <div id="diff-stats" style="display: flex; gap: 0.5rem; align-items: center;"></div>
+          </div>
+
+          <div class="grid-2col" style="margin-bottom: 1.25rem;">
+            <div class="form-group">
+              <label class="form-label" for="diff-input-a">1. Texte original (Avant)</label>
+              <textarea id="diff-input-a" class="form-textarea" rows="8" placeholder="Collez le texte ou code original ici..."></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="diff-input-b">2. Texte modifié (Après)</label>
+              <textarea id="diff-input-b" class="form-textarea" rows="8" placeholder="Collez le texte ou code modifié ici..."></textarea>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Résultat des différences visuelles</label>
+            <div id="diff-output">
+              <div style="padding: 2.5rem; text-align: center; color: var(--text-muted); background: var(--bg-card); border: 1px dashed var(--border-color); border-radius: var(--radius-sm);">
+                Saisissez deux textes ci-dessus et cliquez sur <strong>« Comparer les textes »</strong> pour révéler les différences.
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= 18. COMPTEUR DE MOTS AVANCÉ ================= -->
+        <section id="view-tool-word-counter" class="tool-view-wrapper">
+          <div class="tool-header-bar">
+            <div class="tool-breadcrumbs">
+              <button class="back-to-dash-btn">← Tableau de bord</button>
+              <span class="breadcrumb-sep">/</span>
+              <span class="breadcrumb-current">Texte & Rédaction</span>
+            </div>
+            <div class="tool-view-title-group">
+              <h2>Compteur de mots avancé</h2>
+              <p>Analysez en temps réel le volume de mots, caractères, temps de lecture et densité des mots-clés les plus fréquents.</p>
+            </div>
+          </div>
+
+          <div class="metric-cards-grid">
+            <div class="metric-card">
+              <div class="metric-value" id="wc-words">0</div>
+              <div class="metric-label">Mots</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-value" id="wc-chars">0</div>
+              <div class="metric-label">Caractères</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-value" id="wc-chars-nospace">0</div>
+              <div class="metric-label">Sans espaces</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-value" id="wc-sentences">0</div>
+              <div class="metric-label">Phrases</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-value" id="wc-paragraphs">0</div>
+              <div class="metric-label">Paragraphes</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-value" id="wc-read-time">0 min</div>
+              <div class="metric-label">Lecture (200 m/min)</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-value" id="wc-speak-time">0 min</div>
+              <div class="metric-label">Parole (130 m/min)</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <label class="form-label" for="wc-input" style="margin-bottom: 0;">Saisissez ou collez votre texte à analyser</label>
+              <div style="display: flex; gap: 0.5rem;">
+                <button class="btn btn-secondary btn-sm" id="wc-sample-btn">Texte d'exemple</button>
+                <button class="btn btn-secondary btn-sm" id="wc-clear-btn">Effacer</button>
+              </div>
+            </div>
+            <textarea id="wc-input" class="form-textarea" rows="10" placeholder="Commencez à écrire ou collez votre texte ici pour voir les métriques se mettre à jour en direct..."></textarea>
+          </div>
+
+          <div class="card" style="margin-top: 1.25rem;">
+            <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.75rem;">Densité des termes récurrents (Mots-clés dominants)</h3>
+            <div style="overflow-x: auto;">
+              <table class="density-table">
+                <thead>
+                  <tr>
+                    <th>Terme</th>
+                    <th>Occurrences</th>
+                    <th>Densité</th>
+                    <th>Répartition</th>
+                  </tr>
+                </thead>
+                <tbody id="wc-density-tbody">
+                  <tr>
+                    <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 1.5rem;">Tapez du texte ci-dessus pour afficher la table de densité.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= 19. CONVERTISSEUR DE CASSE ================= -->
+        <section id="view-tool-case-converter" class="tool-view-wrapper">
+          <div class="tool-header-bar">
+            <div class="tool-breadcrumbs">
+              <button class="back-to-dash-btn">← Tableau de bord</button>
+              <span class="breadcrumb-sep">/</span>
+              <span class="breadcrumb-current">Texte & Rédaction</span>
+            </div>
+            <div class="tool-view-title-group">
+              <h2>Convertisseur de casse</h2>
+              <p>Transformez instantanément un texte brut vers 9 conventions de nommage (camelCase, snake_case, PascalCase...).</p>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <label class="form-label" for="case-input" style="margin-bottom: 0;">Texte source</label>
+              <div style="display: flex; gap: 0.5rem;">
+                <button class="btn btn-secondary btn-sm" id="case-sample-btn">Exemple</button>
+                <button class="btn btn-secondary btn-sm" id="case-clear-btn">Effacer</button>
+              </div>
+            </div>
+            <textarea id="case-input" class="form-textarea" rows="3" placeholder="Tapez du texte à convertir (ex: suite outil web productivite developpeur)..."></textarea>
+          </div>
+
+          <div class="case-grid" style="margin-top: 1.25rem;">
+            <div class="case-card">
+              <div class="case-header">
+                <span class="case-name">camelCase</span>
+                <button class="btn btn-secondary btn-sm case-copy-btn" data-target="case-camel">Copier</button>
+              </div>
+              <div class="case-output-box" id="case-camel">—</div>
+            </div>
+
+            <div class="case-card">
+              <div class="case-header">
+                <span class="case-name">snake_case</span>
+                <button class="btn btn-secondary btn-sm case-copy-btn" data-target="case-snake">Copier</button>
+              </div>
+              <div class="case-output-box" id="case-snake">—</div>
+            </div>
+
+            <div class="case-card">
+              <div class="case-header">
+                <span class="case-name">kebab-case</span>
+                <button class="btn btn-secondary btn-sm case-copy-btn" data-target="case-kebab">Copier</button>
+              </div>
+              <div class="case-output-box" id="case-kebab">—</div>
+            </div>
+
+            <div class="case-card">
+              <div class="case-header">
+                <span class="case-name">PascalCase</span>
+                <button class="btn btn-secondary btn-sm case-copy-btn" data-target="case-pascal">Copier</button>
+              </div>
+              <div class="case-output-box" id="case-pascal">—</div>
+            </div>
+
+            <div class="case-card">
+              <div class="case-header">
+                <span class="case-name">CONSTANT_CASE</span>
+                <button class="btn btn-secondary btn-sm case-copy-btn" data-target="case-constant">Copier</button>
+              </div>
+              <div class="case-output-box" id="case-constant">—</div>
+            </div>
+
+            <div class="case-card">
+              <div class="case-header">
+                <span class="case-name">Title Case</span>
+                <button class="btn btn-secondary btn-sm case-copy-btn" data-target="case-title">Copier</button>
+              </div>
+              <div class="case-output-box" id="case-title">—</div>
+            </div>
+
+            <div class="case-card">
+              <div class="case-header">
+                <span class="case-name">UPPERCASE</span>
+                <button class="btn btn-secondary btn-sm case-copy-btn" data-target="case-upper">Copier</button>
+              </div>
+              <div class="case-output-box" id="case-upper">—</div>
+            </div>
+
+            <div class="case-card">
+              <div class="case-header">
+                <span class="case-name">lowercase</span>
+                <button class="btn btn-secondary btn-sm case-copy-btn" data-target="case-lower">Copier</button>
+              </div>
+              <div class="case-output-box" id="case-lower">—</div>
+            </div>
+
+            <div class="case-card">
+              <div class="case-header">
+                <span class="case-name">Sentence case</span>
+                <button class="btn btn-secondary btn-sm case-copy-btn" data-target="case-sentence">Copier</button>
+              </div>
+              <div class="case-output-box" id="case-sentence">—</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= 20. NETTOYEUR DE TEXTE ================= -->
+        <section id="view-tool-text-cleaner" class="tool-view-wrapper">
+          <div class="tool-header-bar">
+            <div class="tool-breadcrumbs">
+              <button class="back-to-dash-btn">← Tableau de bord</button>
+              <span class="breadcrumb-sep">/</span>
+              <span class="breadcrumb-current">Texte & Rédaction</span>
+            </div>
+            <div class="tool-view-title-group">
+              <h2>Nettoyeur de texte</h2>
+              <p>Supprimez les doubles espaces, lignes vides consécutives, balises HTML ou tabulations superflues d'un copié-collé.</p>
+            </div>
+          </div>
+
+          <div class="card" style="margin-bottom: 1.25rem;">
+            <div style="font-size: 0.85rem; font-weight: 600; margin-bottom: 0.75rem; color: var(--text-secondary);">Options de nettoyage :</div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.75rem;">
+              <label style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; cursor: pointer;">
+                <input type="checkbox" id="clean-spaces" checked style="width: 16px; height: 16px;">
+                <span>Supprimer les espaces multiples</span>
+              </label>
+              <label style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; cursor: pointer;">
+                <input type="checkbox" id="clean-lines" checked style="width: 16px; height: 16px;">
+                <span>Supprimer les sauts de ligne triples</span>
+              </label>
+              <label style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; cursor: pointer;">
+                <input type="checkbox" id="clean-html" checked style="width: 16px; height: 16px;">
+                <span>Retirer les balises HTML / XML</span>
+              </label>
+              <label style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; cursor: pointer;">
+                <input type="checkbox" id="clean-trim" checked style="width: 16px; height: 16px;">
+                <span>Rogner les espaces en bout de ligne</span>
+              </label>
+              <label style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; cursor: pointer;">
+                <input type="checkbox" id="clean-tabs" checked style="width: 16px; height: 16px;">
+                <span>Remplacer les tabulations</span>
+              </label>
+              <label style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; cursor: pointer;">
+                <input type="checkbox" id="clean-quotes" checked style="width: 16px; height: 16px;">
+                <span>Normaliser guillemets & apostrophes</span>
+              </label>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem; align-items: center; flex-wrap: wrap;">
+            <button class="btn btn-primary" id="cleaner-clean-btn">🧹 Nettoyer le texte</button>
+            <button class="btn btn-secondary btn-sm" id="cleaner-sample-btn">Texte brut d'exemple</button>
+            <button class="btn btn-secondary btn-sm" id="cleaner-clear-btn">Effacer</button>
+            <span id="cleaner-stats" style="font-size: 0.8rem; color: var(--text-muted); margin-left: auto; font-family: var(--font-mono);"></span>
+          </div>
+
+          <div class="grid-2col">
+            <div class="form-group">
+              <label class="form-label" for="cleaner-input">Texte brut à nettoyer</label>
+              <textarea id="cleaner-input" class="form-textarea" rows="8" placeholder="Collez votre texte désordonné ici..."></textarea>
+            </div>
+            <div class="form-group">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                <label class="form-label" for="cleaner-output" style="margin-bottom: 0;">Texte propre résultant</label>
+                <button class="btn btn-secondary btn-sm" id="cleaner-copy-btn">📋 Copier</button>
+              </div>
+              <textarea id="cleaner-output" class="form-textarea" rows="8" readonly placeholder="Le texte nettoyé apparaîtra ici..."></textarea>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= 21. PLANIFICATEUR DE FUSEAUX HORAIRES ================= -->
+        <section id="view-tool-timezone" class="tool-view-wrapper">
+          <div class="tool-header-bar">
+            <div class="tool-breadcrumbs">
+              <button class="back-to-dash-btn">← Tableau de bord</button>
+              <span class="breadcrumb-sep">/</span>
+              <span class="breadcrumb-current">Productivité & Temps</span>
+            </div>
+            <div class="tool-view-title-group">
+              <h2>Planificateur de fuseaux horaires</h2>
+              <p>Visualisez les heures de travail qui se chevauchent entre plusieurs pays pour planifier des réunions sans erreur.</p>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem;">
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+              <select id="tz-add-select" class="form-select" style="min-width: 200px;"></select>
+              <button class="btn btn-primary btn-sm" id="tz-add-btn">+ Ajouter une ville</button>
+            </div>
+            <div style="font-size: 0.8rem; color: var(--text-muted); display: flex; gap: 1rem; align-items: center;">
+              <span style="display: inline-flex; align-items: center; gap: 4px;">
+                <span style="width: 12px; height: 12px; background: rgba(34, 197, 94, 0.2); border: 1px solid #22c55e; border-radius: 2px;"></span>
+                Heures de bureau (9h - 18h)
+              </span>
+              <span style="display: inline-flex; align-items: center; gap: 4px;">
+                <span style="width: 12px; height: 12px; background: rgba(34, 197, 94, 0.45); border: 1px solid #16a34a; border-radius: 2px;"></span>
+                Créneau idéal partagé
+              </span>
+            </div>
+          </div>
+
+          <div id="tz-list"></div>
+        </section>
+
+        <!-- ================= 22. CALCULATEUR DE DATES ================= -->
+        <section id="view-tool-date-calc" class="tool-view-wrapper">
+          <div class="tool-header-bar">
+            <div class="tool-breadcrumbs">
+              <button class="back-to-dash-btn">← Tableau de bord</button>
+              <span class="breadcrumb-sep">/</span>
+              <span class="breadcrumb-current">Productivité & Temps</span>
+            </div>
+            <div class="tool-view-title-group">
+              <h2>Calculateur de dates</h2>
+              <p>Trouvez le nombre exact de jours, semaines et jours ouvrés entre deux dates, ou projetez une échéance future.</p>
+            </div>
+          </div>
+
+          <div class="grid-2col" style="gap: 1.5rem;">
+            <!-- Mode 1: Écart entre 2 dates -->
+            <div class="card">
+              <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 1rem;">1. Durée entre deux dates</h3>
+              <div class="form-group">
+                <label class="form-label" for="date-calc-start">Date de début</label>
+                <input type="date" id="date-calc-start" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="date-calc-end">Date de fin</label>
+                <input type="date" id="date-calc-end" class="form-input">
+              </div>
+              <button class="btn btn-primary" id="date-calc-diff-btn" style="width: 100%; margin-bottom: 1.25rem;">Calculer la durée</button>
+
+              <div class="metric-cards-grid" style="grid-template-columns: 1fr 1fr; margin-bottom: 0;">
+                <div class="metric-card">
+                  <div class="metric-value" id="date-res-days">0</div>
+                  <div class="metric-label">Jours totaux</div>
+                </div>
+                <div class="metric-card">
+                  <div class="metric-value" id="date-res-weeks">0</div>
+                  <div class="metric-label">Semaines</div>
+                </div>
+                <div class="metric-card">
+                  <div class="metric-value" id="date-res-workdays" style="color: #22c55e;">0</div>
+                  <div class="metric-label">Jours ouvrés</div>
+                </div>
+                <div class="metric-card">
+                  <div class="metric-value" id="date-res-hours">0 h</div>
+                  <div class="metric-label">Heures totales</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Mode 2: Ajouter / Soustraire du temps -->
+            <div class="card">
+              <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 1rem;">2. Projeter une date future ou passée</h3>
+              <div class="form-group">
+                <label class="form-label" for="date-proj-date">Date de départ</label>
+                <input type="date" id="date-proj-date" class="form-input">
+              </div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr 1.2fr; gap: 0.5rem; margin-bottom: 1rem;">
+                <div>
+                  <label class="form-label" for="date-proj-op">Opération</label>
+                  <select id="date-proj-op" class="form-select">
+                    <option value="add">Ajouter (+)</option>
+                    <option value="sub">Soustraire (-)</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="form-label" for="date-proj-num">Quantité</label>
+                  <input type="number" id="date-proj-num" class="form-input" value="45" min="1">
+                </div>
+                <div>
+                  <label class="form-label" for="date-proj-unit">Unité</label>
+                  <select id="date-proj-unit" class="form-select">
+                    <option value="days">Jours</option>
+                    <option value="weeks">Semaines</option>
+                    <option value="months">Mois</option>
+                    <option value="years">Années</option>
+                  </select>
+                </div>
+              </div>
+              <button class="btn btn-secondary" id="date-proj-btn" style="width: 100%; margin-bottom: 1rem;">Calculer la date cible</button>
+              <div id="date-proj-output" style="padding: 1rem; background: var(--bg-body); border-radius: var(--radius-xs); border: 1px solid var(--border-color); font-size: 0.95rem; text-align: center;">
+                Cliquez pour projeter l'échéance.
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= 23. MINUTEUR POMODORO ================= -->
+        <section id="view-tool-pomodoro" class="tool-view-wrapper">
+          <div class="tool-header-bar">
+            <div class="tool-breadcrumbs">
+              <button class="back-to-dash-btn">← Tableau de bord</button>
+              <span class="breadcrumb-sep">/</span>
+              <span class="breadcrumb-current">Productivité & Temps</span>
+            </div>
+            <div class="tool-view-title-group">
+              <h2>Minuteur Pomodoro minimaliste</h2>
+              <p>Minuteur de concentration dans le navigateur avec gestion de tâches et bruits blancs synthétiques en arrière-plan.</p>
+            </div>
+          </div>
+
+          <div class="grid-2col" style="gap: 1.5rem; align-items: start;">
+            <!-- Minuteur Principal -->
+            <div class="pomodoro-box">
+              <div class="pomodoro-modes">
+                <button class="pomodoro-mode-btn active" data-mode="focus">Focus (25m)</button>
+                <button class="pomodoro-mode-btn" data-mode="short">Pause courte (5m)</button>
+                <button class="pomodoro-mode-btn" data-mode="long">Pause longue (15m)</button>
+              </div>
+
+              <div class="pomodoro-digits" id="pomo-display">25:00</div>
+
+              <div style="display: flex; gap: 0.75rem; margin-bottom: 1.5rem;">
+                <button class="btn btn-primary btn-lg" id="pomo-start-btn" style="min-width: 140px;">Démarrer</button>
+                <button class="btn btn-secondary btn-lg" id="pomo-reset-btn">Réinitialiser</button>
+              </div>
+
+              <!-- Ambient white noise generator -->
+              <div style="width: 100%; background: var(--bg-body); padding: 0.85rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color); text-align: left;">
+                <div style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 0.5rem; display: flex; justify-content: space-between;">
+                  <span>🎧 Ambiance sonore (Web Audio API)</span>
+                  <span style="font-size: 0.7rem; color: var(--text-muted);">100% local</span>
+                </div>
+                <div style="display: flex; gap: 0.75rem; align-items: center;">
+                  <select id="pomo-noise-select" class="form-select" style="flex: 1;">
+                    <option value="none">Silencieux</option>
+                    <option value="rain">Pluie apaisante</option>
+                    <option value="cafe">Café cosy (bruit brun)</option>
+                    <option value="waves">Flux & reflux des vagues</option>
+                  </select>
+                  <input type="range" id="pomo-volume" min="0" max="100" value="40" style="width: 90px;" title="Volume sonore">
+                </div>
+              </div>
+            </div>
+
+            <!-- Liste des Tâches -->
+            <div class="card">
+              <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 0.75rem;">Objectifs de la session</h3>
+              <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                <input type="text" id="pomo-task-input" class="form-input" placeholder="Ajouter une tâche à accomplir...">
+                <button class="btn btn-primary btn-sm" id="pomo-task-add-btn">Ajouter</button>
+              </div>
+              <ul id="pomo-task-list" style="list-style: none; padding: 0; margin: 0; min-height: 120px;"></ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= 24. CALCULATEUR DE POURCENTAGES ================= -->
+        <section id="view-tool-percentage" class="tool-view-wrapper">
+          <div class="tool-header-bar">
+            <div class="tool-breadcrumbs">
+              <button class="back-to-dash-btn">← Tableau de bord</button>
+              <span class="breadcrumb-sep">/</span>
+              <span class="breadcrumb-current">Finance & Calculs</span>
+            </div>
+            <div class="tool-view-title-group">
+              <h2>Calculateur de pourcentages</h2>
+              <p>Résolvez instantanément les problèmes concrets de remises, taxes, hausses et proportions.</p>
+            </div>
+          </div>
+
+          <div class="grid-2col" style="gap: 1.25rem;">
+            <!-- Formule 1 -->
+            <div class="card">
+              <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 0.75rem;">1. Quelle est la valeur d'un pourcentage ?</h4>
+              <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                <span>Que vaut</span>
+                <input type="number" id="pct-1-x" class="form-input" style="width: 80px;" value="20">
+                <span>% de</span>
+                <input type="number" id="pct-1-y" class="form-input" style="width: 100px;" value="150">
+                <span>?</span>
+              </div>
+              <div style="font-size: 1.4rem; font-weight: 800; color: #22c55e; font-family: var(--font-mono);">
+                = <span id="pct-1-res">30</span>
+              </div>
+            </div>
+
+            <!-- Formule 2 -->
+            <div class="card">
+              <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 0.75rem;">2. Quelle proportion en % représente une valeur ?</h4>
+              <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                <span>Le nombre</span>
+                <input type="number" id="pct-2-x" class="form-input" style="width: 80px;" value="25">
+                <span>représente quel % de</span>
+                <input type="number" id="pct-2-y" class="form-input" style="width: 100px;" value="200">
+                <span>?</span>
+              </div>
+              <div style="font-size: 1.4rem; font-weight: 800; color: #22c55e; font-family: var(--font-mono);">
+                = <span id="pct-2-res">12.5 %</span>
+              </div>
+            </div>
+
+            <!-- Formule 3 -->
+            <div class="card">
+              <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 0.75rem;">3. Pourcentage d'augmentation ou réduction</h4>
+              <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                <span>Passer de</span>
+                <input type="number" id="pct-3-a" class="form-input" style="width: 90px;" value="80">
+                <span>à</span>
+                <input type="number" id="pct-3-b" class="form-input" style="width: 90px;" value="100">
+                <span>=</span>
+              </div>
+              <div style="font-size: 1.4rem; font-weight: 800; font-family: var(--font-mono);">
+                <span id="pct-3-res">+25.00 %</span>
+              </div>
+            </div>
+
+            <!-- Formule 4 -->
+            <div class="card">
+              <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 0.75rem;">4. Prix après remise commerciale ou taxe (TVA)</h4>
+              <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                <span>Montant :</span>
+                <input type="number" id="pct-4-val" class="form-input" style="width: 90px;" value="89">
+                <select id="pct-4-type" class="form-select" style="width: 110px;">
+                  <option value="remise">Remise (-)</option>
+                  <option value="taxe">Taxe (+)</option>
+                </select>
+                <input type="number" id="pct-4-pct" class="form-input" style="width: 70px;" value="15">
+                <span>%</span>
+              </div>
+              <div style="font-size: 1.4rem; font-weight: 800; color: #22c55e; font-family: var(--font-mono);">
+                = <span id="pct-4-res">75.65 €</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= 25. PARTAGE D'ADDITION (SPLIT BILL) ================= -->
+        <section id="view-tool-split-bill" class="tool-view-wrapper">
+          <div class="tool-header-bar">
+            <div class="tool-breadcrumbs">
+              <button class="back-to-dash-btn">← Tableau de bord</button>
+              <span class="breadcrumb-sep">/</span>
+              <span class="breadcrumb-current">Finance & Calculs</span>
+            </div>
+            <div class="tool-view-title-group">
+              <h2>Partage d'addition (Split Bill)</h2>
+              <p>Divisez la note d'un restaurant entre amis, calculez le pourboire et copiez le récapitulatif en un clic.</p>
+            </div>
+          </div>
+
+          <div class="grid-2col" style="gap: 1.5rem;">
+            <!-- Paramètres de la note -->
+            <div class="card">
+              <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 1rem;">1. Détails de l'addition</h3>
+              
+              <div class="form-group">
+                <label class="form-label" for="split-total">Montant total de l'addition (€)</label>
+                <input type="number" id="split-total" class="form-input" value="128.50" step="0.5" min="0">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Pourboire (Tip)</label>
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.5rem;">
+                  <button class="btn btn-secondary btn-sm split-tip-btn" data-tip="0">0%</button>
+                  <button class="btn btn-secondary btn-sm split-tip-btn" data-tip="5">5%</button>
+                  <button class="btn btn-secondary btn-sm split-tip-btn active" data-tip="10">10%</button>
+                  <button class="btn btn-secondary btn-sm split-tip-btn" data-tip="15">15%</button>
+                  <button class="btn btn-secondary btn-sm split-tip-btn" data-tip="20">20%</button>
+                </div>
+                <input type="number" id="split-custom-tip" class="form-input" placeholder="Ou saisissez un % libre...">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="split-people">Nombre de personnes qui partagent</label>
+                <input type="number" id="split-people" class="form-input" value="4" min="1" max="50">
+              </div>
+            </div>
+
+            <!-- Résultat et Partage -->
+            <div class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
+              <div>
+                <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 1rem;">2. Synthèse du paiement</h3>
+
+                <div style="background: var(--bg-body); border-radius: var(--radius-sm); border: 1px solid var(--border-color); padding: 1.25rem; margin-bottom: 1.25rem;">
+                  <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.9rem;">
+                    <span style="color: var(--text-muted);">Montant du pourboire :</span>
+                    <strong id="split-res-tip-amount" style="font-family: var(--font-mono);">12.85 €</strong>
+                  </div>
+                  <div style="display: flex; justify-content: space-between; margin-bottom: 1rem; font-size: 0.9rem;">
+                    <span style="color: var(--text-muted);">Total global à régler :</span>
+                    <strong id="split-res-grand-total" style="font-family: var(--font-mono);">141.35 €</strong>
+                  </div>
+                  <div style="border-top: 1px solid var(--border-color); padding-top: 0.75rem; display: flex; justify-content: space-between; align-items: baseline;">
+                    <span style="font-weight: 700; font-size: 1rem;">À payer par personne :</span>
+                    <span id="split-res-per-person" style="font-size: 1.8rem; font-weight: 800; color: #22c55e; font-family: var(--font-mono);">35.34 €</span>
+                  </div>
+                </div>
+              </div>
+
+              <button class="btn btn-primary" id="split-copy-summary" style="width: 100%;">
+                📋 Copier le récapitulatif pour message
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= 26. INTÉRÊTS COMPOSÉS ================= -->
+        <section id="view-tool-compound-interest" class="tool-view-wrapper">
+          <div class="tool-header-bar">
+            <div class="tool-breadcrumbs">
+              <button class="back-to-dash-btn">← Tableau de bord</button>
+              <span class="breadcrumb-sep">/</span>
+              <span class="breadcrumb-current">Finance & Calculs</span>
+            </div>
+            <div class="tool-view-title-group">
+              <h2>Simulateur d'intérêts composés</h2>
+              <p>Visualisez la croissance exponentielle de votre épargne sur 10, 20 ou 30 ans avec des versements programmés.</p>
+            </div>
+          </div>
+
+          <div class="grid-2col" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.75rem; margin-bottom: 1rem;">
+            <div class="form-group">
+              <label class="form-label" for="ci-initial">Capital initial (€)</label>
+              <input type="number" id="ci-initial" class="form-input" value="5000" step="500">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="ci-monthly">Versement mensuel (€)</label>
+              <input type="number" id="ci-monthly" class="form-input" value="200" step="50">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="ci-rate">Taux d'intérêt annuel (%)</label>
+              <input type="number" id="ci-rate" class="form-input" value="7.0" step="0.1">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="ci-years">Durée d'épargne (années)</label>
+              <input type="number" id="ci-years" class="form-input" value="20" min="1" max="50">
+            </div>
+          </div>
+
+          <button class="btn btn-primary" id="ci-calc-btn" style="margin-bottom: 1.25rem;">📈 Simuler la croissance de l'épargne</button>
+
+          <div class="metric-cards-grid" style="margin-bottom: 1.25rem;">
+            <div class="metric-card">
+              <div class="metric-value" id="ci-res-invested">53 000 €</div>
+              <div class="metric-label">Total des versements</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-value" id="ci-res-interest" style="color: #22c55e;">+71 859 €</div>
+              <div class="metric-label">Intérêts générés</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-value" id="ci-res-total" style="color: var(--accent-primary);">124 859 €</div>
+              <div class="metric-label">Capital final cumulé</div>
+            </div>
+          </div>
+
+          <div class="chart-box">
+            <canvas id="ci-chart-canvas" class="chart-canvas"></canvas>
+            <div style="display: flex; justify-content: center; gap: 1.5rem; margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-muted);">
+              <span style="display: inline-flex; align-items: center; gap: 6px;">
+                <span style="width: 14px; height: 3px; background: #94a3b8; display: inline-block;"></span>
+                Versements cumulés
+              </span>
+              <span style="display: inline-flex; align-items: center; gap: 6px;">
+                <span style="width: 14px; height: 3px; background: #22c55e; display: inline-block;"></span>
+                Capital total avec intérêts composés
+              </span>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= 27. APERÇU BALISES META ================= -->
+        <section id="view-tool-meta-preview" class="tool-view-wrapper">
+          <div class="tool-header-bar">
+            <div class="tool-breadcrumbs">
+              <button class="back-to-dash-btn">← Tableau de bord</button>
+              <span class="breadcrumb-sep">/</span>
+              <span class="breadcrumb-current">Marketing & Réseaux</span>
+            </div>
+            <div class="tool-view-title-group">
+              <h2>Aperçu de balises Meta</h2>
+              <p>Testez fidèlement le rendu de vos partages sur Twitter, LinkedIn et Facebook et copiez les balises OpenGraph.</p>
+            </div>
+          </div>
+
+          <div class="grid-2col" style="gap: 1.5rem;">
+            <!-- Formulaire -->
+            <div class="card">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                <h3 style="font-size: 1.05rem; font-weight: 700;">Champs OpenGraph & Meta</h3>
+                <button class="btn btn-secondary btn-sm" id="meta-sample-btn">Charger un exemple</button>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="meta-title">Titre de la page (og:title)</label>
+                <input type="text" id="meta-title" class="form-input" placeholder="Titre attractif pour le partage...">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="meta-desc">Description (og:description)</label>
+                <textarea id="meta-desc" class="form-textarea" rows="3" placeholder="Résumé accrocheur de 1 à 2 phrases..."></textarea>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="meta-url">URL canonique de la page (og:url)</label>
+                <input type="url" id="meta-url" class="form-input" placeholder="https://votre-domaine.com/page">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="meta-img">URL de l'image de couverture (og:image 1200x630)</label>
+                <input type="url" id="meta-img" class="form-input" placeholder="https://votre-domaine.com/og-image.jpg">
+              </div>
+
+              <div class="form-group">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                  <label class="form-label" style="margin-bottom: 0;">Code HTML `<head>` généré</label>
+                  <button class="btn btn-secondary btn-sm" id="meta-copy-html-btn">Copier les balises</button>
+                </div>
+                <pre id="meta-generated-code" class="code-preview-box" style="font-size: 0.75rem; max-height: 180px;"></pre>
+              </div>
+            </div>
+
+            <!-- Aperçus Réseaux Sociaux -->
+            <div>
+              <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 1rem;">Aperçu des publications</h3>
+
+              <!-- Twitter Card -->
+              <div style="margin-bottom: 1.25rem;">
+                <div style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.4rem;">Twitter / X (Summary Card Large Image)</div>
+                <div class="social-preview-wrap">
+                  <div class="social-prev-img social-preview-img" style="background-size: cover; background-position: center;"></div>
+                  <div class="social-preview-body">
+                    <div class="social-prev-domain social-preview-domain">domaine.com</div>
+                    <div class="social-prev-title social-preview-title">Titre de la page partagée</div>
+                    <div class="social-prev-desc social-preview-desc">Description de la page telle qu'elle apparaîtra sur Twitter.</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- LinkedIn Preview -->
+              <div>
+                <div style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.4rem;">LinkedIn (Flux d'actualités)</div>
+                <div class="social-preview-wrap">
+                  <div class="social-prev-img social-preview-img" style="background-size: cover; background-position: center;"></div>
+                  <div class="social-preview-body" style="background: var(--bg-body);">
+                    <div class="social-prev-title social-preview-title" style="font-size: 0.88rem;">Titre de la page partagée</div>
+                    <div class="social-prev-domain social-preview-domain" style="margin-bottom: 0;">domaine.com</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= 28. GÉNÉRATEUR DE LIENS UTM ================= -->
+        <section id="view-tool-utm-builder" class="tool-view-wrapper">
+          <div class="tool-header-bar">
+            <div class="tool-breadcrumbs">
+              <button class="back-to-dash-btn">← Tableau de bord</button>
+              <span class="breadcrumb-sep">/</span>
+              <span class="breadcrumb-current">Marketing & Réseaux</span>
+            </div>
+            <div class="tool-view-title-group">
+              <h2>Générateur de liens UTM</h2>
+              <p>Créez des URLs de suivi professionnelles pour mesurer précisément le trafic dans Google Analytics.</p>
+            </div>
+          </div>
+
+          <div class="grid-2col" style="gap: 1.5rem;">
+            <!-- Formulaire UTM -->
+            <div class="card">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h3 style="font-size: 1.05rem; font-weight: 700;">Paramètres de campagne</h3>
+                <button class="btn btn-secondary btn-sm" id="utm-sample-btn">Exemple</button>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="utm-base-url">1. URL du site web (obligatoire)</label>
+                <input type="url" id="utm-base-url" class="form-input" placeholder="https://votre-site.com/landing-page">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="utm-source">2. Source de trafic (utm_source)</label>
+                <input type="text" id="utm-source" class="form-input" placeholder="ex: google, newsletter, linkedin">
+                <div style="display: flex; gap: 0.4rem; margin-top: 0.35rem; flex-wrap: wrap;">
+                  <button type="button" class="btn btn-secondary btn-sm utm-tag-pill" data-target="utm-source" data-val="google">google</button>
+                  <button type="button" class="btn btn-secondary btn-sm utm-tag-pill" data-target="utm-source" data-val="linkedin">linkedin</button>
+                  <button type="button" class="btn btn-secondary btn-sm utm-tag-pill" data-target="utm-source" data-val="newsletter">newsletter</button>
+                  <button type="button" class="btn btn-secondary btn-sm utm-tag-pill" data-target="utm-source" data-val="facebook">facebook</button>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="utm-medium">3. Support marketing (utm_medium)</label>
+                <input type="text" id="utm-medium" class="form-input" placeholder="ex: cpc, email, banner, social">
+                <div style="display: flex; gap: 0.4rem; margin-top: 0.35rem; flex-wrap: wrap;">
+                  <button type="button" class="btn btn-secondary btn-sm utm-tag-pill" data-target="utm-medium" data-val="cpc">cpc</button>
+                  <button type="button" class="btn btn-secondary btn-sm utm-tag-pill" data-target="utm-medium" data-val="email">email</button>
+                  <button type="button" class="btn btn-secondary btn-sm utm-tag-pill" data-target="utm-medium" data-val="social">social</button>
+                  <button type="button" class="btn btn-secondary btn-sm utm-tag-pill" data-target="utm-medium" data-val="banner">banner</button>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="utm-campaign">4. Nom de la campagne (utm_campaign)</label>
+                <input type="text" id="utm-campaign" class="form-input" placeholder="ex: lancement_printemps_2026">
+              </div>
+
+              <div class="grid-2col" style="gap: 0.75rem;">
+                <div class="form-group">
+                  <label class="form-label" for="utm-term">5. Mot-clé (utm_term)</label>
+                  <input type="text" id="utm-term" class="form-input" placeholder="ex: outil_pdf">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="utm-content">6. Contenu (utm_content)</label>
+                  <input type="text" id="utm-content" class="form-input" placeholder="ex: bouton_cta_bleu">
+                </div>
+              </div>
+            </div>
+
+            <!-- URL de sortie -->
+            <div class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
+              <div>
+                <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 1rem;">Lien UTM final généré</h3>
+                <div class="form-group">
+                  <textarea id="utm-output-url" class="form-textarea" rows="6" readonly style="font-family: var(--font-mono); font-size: 0.85rem;" placeholder="Remplissez les champs pour générer votre lien tracké..."></textarea>
+                </div>
+                <div style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.5;">
+                  💡 <strong>Conseil Analytics :</strong> Ce lien encodé transmettra automatiquement la provenance de chaque visite dans vos rapports Google Analytics, Matomo ou Plausible.
+                </div>
+              </div>
+
+              <button class="btn btn-primary" id="utm-copy-btn" style="width: 100%; margin-top: 1.5rem;">
+                📋 Copier le lien tracké complet
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= 29. CRÉATEUR DE GRILLES INSTAGRAM ================= -->
+        <section id="view-tool-insta-grid" class="tool-view-wrapper">
+          <div class="tool-header-bar">
+            <div class="tool-breadcrumbs">
+              <button class="back-to-dash-btn">← Tableau de bord</button>
+              <span class="breadcrumb-sep">/</span>
+              <span class="breadcrumb-current">Marketing & Réseaux</span>
+            </div>
+            <div class="tool-view-title-group">
+              <h2>Créateur de grilles Instagram</h2>
+              <p>Découpez une grande image en 3, 6 ou 9 carrés parfaits avec numérotation d'ordre de publication et téléchargement en ZIP.</p>
+            </div>
+          </div>
+
+          <div class="grid-2col" style="align-items: center; margin-bottom: 1.25rem;">
+            <div style="display: flex; gap: 0.75rem; align-items: center;">
+              <label class="form-label" for="insta-layout" style="margin-bottom: 0; white-space: nowrap;">Format de découpage :</label>
+              <select id="insta-layout" class="form-select" style="max-width: 240px;">
+                <option value="9">3 × 3 (9 carrés mosaïque)</option>
+                <option value="6">2 × 3 (6 carrés)</option>
+                <option value="3">1 × 3 (3 carrés panoramiques)</option>
+              </select>
+            </div>
+            <div style="display: flex; justify-content: flex-end;">
+              <button class="btn btn-secondary btn-sm" id="insta-sample-btn">🖼️ Tester avec une image d'exemple</button>
+            </div>
+          </div>
+
+          <div class="dropzone" id="insta-dropzone" style="margin-bottom: 1.5rem;">
+            <input type="file" id="insta-input" accept="image/*">
+            <div class="dropzone-icon">📸</div>
+            <div class="dropzone-title">Glissez votre photo ou illustration haute résolution</div>
+            <div class="dropzone-subtitle">Formats supportés : JPG, PNG, WebP (ratio conseillé : carré ou 3:2)</div>
+          </div>
+
+          <div id="insta-workspace" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem;">
+              <div>
+                <h3 style="font-size: 1.05rem; font-weight: 700;">Grille découpée (Ordre de publication numéroté)</h3>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0;">Publiez le carré <strong>#1</strong> en premier sur Instagram, puis le <strong>#2</strong>, etc.</p>
+              </div>
+              <button class="btn btn-primary" id="insta-download-zip-btn">📦 Télécharger tous les carrés (ZIP)</button>
+            </div>
+
+            <div class="insta-grid-container" id="insta-grid-tiles"></div>
+          </div>
+        </section>
+
+        <!-- ================= 30. ROUE DE TIRAGE AU SORT ================= -->
+        <section id="view-tool-wheel" class="tool-view-wrapper">
+          <div class="tool-header-bar">
+            <div class="tool-breadcrumbs">
+              <button class="back-to-dash-btn">← Tableau de bord</button>
+              <span class="breadcrumb-sep">/</span>
+              <span class="breadcrumb-current">Utilitaires & Jeux</span>
+            </div>
+            <div class="tool-view-title-group">
+              <h2>Roue de tirage au sort</h2>
+              <p>Entrez une liste de noms ou d'options et lancez la roue interactive avec rotation physique, bruitage et confettis.</p>
+            </div>
+          </div>
+
+          <div class="grid-2col" style="gap: 1.5rem; align-items: start;">
+            <!-- Colonne Noms & Contrôles -->
+            <div class="card">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                <label class="form-label" for="wheel-names-input" style="margin-bottom: 0;">Liste des participants (1 par ligne)</label>
+                <span id="wheel-count" style="font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-mono);">0 nom(s)</span>
+              </div>
+
+              <textarea id="wheel-names-input" class="form-textarea" rows="8" placeholder="Alice&#10;Bob&#10;Chloé&#10;David&#10;Emma..."></textarea>
+
+              <div style="display: flex; gap: 0.5rem; margin-top: 0.75rem; flex-wrap: wrap;">
+                <button class="btn btn-secondary btn-sm" id="wheel-sample-btn">Charger un exemple</button>
+                <button class="btn btn-danger btn-sm" id="wheel-remove-winner-btn" style="display: none;">Retirer le gagnant</button>
+              </div>
+
+              <!-- Winner Result Banner -->
+              <div id="wheel-result-box" style="margin-top: 1.25rem; padding: 1.25rem; background: var(--bg-body); border-radius: var(--radius-sm); border: 1px solid var(--border-color); text-align: center;">
+                <span style="color: var(--text-muted); font-size: 0.9rem;">Appuyez sur « Tourner la roue » pour désigner un gagnant !</span>
+              </div>
+
+              <!-- History List -->
+              <div style="margin-top: 1.25rem;">
+                <div style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.5rem; text-transform: uppercase;">Historique des tirages</div>
+                <ul id="wheel-history-list" style="list-style: none; padding: 0; margin: 0; max-height: 140px; overflow-y: auto;"></ul>
+              </div>
+            </div>
+
+            <!-- Colonne Roue Canvas -->
+            <div class="card" style="display: flex; flex-direction: column; align-items: center; padding: 1.5rem 1rem;">
+              <div class="wheel-container">
+                <div class="wheel-pointer"></div>
+                <canvas id="wheel-canvas" width="440" height="440" class="wheel-canvas" style="cursor: pointer;" title="Cliquez pour tourner"></canvas>
+                <canvas id="wheel-confetti-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;"></canvas>
+              </div>
+
+              <button class="btn btn-primary btn-lg" id="wheel-spin-btn" style="margin-top: 1rem; width: 100%; max-width: 320px;">
+                🎡 Tourner la roue !
+              </button>
+            </div>
+          </div>
+        </section>
+
       </main>
 
     </div>
@@ -1224,7 +2211,7 @@
     <div class="search-modal">
       <div class="search-modal-header">
         <span>🔍</span>
-        <input type="text" id="search-modal-input" class="search-modal-input" placeholder="Rechercher parmi les 16 outils...">
+        <input type="text" id="search-modal-input" class="search-modal-input" placeholder="Rechercher parmi les 30 outils...">
         <span class="search-shortcut">ESC</span>
       </div>
       <div class="search-modal-results" id="search-modal-results"></div>
@@ -1244,6 +2231,11 @@
   <script src="js/tools/bg-remover.js"></script>
   <script src="js/tools/dev-tools.js"></script>
   <script src="js/tools/utility-tools.js"></script>
+  <script src="js/tools/text-tools.js"></script>
+  <script src="js/tools/productivity-tools.js"></script>
+  <script src="js/tools/finance-tools.js"></script>
+  <script src="js/tools/marketing-tools.js"></script>
+  <script src="js/tools/wheel-tool.js"></script>
   <script src="js/app.js"></script>
 
 </body>
