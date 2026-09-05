@@ -382,9 +382,9 @@ html, body {
 .category-filter-bar {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
   margin-bottom: 1.5rem;
-  overflow-x: auto;
   padding-bottom: 0.25rem;
 }
 

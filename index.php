@@ -44,7 +44,7 @@ $upload_max = ini_get('upload_max_filesize');
         <div class="brand-icon">⚡</div>
         <div class="brand-text">
           <h1>ToolSuite</h1>
-          <span>15 Outils Web Pro</span>
+          <span>30 Outils Web Pro</span>
         </div>
       </div>
 
@@ -90,7 +90,7 @@ $upload_max = ini_get('upload_max_filesize');
               <a class="nav-link" data-nav-category="util">
                 <span class="icon">🛠️</span>
                 <span>Utilitaires</span>
-                <span class="nav-badge">5</span>
+                <span class="nav-badge">4</span>
               </a>
             </li>
             <li>
@@ -238,7 +238,7 @@ $upload_max = ini_get('upload_max_filesize');
             <button class="filter-btn" data-category="doc">📑 Documents & PDF (5)</button>
             <button class="filter-btn" data-category="image">🖼️ Images & Médias (5)</button>
             <button class="filter-btn" data-category="dev">⚙️ DevTools (4)</button>
-            <button class="filter-btn" data-category="util">🛠️ Utilitaires (5)</button>
+            <button class="filter-btn" data-category="util">🛠️ Utilitaires (4)</button>
             <button class="filter-btn" data-category="text">✍️ Texte & Rédaction (4)</button>
             <button class="filter-btn" data-category="time">⏱️ Productivité (3)</button>
             <button class="filter-btn" data-category="finance">💰 Finance (3)</button>
