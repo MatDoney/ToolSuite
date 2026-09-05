@@ -2,7 +2,12 @@
 
 > **🤖 Note importante : Cette application et l'intégralité de son code source ont été entièrement générés par Intelligence Artificielle (IA).**
 
+> **🌐 Auto-hébergement & Déploiement libre :**  
+> Vous êtes totalement libre de **télécharger, cloner, modifier et auto-héberger** ce projet sur votre propre serveur ou machine (Apache, Nginx, Docker, GitHub Pages, Raspberry Pi, etc.) grâce à la **[Licence libre MIT](#-licence)**.  
+> ⚠️ **Attention importante avant mise en ligne :** Si vous déployez ce projet sur un serveur accessible au public, pensez impérativement à **adapter et personnaliser les fichiers de mentions légales** (`mentions-legales.html` et/ou `mentions-legales.php`) avec vos propres coordonnées et les informations de votre hébergement afin d'être en conformité avec la réglementation (loi LCEN et RGPD).
+
 [![Technologies](https://img.shields.io/badge/Stack-HTML5%20%7C%20CSS3%20%7C%20Vanilla%20JS%20%7C%20PHP-6366f1.svg)](#-technologies-utilisées)
+[![Licence](https://img.shields.io/badge/Licence-MIT%20(Open%20Source)-22c55e.svg)](#-licence)
 [![Node.js](https://img.shields.io/badge/Node.js%20%2F%20npm-Aucun%20(Zero%20Dependency)-10b981.svg)](#-philosophie--architecture)
 [![Vie Privée](https://img.shields.io/badge/Confidentialit%C3%A9-100%25%20Local%20%26%20S%C3%A9curis%C3%A9-06b6d4.svg)](#-philosophie--architecture)
 [![Généré par IA](https://img.shields.io/badge/G%C3%A9n%C3%A9r%C3%A9%20par-IA%20(Google%20DeepMind)-8b5cf6.svg)](#-mention-de-génération-par-ia)
@@ -109,6 +114,7 @@ L'ensemble des calculs, conversions et traitements s'effectue **directement et l
 │       ├── finance-tools.js    # Pourcentages, Split Bill, Intérêts composés avec graphique
 │       ├── marketing-tools.js  # Balises Meta SEO, Liens UTM, Découpe Grille Instagram
 │       └── wheel-tool.js       # Roue de tirage au sort physique avec Web Audio & Confettis
+├── LICENSE                     # Licence open-source MIT
 └── README.md                   # Documentation complète du projet
 ```
 
@@ -157,4 +163,11 @@ Si vous disposez d'un environnement PHP :
 
 ## 📄 Licence
 
-Ce projet est distribué sous licence libre **MIT**. Vous êtes libre de l'utiliser, l'adapter, l'enrichir et l'intégrer à vos propres projets professionnels ou personnels.
+Ce projet est distribué sous la **[Licence libre MIT](LICENSE)** (Massachusetts Institute of Technology).
+
+Cette licence open-source permissive vous garantit une liberté totale pour :
+- 🚀 **Auto-héberger librement** : Installez et déployez ToolSuite sur vos propres serveurs, machines locales, NAS ou VPS.
+- 🛠️ **Modifier & Adapter** : Personnalisez l'interface, ajoutez de nouveaux outils ou ajustez les fonctionnalités à vos besoins.
+- 💼 **Usage personnel & commercial** : Utilisez les 30 outils librement, sans frais ni redevance, pour des besoins individuels, associatifs ou professionnels.
+- 📢 **Redistribuer** : Partagez ou forkez le projet en conservant la notice de copyright et la licence MIT originale.
+
