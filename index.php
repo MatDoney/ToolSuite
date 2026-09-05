@@ -14,8 +14,12 @@ $upload_max = ini_get('upload_max_filesize');
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ToolSuite - Suite d'Outils Web Polyvalente & Moderne (PHP)</title>
-  <meta name="description" content="Suite moderne de 15 outils web : manipulation de PDF, OCR, éditeur Markdown, compresseur d'images, favicon, détourage, formateur JSON, testeur Regex, ombres CSS, QR codes et générateur de mots de passe.">
+  <title>ToolSuite - Suite de 30 Outils Web Gratuits, Locaux & Sécurisés (PHP)</title>
+  <meta name="description" content="ToolSuite : Suite tout-en-un de 30 outils web professionnels, 100% locaux, gratuits et confidentiels. PDF, OCR, images, DevTools, comparateur de texte, calculs financiers, fuseaux horaires et marketing sans aucun téléversement serveur.">
+  <meta name="keywords" content="outils web, fusion pdf, compression image, convertisseur webp, ocr gratuit, json formatter, regex tester, calculateur pourcentage, fuseaux horaires, anonymat, sans serveur">
+  <meta property="og:title" content="ToolSuite - 30 Outils Web Gratuits, 100% Locaux & Sécurisés">
+  <meta property="og:description" content="Suite complète de 30 outils pour PDF, images, texte, dev, temps, finance et réseaux sociaux avec traitement direct dans votre navigateur sans téléversement.">
+  <meta property="og:type" content="website">
   
   <!-- Stylesheets -->
   <link rel="stylesheet" href="css/style.css">
@@ -178,6 +182,9 @@ $upload_max = ini_get('upload_max_filesize');
           <span class="privacy-dot"></span>
           <span>100% Local & Sécurisé</span>
         </div>
+        <div style="margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid var(--border-subtle);">
+          <a href="mentions-legales.php" class="sidebar-footer-link">⚖️ Mentions Légales</a>
+        </div>
       </div>
     </aside>
 
@@ -249,6 +256,17 @@ $upload_max = ini_get('upload_max_filesize');
           <div class="tools-grid" id="tools-dashboard-grid">
             <!-- Dynamically populated by App.renderDashboardCards() -->
           </div>
+
+          <!-- Dashboard Footer -->
+          <footer style="margin-top: 3.5rem; padding: 1.5rem 0 1rem; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; color: var(--text-muted); font-size: 0.8rem;">
+            <div>
+              <span>ToolSuite © 2026 • 30 Outils Web Gratuits, Locaux & Sécurisés</span>
+            </div>
+            <div style="display: flex; gap: 1.25rem;">
+              <a href="mentions-legales.php" style="color: var(--text-muted); text-decoration: none;">⚖️ Mentions Légales & Confidentialité</a>
+              <a href="https://github.com/MatDoney/ToolSuite" target="_blank" rel="noopener noreferrer" style="color: var(--text-muted); text-decoration: none;">GitHub</a>
+            </div>
+          </footer>
         </section>
 
         <!-- ================= 1. FUSION DE PDF ================= -->

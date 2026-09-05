@@ -595,3 +595,136 @@ html, body {
 .mobile-menu-btn {
   display: none;
 }
+
+/* ==========================================================================
+   Mentions Légales & Pages d'Informations Légales
+   ========================================================================== */
+.legal-nav-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.75rem;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-glass);
+  backdrop-filter: blur(12px);
+  position: sticky;
+  top: 0;
+  z-index: 30;
+}
+
+.legal-container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 5rem;
+}
+
+.legal-header {
+  margin-bottom: 2.25rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.legal-title {
+  font-size: 1.85rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.legal-subtitle {
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.legal-notice-box {
+  background: rgba(59, 130, 246, 0.08);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  border-radius: var(--radius-sm);
+  padding: 1rem 1.25rem;
+  margin-bottom: 2rem;
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.legal-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 1.6rem;
+  margin-bottom: 1.5rem;
+}
+
+.legal-card-title {
+  font-size: 1.12rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.legal-card-content {
+  font-size: 0.88rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+
+.legal-card-content p {
+  margin-bottom: 0.85rem;
+}
+
+.legal-card-content p:last-child {
+  margin-bottom: 0;
+}
+
+.legal-card-content ul {
+  margin: 0.5rem 0 1rem 1.25rem;
+  list-style: disc;
+}
+
+.legal-card-content li {
+  margin-bottom: 0.45rem;
+}
+
+/* Balises obligatoires à compléter */
+a-completer, [a-completer], .to-complete {
+  display: inline-block;
+  background: rgba(245, 158, 11, 0.12);
+  color: #f59e0b;
+  border: 1px dashed rgba(245, 158, 11, 0.45);
+  padding: 0.15rem 0.55rem;
+  border-radius: var(--radius-xs);
+  font-family: var(--font-mono);
+  font-size: 0.84em;
+  font-weight: 600;
+  margin: 0.15rem 0;
+  line-height: 1.4;
+}
+
+[data-theme="light"] a-completer, 
+[data-theme="light"] [a-completer], 
+[data-theme="light"] .to-complete {
+  background: rgba(217, 119, 6, 0.1);
+  color: #b45309;
+  border-color: rgba(217, 119, 6, 0.35);
+}
+
+.sidebar-footer-link {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.72rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: color var(--transition-fast);
+}
+
+.sidebar-footer-link:hover {
+  color: var(--text-primary);
+  text-decoration: underline;
+}
+

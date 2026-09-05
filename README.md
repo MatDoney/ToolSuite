@@ -85,6 +85,8 @@ L'ensemble des calculs, conversions et traitements s'effectue **directement et l
 .
 ├── index.html                  # Point d'entrée autonome (ouverture directe sans serveur)
 ├── index.php                   # Point d'entrée principal PHP (serveurs Apache / Nginx / PHP)
+├── mentions-legales.html       # Mentions Légales & RGPD conformes LCEN (version HTML)
+├── mentions-legales.php        # Mentions Légales & RGPD conformes LCEN (version PHP)
 ├── api/
 │   └── api.php                 # API PHP d'information système et diagnostic environnement
 ├── css/
