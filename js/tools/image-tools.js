@@ -1,9 +1,27 @@
 /**
- * Image Tools - Convertisseur, Compresseur & Générateur de Favicon
- * Uses HTML5 Canvas & JSZip (loaded via CDN)
+ * @file image-tools.js
+ * @module ImageTools
+ * @description Suite d'outils de traitement d'images 100% côté client (Canvas HTML5 & JSZip).
+ * Comprend un convertisseur de formats multi-extensions (PNG, JPEG, WebP, AVIF, SVG),
+ * un compresseur d'images avec estimation de gain d'espace en temps réel,
+ * et un générateur complet de pack de favicons multi-résolutions (16x16 à 512x512) packagé en archive ZIP avec son `site.webmanifest`.
+ * @author MatDoney
+ * @version 1.1.0
+ * @license MIT
  */
 
+/**
+ * @namespace ImageTools
+ * @description Contrôleur des outils de manipulation, compression et génération de formats graphiques.
+ */
 const ImageTools = {
+  /**
+   * Initialise les 3 sous-modules d'outils d'image (convertisseur, compresseur, favicons).
+   *
+   * @function init
+   * @memberof ImageTools
+   * @returns {void}
+   */
   init() {
     this.initConverter();
     this.initCompressor();
@@ -11,6 +29,16 @@ const ImageTools = {
   },
 
   /* ================= 1. CONVERTISSEUR DE FORMATS ================= */
+
+  /**
+   * Initialise la vue de conversion de formats d'image : écouteur de glisser-déposer,
+   * lecture des dimensions de l'image source, gestion du fond blanc pour JPEG (éviter les fonds noirs sur transparence),
+   * encapsulation SVG et téléchargement dynamique dans le format ciblé.
+   *
+   * @function initConverter
+   * @memberof ImageTools
+   * @returns {void}
+   */
   initConverter() {
     let sourceImage = null;
     let sourceFileName = 'image';
@@ -46,7 +74,7 @@ const ImageTools = {
         canvas.height = sourceImage.naturalHeight || sourceImage.height;
         const ctx = canvas.getContext('2d');
 
-        // Fill white if converting to JPEG to prevent black transparency
+        // Fond blanc si conversion vers JPEG pour éviter l'apparition d'un fond noir sur transparence
         if (targetFormat === 'jpeg') {
           ctx.fillStyle = '#ffffff';
           ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -55,7 +83,7 @@ const ImageTools = {
         ctx.drawImage(sourceImage, 0, 0);
 
         if (targetFormat === 'svg') {
-          // Wrap image cleanly into an SVG container
+          // Encapsulation propre dans un conteneur SVG vectoriel
           const svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="${canvas.width}" height="${canvas.height}" viewBox="0 0 ${canvas.width} ${canvas.height}">
   <image width="${canvas.width}" height="${canvas.height}" href="${canvas.toDataURL('image/png')}" />
 </svg>`;
@@ -76,6 +104,15 @@ const ImageTools = {
   },
 
   /* ================= 2. COMPRESSEUR D'IMAGES ================= */
+
+  /**
+   * Initialise le compresseur d'images : réglages de qualité (0 à 100%), mise à l'échelle (scale factor),
+   * zone de dépôt d'image et déclenchement réactif du calcul de compression.
+   *
+   * @function initCompressor
+   * @memberof ImageTools
+   * @returns {void}
+   */
   initCompressor() {
     let originalImage = null;
     let originalSize = 0;
@@ -121,6 +158,17 @@ const ImageTools = {
     });
   },
 
+  /**
+   * Exécute l'algorithme de compression réactive sur l'image fournie via encodage WebP.
+   * Calcule le pourcentage de réduction et le volume d'octets économisés en temps réel.
+   *
+   * @function runCompression
+   * @memberof ImageTools
+   * @param {HTMLImageElement|null} img - Élément image source chargé.
+   * @param {number} origSize - Taille en octets du fichier image d'origine.
+   * @param {string} fileName - Nom d'origine du fichier pour la nomenclature d'export.
+   * @returns {void}
+   */
   runCompression(img, origSize, fileName) {
     if (!img) return;
 
@@ -133,7 +181,7 @@ const ImageTools = {
     const ctx = canvas.getContext('2d');
     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-    // Compress using WebP or JPEG for highest efficiency
+    // Encodage en WebP moderne pour un ratio compression/fidélité optimal
     const mimeType = 'image/webp';
     canvas.toBlob((blob) => {
       if (!blob) return;
@@ -171,6 +219,15 @@ const ImageTools = {
   },
 
   /* ================= 3. GÉNÉRATEUR DE FAVICON ================= */
+
+  /**
+   * Initialise le générateur de pack de favicons : définition des résolutions cibles,
+   * zone de dépôt de logo, et copie dans le presse-papier des balises HTML `<link rel="icon">`.
+   *
+   * @function initFavicon
+   * @memberof ImageTools
+   * @returns {void}
+   */
   initFavicon() {
     let sourceLogo = null;
     const sizes = [
@@ -208,6 +265,16 @@ const ImageTools = {
     }
   },
 
+  /**
+   * Génère la grille de prévisualisation des favicons, crée les blobs PNG haute fidélité
+   * pour chaque taille et configure le téléchargement de l'archive ZIP finale via JSZip.
+   *
+   * @function generateFaviconPack
+   * @memberof ImageTools
+   * @param {HTMLImageElement} img - Logo source servant de matrice.
+   * @param {Array<{size: number, name: string}>} sizes - Liste des formats et noms de fichiers cibles.
+   * @returns {void}
+   */
   generateFaviconPack(img, sizes) {
     const grid = document.getElementById('favicon-grid');
     grid.innerHTML = '';
@@ -224,7 +291,7 @@ const ImageTools = {
       const card = document.createElement('div');
       card.className = 'favicon-card';
 
-      // Visual display canvas
+      // Canvas d'affichage visuel sur la grille de bord
       const displayCanvas = document.createElement('canvas');
       displayCanvas.width = Math.min(spec.size, 64);
       displayCanvas.height = Math.min(spec.size, 64);
@@ -268,7 +335,7 @@ const ImageTools = {
         zip.file(item.name, item.blob);
       });
 
-      // Also generate site.webmanifest
+      // Ajout du fichier de manifeste Web standard pour PWA et Android
       const manifest = {
         name: "Application Web",
         short_name: "App",

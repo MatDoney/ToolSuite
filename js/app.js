@@ -1,8 +1,29 @@
 /**
- * ToolSuite - Core Application Router & Search System
- * Manages Dashboard, 30 Tools, Fast Search (Ctrl+K), and Views
+ * @file app.js
+ * @description Routeur central, catalogue exhaustif des 42 outils et système de recherche instantanée de ToolSuite.
+ * Gère l'affichage dynamique de la grille du tableau de bord, le filtrage par catégories, la navigation
+ * par ancres d'URL (Hash routing type '#tool-id'), le panneau de recherche globale rapide (raccourci Ctrl+K ou '/')
+ * avec navigation au clavier (flèches haut/bas, Entrée, Échap), et le cycle de vie d'initialisation de chaque module.
+ * @module App
  */
 
+/**
+ * @typedef {Object} ToolItem
+ * @property {string} id - Identifiant unique de l'outil correspondant à son ancre d'URL et à l'ID de sa vue HTML (ex: 'tool-pdf-merge').
+ * @property {string} name - Intitulé principal de l'outil affiché sur la carte et dans la barre de titre.
+ * @property {string} category - Identifiant technique de la catégorie principale ('doc', 'image', 'dev', 'util', 'text', 'time', 'finance', 'marketing').
+ * @property {string[]} [categories] - Tableau optionnel de catégories secondaires pour indexation multiple (ex: ['util', 'image']).
+ * @property {string} categoryLabel - Nom lisible de la catégorie affiché sur les badges.
+ * @property {string} desc - Description synthétique des fonctionnalités offertes par l'outil.
+ * @property {string} tag - Badge technique mettant en valeur les librairies ou spécificités (ex: 'PDF-Lib • Illimité', 'Canvas Alpha').
+ * @property {string} icon - Émoji ou symbole graphique distinctif.
+ * @property {string} iconClass - Classe CSS d'habillage colorimétrique de l'icône ('icon-doc', 'icon-image', 'icon-dev', 'icon-util').
+ */
+
+/**
+ * Répertoire exhaustif des 42 outils web disponibles dans l'application.
+ * @type {ToolItem[]}
+ */
 const TOOLS_CATALOG = [
   // 1. Documents & PDF
   {
@@ -445,10 +466,25 @@ const TOOLS_CATALOG = [
   }
 ];
 
+/**
+ * Objet d'orchestration principal de l'application cliente ToolSuite.
+ * @namespace App
+ */
 const App = {
+  /** @type {string} Identifiant du filtre de catégorie actif ('all' par défaut) */
   activeCategory: 'all',
+  /** @type {string|null} Identifiant de l'outil actuellement ouvert à l'écran (ou null si sur le tableau de bord) */
   currentToolId: null,
+  /** @type {(toolId: string) => void} Fonction de sélection d'un résultat de recherche */
+  selectSearchResult: () => {},
 
+  /**
+   * Point d'entrée principal de l'application déclenché au chargement du DOM.
+   * Configure le thème sombre/clair, génère les cartes, attache la navigation et initialise les outils.
+   * @function init
+   * @memberof App
+   * @returns {void}
+   */
   init() {
     UI.initTheme();
     this.renderDashboardCards();
@@ -456,11 +492,17 @@ const App = {
     this.initQuickSearch();
     this.initTools();
 
-    // Check URL hash for direct tool linking (ex: #tool-qrcode)
+    // Surveillance des changements d'ancre dans l'URL pour le routage direct (ex: #tool-qrcode)
     window.addEventListener('hashchange', () => this.handleHashChange());
     this.handleHashChange();
   },
 
+  /**
+   * Interprète le fragment d'URL actif (hash) et affiche l'outil correspondant ou le tableau de bord.
+   * @function handleHashChange
+   * @memberof App
+   * @returns {void}
+   */
   handleHashChange() {
     const hash = window.location.hash.replace('#', '');
     if (hash && TOOLS_CATALOG.some(t => t.id === hash)) {
@@ -470,6 +512,12 @@ const App = {
     }
   },
 
+  /**
+   * Génère dynamiquement le balisage HTML des vignettes du tableau de bord selon la catégorie active.
+   * @function renderDashboardCards
+   * @memberof App
+   * @returns {void}
+   */
   renderDashboardCards() {
     const grid = document.getElementById('tools-dashboard-grid');
     if (!grid) return;
@@ -494,19 +542,25 @@ const App = {
     `).join('');
   },
 
+  /**
+   * Attache les écouteurs d'événements pour les boutons de filtre, la barre latérale et le menu mobile.
+   * @function initNavigation
+   * @memberof App
+   * @returns {void}
+   */
   initNavigation() {
-    // Category filter buttons
+    // Boutons de filtrage par catégorie
     const filterBtns = document.querySelectorAll('.filter-btn');
     filterBtns.forEach(btn => {
       btn.addEventListener('click', () => {
         filterBtns.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        this.activeCategory = btn.getAttribute('data-category');
+        this.activeCategory = btn.getAttribute('data-category') || 'all';
         this.renderDashboardCards();
       });
     });
 
-    // Sidebar navigation links
+    // Liens de navigation de la barre latérale
     const navLinks = document.querySelectorAll('.sidebar-nav .nav-link');
     navLinks.forEach(link => {
       link.addEventListener('click', (e) => {
@@ -518,19 +572,19 @@ const App = {
           this.openTool(toolId);
         } else if (cat) {
           this.showDashboard();
-          const targetBtn = document.querySelector(`.filter-btn[data-category="${cat}"]`);
+          const targetBtn = /** @type {HTMLElement|null} */ (document.querySelector(`.filter-btn[data-category="${cat}"]`));
           if (targetBtn) targetBtn.click();
         }
 
         navLinks.forEach(l => l.classList.remove('active'));
         link.classList.add('active');
 
-        // Close mobile sidebar if open
+        // Fermeture du menu rétractable sur mobile
         document.getElementById('app-sidebar')?.classList.remove('open');
       });
     });
 
-    // Back to dashboard buttons
+    // Boutons de retour au tableau de bord principal
     document.querySelectorAll('.back-to-dash-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         window.location.hash = '';
@@ -538,7 +592,7 @@ const App = {
       });
     });
 
-    // Mobile menu toggle
+    // Bouton de bascule du menu mobile
     const mobileMenuBtn = document.getElementById('mobile-menu-btn');
     const sidebar = document.getElementById('app-sidebar');
     if (mobileMenuBtn && sidebar) {
@@ -548,13 +602,27 @@ const App = {
     }
   },
 
+  /**
+   * Affiche la vue principale du tableau de bord et masque toute vue d'outil ouverte.
+   * @function showDashboard
+   * @memberof App
+   * @returns {void}
+   */
   showDashboard() {
     this.currentToolId = null;
-    document.getElementById('dashboard-view').style.display = 'block';
+    const dashView = document.getElementById('dashboard-view');
+    if (dashView) dashView.style.display = 'block';
     document.querySelectorAll('.tool-view-wrapper').forEach(view => view.classList.remove('active'));
     window.scrollTo({ top: 0, behavior: 'smooth' });
   },
 
+  /**
+   * Ouvre la vue dédiée d'un outil et synchronise l'ancre d'URL correspondante.
+   * @function openTool
+   * @memberof App
+   * @param {string} toolId - Identifiant unique de l'outil (ex: 'tool-ocr').
+   * @returns {void}
+   */
   openTool(toolId) {
     const tool = TOOLS_CATALOG.find(t => t.id === toolId);
     if (!tool) return;
@@ -562,7 +630,8 @@ const App = {
     this.currentToolId = toolId;
     window.location.hash = toolId;
 
-    document.getElementById('dashboard-view').style.display = 'none';
+    const dashView = document.getElementById('dashboard-view');
+    if (dashView) dashView.style.display = 'none';
     document.querySelectorAll('.tool-view-wrapper').forEach(view => view.classList.remove('active'));
 
     const targetView = document.getElementById(`view-${toolId}`);
@@ -572,15 +641,28 @@ const App = {
     }
   },
 
+  /**
+   * Initialise le modal de recherche globale prédictive (Palette de commandes).
+   * Gère le déclenchement par raccourci clavier (Ctrl+K ou touche '/') et la sélection au clavier.
+   * @function initQuickSearch
+   * @memberof App
+   * @returns {void}
+   */
   initQuickSearch() {
-    const modalBackdrop = document.getElementById('search-modal-backdrop');
-    const searchInput = document.getElementById('search-modal-input');
+    const modalBackdrop = /** @type {HTMLElement|null} */ (document.getElementById('search-modal-backdrop'));
+    const searchInput = /** @type {HTMLInputElement|null} */ (document.getElementById('search-modal-input'));
     const searchResults = document.getElementById('search-modal-results');
     const searchTrigger = document.getElementById('search-trigger-btn');
+
+    if (!modalBackdrop || !searchInput || !searchResults) return;
 
     let selectedIndex = 0;
     let filteredTools = [...TOOLS_CATALOG];
 
+    /**
+     * Ouvre la boîte de dialogue de recherche et donne le focus au champ de saisie.
+     * @inner
+     */
     const openSearch = () => {
       modalBackdrop.classList.add('open');
       searchInput.value = '';
@@ -589,10 +671,18 @@ const App = {
       setTimeout(() => searchInput.focus(), 50);
     };
 
+    /**
+     * Ferme la boîte de dialogue de recherche.
+     * @inner
+     */
     const closeSearch = () => {
       modalBackdrop.classList.remove('open');
     };
 
+    /**
+     * Filtre les outils et régénère les éléments correspondants dans le menu déroulant.
+     * @inner
+     */
     const renderResults = () => {
       const q = searchInput.value.toLowerCase().trim();
       filteredTools = TOOLS_CATALOG.filter(t => 
@@ -620,18 +710,19 @@ const App = {
     };
 
     searchTrigger?.addEventListener('click', openSearch);
-    modalBackdrop?.addEventListener('click', (e) => {
+    modalBackdrop.addEventListener('click', (e) => {
       if (e.target === modalBackdrop) closeSearch();
     });
 
-    searchInput?.addEventListener('input', () => {
+    searchInput.addEventListener('input', () => {
       selectedIndex = 0;
       renderResults();
     });
 
-    // Keyboard Shortcuts (Ctrl + K or /)
+    // Raccourcis clavier globaux (Ctrl+K ou '/' lorsque le curseur n'est pas dans un champ texte)
     window.addEventListener('keydown', (e) => {
-      if ((e.ctrlKey && e.key === 'k') || (e.key === '/' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA')) {
+      const activeTag = document.activeElement ? document.activeElement.tagName : '';
+      if ((e.ctrlKey && e.key === 'k') || (e.key === '/' && activeTag !== 'INPUT' && activeTag !== 'TEXTAREA')) {
         e.preventDefault();
         openSearch();
       } else if (e.key === 'Escape' && modalBackdrop.classList.contains('open')) {
@@ -652,27 +743,37 @@ const App = {
       }
     });
 
+    /**
+     * Sélectionne un résultat dans la recherche, ferme le modal et charge l'outil ciblé.
+     * @param {string} toolId - Identifiant de l'outil sélectionné.
+     */
     this.selectSearchResult = (toolId) => {
       closeSearch();
       this.openTool(toolId);
     };
   },
 
+  /**
+   * Déclenche l'initialisation sécurisée de chaque sous-module JavaScript de la suite.
+   * Enveloppe chaque appel dans un bloc try/catch pour isoler les éventuelles exceptions locales.
+   * @function initTools
+   * @memberof App
+   * @returns {void}
+   */
   initTools() {
-    // Initialize all tool modules once
-    try { if (window.PDFTools) PDFTools.init(); } catch (e) { console.error(e); }
-    try { if (window.PdfAdvancedTools) PdfAdvancedTools.init(); } catch (e) { console.error(e); }
-    try { if (window.OCRTool) OCRTool.init(); } catch (e) { console.error(e); }
-    try { if (window.MarkdownTool) MarkdownTool.init(); } catch (e) { console.error(e); }
-    try { if (window.ImageTools) ImageTools.init(); } catch (e) { console.error(e); }
-    try { if (window.BgRemover) BgRemover.init(); } catch (e) { console.error(e); }
-    try { if (window.DevTools) DevTools.init(); } catch (e) { console.error(e); }
-    try { if (window.UtilityTools) UtilityTools.init(); } catch (e) { console.error(e); }
-    try { if (window.TextTools) TextTools.init(); } catch (e) { console.error(e); }
-    try { if (window.ProductivityTools) ProductivityTools.init(); } catch (e) { console.error(e); }
-    try { if (window.FinanceTools) FinanceTools.init(); } catch (e) { console.error(e); }
-    try { if (window.MarketingTools) MarketingTools.init(); } catch (e) { console.error(e); }
-    try { if (window.WheelTool) WheelTool.init(); } catch (e) { console.error(e); }
+    try { if (/** @type {any} */ (window).PDFTools) /** @type {any} */ (window).PDFTools.init(); } catch (e) { console.error(e); }
+    try { if (/** @type {any} */ (window).PdfAdvancedTools) /** @type {any} */ (window).PdfAdvancedTools.init(); } catch (e) { console.error(e); }
+    try { if (/** @type {any} */ (window).OCRTool) /** @type {any} */ (window).OCRTool.init(); } catch (e) { console.error(e); }
+    try { if (/** @type {any} */ (window).MarkdownTool) /** @type {any} */ (window).MarkdownTool.init(); } catch (e) { console.error(e); }
+    try { if (/** @type {any} */ (window).ImageTools) /** @type {any} */ (window).ImageTools.init(); } catch (e) { console.error(e); }
+    try { if (/** @type {any} */ (window).BgRemover) /** @type {any} */ (window).BgRemover.init(); } catch (e) { console.error(e); }
+    try { if (/** @type {any} */ (window).DevTools) /** @type {any} */ (window).DevTools.init(); } catch (e) { console.error(e); }
+    try { if (/** @type {any} */ (window).UtilityTools) /** @type {any} */ (window).UtilityTools.init(); } catch (e) { console.error(e); }
+    try { if (/** @type {any} */ (window).TextTools) /** @type {any} */ (window).TextTools.init(); } catch (e) { console.error(e); }
+    try { if (/** @type {any} */ (window).ProductivityTools) /** @type {any} */ (window).ProductivityTools.init(); } catch (e) { console.error(e); }
+    try { if (/** @type {any} */ (window).FinanceTools) /** @type {any} */ (window).FinanceTools.init(); } catch (e) { console.error(e); }
+    try { if (/** @type {any} */ (window).MarketingTools) /** @type {any} */ (window).MarketingTools.init(); } catch (e) { console.error(e); }
+    try { if (/** @type {any} */ (window).WheelTool) /** @type {any} */ (window).WheelTool.init(); } catch (e) { console.error(e); }
   }
 };
 

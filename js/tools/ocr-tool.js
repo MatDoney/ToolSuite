@@ -1,11 +1,33 @@
 /**
- * OCR Tool - Extracteur de texte
- * Uses Tesseract.js (loaded via CDN)
+ * @file ocr-tool.js
+ * @module OCRTool
+ * @description Outil d'extraction de texte (OCR - Reconnaissance Optique de Caractères).
+ * Utilise la bibliothèque WebAssembly Tesseract.js pour extraire le texte présent dans une image
+ * (PNG, JPEG, WebP) directement dans le navigateur de l'utilisateur, avec support multilingue (français, anglais, etc.).
+ * @author MatDoney
+ * @version 1.1.0
+ * @license MIT
  */
 
+/**
+ * @namespace OCRTool
+ * @description Contrôleur de l'outil de reconnaissance optique de caractères (OCR).
+ */
 const OCRTool = {
+  /**
+   * Données base64 ou URL de l'image actuellement chargée en mémoire pour l'analyse OCR.
+   * @type {string|null}
+   */
   currentImage: null,
 
+  /**
+   * Initialise les écouteurs d'événements de la vue OCR : zone de dépôt d'image,
+   * bouton de lancement, copie dans le presse-papier et téléchargement du texte brut extrait.
+   *
+   * @function init
+   * @memberof OCRTool
+   * @returns {void}
+   */
   init() {
     UI.setupDropzone('ocr-dropzone', 'ocr-input', (file) => {
       if (file.type.startsWith('image/')) {
@@ -43,6 +65,15 @@ const OCRTool = {
     }
   },
 
+  /**
+   * Lit et charge le fichier image déposé sous forme de Data URL pour l'affichage de l'aperçu
+   * et l'injection dans le moteur Tesseract.
+   *
+   * @function loadImage
+   * @memberof OCRTool
+   * @param {File} file - Fichier image sélectionné par l'utilisateur.
+   * @returns {void}
+   */
   loadImage(file) {
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -56,6 +87,16 @@ const OCRTool = {
     reader.readAsDataURL(file);
   },
 
+  /**
+   * Exécute l'analyse OCR sur l'image chargée en instanciant un worker Tesseract.js.
+   * Met à jour la barre de progression en temps réel et remplit la zone de résultat avec le texte reconnu.
+   *
+   * @async
+   * @function recognize
+   * @memberof OCRTool
+   * @returns {Promise<void>}
+   * @throws {Error} Si la bibliothèque Tesseract n'est pas disponible ou si le worker échoue.
+   */
   async recognize() {
     if (!this.currentImage) return;
 

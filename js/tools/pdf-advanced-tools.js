@@ -1,26 +1,28 @@
 /**
- * ToolSuite - Advanced PDF Tools (12 New Tools)
- * 1. Outil de caviardage (Redact)
- * 2. Gestionnaire de mots de passe
- * 3. Aplatissement (Flattening)
- * 4. Réorganisation visuelle & Rotation (Drag & Drop)
- * 5. Recadrage de marges (Crop tool)
- * 6. Extracteur d'images
- * 7. Outil de signature
- * 8. Générateur de filigrane (Watermark)
- * 9. Numérotation automatique de pages
- * 10. URL vers PDF (Mode Lecture & Archivage)
- * 11. PDF vers Excel (Extraction de tableaux)
- * 12. Images multiples vers PDF
- * 100% Client-side • PDF-Lib, PDF.js & JSZip
+ * @file pdf-advanced-tools.js
+ * @description Suite avancée de manipulation et de transformation de documents PDF (12 outils spécialisés) 100% exécutés côté client.
+ * Intègre un moteur de chiffrement cryptographique autonome conforme ISO 32000-1 (RC4 128-bit Standard Security Handler),
+ * du caviardage destructif avec rastérisation 300 DPI, l'aplatissement de formulaires AcroForms, la réorganisation/rotation de pages en Drag & Drop,
+ * le rognage de marges blanches avec auto-détection, l'extraction de photos en archive ZIP, l'apposition de signatures électroniques,
+ * l'application de filigranes orientables, la numérotation automatique de pages, la conversion haute fidélité d'articles web (URL) en PDF structuré multi-pages,
+ * l'extraction de tableaux vers Excel/CSV, et l'assemblage d'images multiples au format PDF.
+ * @module PdfAdvancedTools
  */
 
 /**
- * Standalone PDF Encryption Engine
- * Implements ISO 32000-1 Algorithm 2 & 3 (Standard Security Handler, Revision 3, RC4 128-bit)
- * Produces real password-protected PDFs compatible with all standard viewers.
+ * Moteur autonome de chiffrement PDF conforme à la norme internationale ISO 32000-1.
+ * Implémente les algorithmes 2 et 3 de la spécification PDF (Standard Security Handler, Révision 3, RC4 128 bits).
+ * Génère des fichiers PDF protégés par mot de passe authentiques, compatibles avec l'ensemble des lecteurs PDF du marché.
+ * @namespace PdfEncryptEngine
  */
 const PdfEncryptEngine = {
+  /**
+   * Calcule l'empreinte MD5 (Message Digest 5) d'une chaîne ou d'un tampon binaire selon la RFC 1321.
+   * @function md5
+   * @memberof PdfEncryptEngine
+   * @param {string|Uint8Array} data - Données textuelles ou binaires à hacher.
+   * @returns {Uint8Array} Empreinte de hachage de 16 octets (128 bits).
+   */
   md5(data) {
     const bytes = typeof data === 'string' ? new TextEncoder().encode(data) : data;
     const S = [
@@ -96,6 +98,14 @@ const PdfEncryptEngine = {
     return result;
   },
 
+  /**
+   * Chiffre ou déchiffre des données à l'aide de l'algorithme de chiffrement de flux RC4 (Rivest Cipher 4).
+   * @function rc4
+   * @memberof PdfEncryptEngine
+   * @param {Uint8Array} key - Clé de chiffrement symétrique.
+   * @param {Uint8Array} data - Données d'entrée brutes.
+   * @returns {Uint8Array} Données résultantes après application du XOR avec le flux de clés.
+   */
   rc4(key, data) {
     const s = new Uint8Array(256);
     for (let i = 0; i < 256; i++) s[i] = i;
@@ -116,6 +126,13 @@ const PdfEncryptEngine = {
     return result;
   },
 
+  /**
+   * Convertit une chaîne de caractères hexadécimale en tableau d'octets.
+   * @function hexToBytes
+   * @memberof PdfEncryptEngine
+   * @param {string} hex - Chaîne hexadécimale de longueur paire.
+   * @returns {Uint8Array} Tableau d'octets reconstitué.
+   */
   hexToBytes(hex) {
     const bytes = new Uint8Array(hex.length / 2);
     for (let i = 0; i < bytes.length; i++) {
@@ -124,10 +141,24 @@ const PdfEncryptEngine = {
     return bytes;
   },
 
+  /**
+   * Convertit un tableau d'octets en chaîne hexadécimale en minuscules.
+   * @function bytesToHex
+   * @memberof PdfEncryptEngine
+   * @param {Uint8Array} bytes - Données binaires.
+   * @returns {string} Chaîne hexadécimale formatée.
+   */
   bytesToHex(bytes) {
     return Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
   },
 
+  /**
+   * Encode une chaîne de mot de passe en séquence d'octets conforme au jeu de caractères PDFDocEncoding (ISO 32000-1).
+   * @function encodePassword
+   * @memberof PdfEncryptEngine
+   * @param {string} password - Mot de passe utilisateur ou propriétaire.
+   * @returns {Uint8Array} Séquence d'octets normalisée.
+   */
   encodePassword(password) {
     const PDFDOC_DIFFS = {
       0x16: 0x0017, 0x18: 0x02d8, 0x19: 0x02c7, 0x1a: 0x02c6, 0x1b: 0x02d9,
@@ -155,6 +186,7 @@ const PdfEncryptEngine = {
     return new Uint8Array(bytes);
   },
 
+  /** @type {Uint8Array} Séquence constante de remplissage standard de 32 octets (ISO 32000-1 Table 100) */
   padding: new Uint8Array([
     0x28, 0xBF, 0x4E, 0x5E, 0x4E, 0x75, 0x8A, 0x41,
     0x64, 0x00, 0x4E, 0x56, 0xFF, 0xFA, 0x01, 0x08,
@@ -162,6 +194,13 @@ const PdfEncryptEngine = {
     0x2F, 0x0C, 0xA9, 0xFE, 0x64, 0x53, 0x69, 0x7A
   ]),
 
+  /**
+   * Tronque ou complète le mot de passe à exactement 32 octets avec la chaîne de remplissage standard PDF.
+   * @function padPassword
+   * @memberof PdfEncryptEngine
+   * @param {string} pwd - Mot de passe à calibrer.
+   * @returns {Uint8Array} Bloc calibré de 32 octets.
+   */
   padPassword(pwd) {
     const pwdBytes = this.encodePassword(pwd || '');
     const padded = new Uint8Array(32);
@@ -174,6 +213,14 @@ const PdfEncryptEngine = {
     return padded;
   },
 
+  /**
+   * Calcule la valeur de la clé propriétaire /O (Owner Key) selon l'Algorithme 3.3 de la norme PDF.
+   * @function computeOwnerKey
+   * @memberof PdfEncryptEngine
+   * @param {string} ownerPassword - Mot de passe propriétaire.
+   * @param {string} userPassword - Mot de passe utilisateur.
+   * @returns {Uint8Array} Valeur /O de 32 octets.
+   */
   computeOwnerKey(ownerPassword, userPassword) {
     const paddedOwner = this.padPassword(ownerPassword || userPassword);
     let hash = this.md5(paddedOwner);
@@ -192,6 +239,16 @@ const PdfEncryptEngine = {
     return result;
   },
 
+  /**
+   * Calcule la clé de chiffrement principale du document selon l'Algorithme 3.2 de la spécification ISO 32000-1.
+   * @function computeEncryptionKey
+   * @memberof PdfEncryptEngine
+   * @param {string} userPassword - Mot de passe d'ouverture.
+   * @param {Uint8Array} ownerKey - Clé propriétaire /O.
+   * @param {number} permissions - Masque de permissions /P (entier 32 bits).
+   * @param {Uint8Array} fileId - Identifiant de fichier issu du tableau /ID du trailer.
+   * @returns {Uint8Array} Clé de chiffrement du document de 16 octets (128 bits).
+   */
   computeEncryptionKey(userPassword, ownerKey, permissions, fileId) {
     const paddedPwd = this.padPassword(userPassword);
     const hashInput = new Uint8Array(paddedPwd.length + ownerKey.length + 4 + fileId.length);
@@ -211,6 +268,14 @@ const PdfEncryptEngine = {
     return hash.slice(0, 16);
   },
 
+  /**
+   * Calcule la valeur de la clé utilisateur /U (User Key) selon l'Algorithme 3.4 / 3.5.
+   * @function computeUserKey
+   * @memberof PdfEncryptEngine
+   * @param {Uint8Array} encryptionKey - Clé de chiffrement calculée.
+   * @param {Uint8Array} fileId - Identifiant unique /ID du document.
+   * @returns {Uint8Array} Valeur /U de 32 octets.
+   */
   computeUserKey(encryptionKey, fileId) {
     const hashInput = new Uint8Array(this.padding.length + fileId.length);
     hashInput.set(this.padding);
@@ -229,6 +294,16 @@ const PdfEncryptEngine = {
     return finalResult;
   },
 
+  /**
+   * Chiffre le contenu d'un objet indirect ou d'un flux PDF selon l'Algorithme 3.1.
+   * @function encryptObject
+   * @memberof PdfEncryptEngine
+   * @param {Uint8Array} data - Données brutes à chiffrer.
+   * @param {number} objectNum - Numéro d'objet indirect.
+   * @param {number} generationNum - Numéro de génération de l'objet.
+   * @param {Uint8Array} encryptionKey - Clé de chiffrement principale.
+   * @returns {Uint8Array} Données chiffrées par RC4 avec la clé dérivée d'objet.
+   */
   encryptObject(data, objectNum, generationNum, encryptionKey) {
     const keyInput = new Uint8Array(encryptionKey.length + 5);
     keyInput.set(encryptionKey);
@@ -241,6 +316,13 @@ const PdfEncryptEngine = {
     return this.rc4(objectKey.slice(0, Math.min(encryptionKey.length + 5, 16)), data);
   },
 
+  /**
+   * Échappe une séquence binaire pour l'intégrer sous forme de chaîne littérale PDF sécurisée.
+   * @function bytesToPDFStringValue
+   * @memberof PdfEncryptEngine
+   * @param {Uint8Array} bytes - Octets binaires.
+   * @returns {string} Chaîne avec échappement des parenthèses, antislashs et retours charriot.
+   */
   bytesToPDFStringValue(bytes) {
     const out = new Array(bytes.length);
     for (let i = 0; i < bytes.length; i++) {
@@ -255,6 +337,18 @@ const PdfEncryptEngine = {
     return out.join('');
   },
 
+  /**
+   * Chiffre l'intégralité d'un document PDF avec un mot de passe utilisateur en appliquant l'algorithme RC4 128-bit.
+   * Parcourt le graphe des objets indirects du PDFDocument pour chiffrer leurs flux et chaînes sans altérer les structures indispensables.
+   * @async
+   * @function encryptPDF
+   * @memberof PdfEncryptEngine
+   * @param {Uint8Array} pdfBytes - Données binaires du PDF source à verrouiller.
+   * @param {string} userPassword - Mot de passe requis pour ouvrir et consulter le document.
+   * @param {string|null} [ownerPassword=null] - Mot de passe maître optionnel conférant tous les privilèges.
+   * @returns {Promise<Uint8Array>} Fichier PDF chiffré prêt pour sauvegarde ou téléchargement.
+   * @throws {Error} Si le document est déjà chiffré ou si la librairie PDF-Lib n'est pas disponible.
+   */
   async encryptPDF(pdfBytes, userPassword, ownerPassword = null) {
     const PDFLib = window.PDFLib || (typeof PDFLib !== 'undefined' ? PDFLib : null);
     if (!PDFLib) throw new Error("PDFLib n'est pas chargé.");
@@ -372,9 +466,20 @@ const PdfEncryptEngine = {
   }
 };
 
+/**
+ * Espace de nom principal regroupant les 12 outils spécialisés de traitement PDF.
+ * @namespace PdfAdvancedTools
+ */
 const PdfAdvancedTools = {
+  /** @type {boolean} Indicateur d'état du chargement de la bibliothèque PDF.js */
   pdfjsLoaded: false,
 
+  /**
+   * Déclenche l'initialisation de l'ensemble des 12 modules d'outils PDF avancés.
+   * @function init
+   * @memberof PdfAdvancedTools
+   * @returns {void}
+   */
   init() {
     this.initRedact();
     this.initPassword();
@@ -391,6 +496,13 @@ const PdfAdvancedTools = {
   },
 
   /* ================= HELPERS & LIBRARIES ================= */
+  /**
+   * Charge de façon asynchrone la bibliothèque PDF-Lib depuis le dossier vendor ou un CDN de secours.
+   * @async
+   * @function ensurePdfLib
+   * @memberof PdfAdvancedTools
+   * @returns {Promise<any>} Instance globale window.PDFLib prête pour manipulation de documents.
+   */
   async ensurePdfLib() {
     if (typeof PDFLib !== 'undefined') return PDFLib;
     if (window.PDFLib) return window.PDFLib;
@@ -409,6 +521,13 @@ const PdfAdvancedTools = {
     });
   },
 
+  /**
+   * Charge de façon asynchrone le moteur de rendu PDF.js et attache son Web Worker dédié.
+   * @async
+   * @function ensurePdfJs
+   * @memberof PdfAdvancedTools
+   * @returns {Promise<any>} Instance globale window.pdfjsLib configurée.
+   */
   async ensurePdfJs() {
     if (typeof pdfjsLib !== 'undefined') {
       if (!pdfjsLib.GlobalWorkerOptions.workerSrc) {
@@ -437,12 +556,28 @@ const PdfAdvancedTools = {
     });
   },
 
+  /**
+   * Vérifie la validité d'un fichier PDF d'après son extension de nom ou son type MIME.
+   * @function isPdf
+   * @memberof PdfAdvancedTools
+   * @param {File|null} file - Fichier inspecté.
+   * @returns {boolean} Vrai si le fichier est identifié comme un document PDF.
+   */
   isPdf(file) {
     if (!file) return false;
     return (file.name || '').toLowerCase().endsWith('.pdf') || (file.type || '').includes('pdf');
   },
 
   /* ================= 1. CAVIARDAGE (REDACT) ================= */
+  /**
+   * Initialise l'outil de caviardage destructif (Redact Tool).
+   * Permet à l'utilisateur de tracer des rectangles noirs opaques sur les données confidentielles (noms, IBAN, etc.).
+   * Au moment de l'application, chaque page est rendue en bitmap haute définition (300 DPI) avec les zones noires
+   * fusionnées dans les pixels, détruisant ainsi physiquement et irréversiblement le texte vectoriel sous-jacent.
+   * @function initRedact
+   * @memberof PdfAdvancedTools
+   * @returns {void}
+   */
   initRedact() {
     let pdfDoc = null;
     let pdfBytes = null;
@@ -698,6 +833,16 @@ const PdfAdvancedTools = {
   },
 
   /* ================= 2. GESTIONNAIRE DE MOTS DE PASSE ================= */
+  /**
+   * Initialise le gestionnaire de sécurité des mots de passe PDF.
+   * Volet Déverrouillage : Accepte un document protégé par mot de passe, déchiffre son contenu via PDF.js,
+   * et reconstruit une copie vectorielle ou matricielle 100% saine exempte de toute restriction DRM ou mot de passe.
+   * Volet Verrouillage : Applique un chiffrement standard ISO 32000-1 RC4 128 bits via PdfEncryptEngine,
+   * rendant le mot de passe obligatoire pour toute ouverture dans Adobe Acrobat, Edge, Chrome ou macOS Preview.
+   * @function initPassword
+   * @memberof PdfAdvancedTools
+   * @returns {void}
+   */
   initPassword() {
     let unlockPdfBytes = null;
     let lockPdfBytes = null;
@@ -815,6 +960,16 @@ const PdfAdvancedTools = {
   },
 
   /* ================= 3. APLATISSEMENT (FLATTENING) ================= */
+  /**
+   * Initialise l'outil d'aplatissement de documents PDF (Flattening).
+   * Mode Formulaires : Fige les champs éditables AcroForms (champs texte, cases à cocher, listes)
+   * pour les convertir en vecteurs graphiques non modifiables.
+   * Mode Intégral : Rastérise l'ensemble des pages en calques bitmap uniques pour neutraliser
+   * les superpositions, calques optionnels (OCG) et annotations interactives.
+   * @function initFlatten
+   * @memberof PdfAdvancedTools
+   * @returns {void}
+   */
   initFlatten() {
     let pdfBytes = null;
     let fileName = 'document.pdf';
@@ -885,6 +1040,15 @@ const PdfAdvancedTools = {
   },
 
   /* ================= 4. RÉORGANISATION VISUELLE & ROTATION ================= */
+  /**
+   * Initialise l'interface visuelle de réorganisation et de rotation des pages PDF en Drag & Drop.
+   * Génère dynamiquement une grille de cartes miniatures avec vignettes rendues par PDF.js,
+   * permet l'inversion d'ordre par glisser-déposer natif HTML5, la rotation individuelle (90° horaire/anti-horaire)
+   * et la suppression définitive de pages indésirables avant recompilation vectorielle via PDF-Lib.
+   * @function initReorderRotate
+   * @memberof PdfAdvancedTools
+   * @returns {void}
+   */
   initReorderRotate() {
     let pdfBytes = null;
     let pageList = []; // array of { originalIndex, rotation }
@@ -975,6 +1139,14 @@ const PdfAdvancedTools = {
       }
     };
 
+    /**
+     * Applique une rotation angulaire à la page spécifiée et rafraîchit la prévisualisation.
+     * @function rotatePage
+     * @memberof PdfAdvancedTools
+     * @param {number} index - Index séquentiel de la page dans la liste de réorganisation.
+     * @param {number} angle - Incrément d'angle en degrés (-90 pour gauche, +90 pour droite).
+     * @returns {void}
+     */
     this.rotatePage = (index, angle) => {
       if (pageList[index]) {
         pageList[index].rotation = (pageList[index].rotation + angle + 360) % 360;
@@ -982,6 +1154,13 @@ const PdfAdvancedTools = {
       }
     };
 
+    /**
+     * Supprime une page de la liste de réorganisation après vérification du seuil minimal (au moins 1 page restante).
+     * @function deletePage
+     * @memberof PdfAdvancedTools
+     * @param {number} index - Index de la page à retirer.
+     * @returns {void}
+     */
     this.deletePage = (index) => {
       if (pageList.length <= 1) {
         UI.toast('Le document doit contenir au moins une page.', 'warning');
@@ -1022,6 +1201,15 @@ const PdfAdvancedTools = {
   },
 
   /* ================= 5. RECADRAGE DE MARGES (CROP TOOL) ================= */
+  /**
+   * Initialise l'outil de recadrage de marges PDF (Crop Tool).
+   * Permet l'ajustement interactif des 4 marges (haut, bas, gauche, droite) avec prévisualisation en temps réel,
+   * ainsi qu'un algorithme de détection automatique des marges blanches basé sur l'analyse de luminance pixel par pixel sur Canvas.
+   * Modifie la boîte de découpe (/CropBox) de chaque page sans ré-encoder les flux vectoriels d'origine.
+   * @function initCrop
+   * @memberof PdfAdvancedTools
+   * @returns {void}
+   */
   initCrop() {
     let pdfBytes = null;
     let pdfDocJs = null;
@@ -1156,6 +1344,15 @@ const PdfAdvancedTools = {
   },
 
   /* ================= 6. EXTRACTEUR D'IMAGES ================= */
+  /**
+   * Initialise l'extracteur d'images incorporées dans les documents PDF.
+   * Analyse la table des opérateurs PDF (`paintImageXObject`) pour extraire les objets matriciels XObject,
+   * convertit les flux binaires (RGBA, RGB, niveaux de gris) en images PNG sur Canvas,
+   * affiche une galerie de prévisualisation avec dimensions, et permet l'export individuel ou groupé en archive ZIP via JSZip.
+   * @function initExtractImages
+   * @memberof PdfAdvancedTools
+   * @returns {void}
+   */
   initExtractImages() {
     let extractedImages = []; // { dataUrl, filename, size, width, height }
     const gallery = document.getElementById('pdf-extracted-gallery');
@@ -1252,6 +1449,13 @@ const PdfAdvancedTools = {
       }
     });
 
+    /**
+     * Déclenche le téléchargement d'un fichier image individuel extrait de la galerie.
+     * @function downloadSingleImage
+     * @memberof PdfAdvancedTools
+     * @param {number} idx - Index de l'élément dans le tableau des images extraites.
+     * @returns {void}
+     */
     this.downloadSingleImage = (idx) => {
       const item = extractedImages[idx];
       if (item) {
@@ -1287,6 +1491,17 @@ const PdfAdvancedTools = {
   },
 
   /* ================= 7. OUTIL DE SIGNATURE ================= */
+  /**
+   * Initialise l'outil de signature électronique manuscrite de PDF.
+   * Propose 3 modes de création de paraphe :
+   * 1. Dessin à la souris ou au doigt/stylet tactile avec choix de couleur (noir ou bleu).
+   * 2. Saisie textuelle en police cursive stylisée.
+   * 3. Téléversement d'un scan avec suppression automatique du fond blanc par transparence alpha.
+   * Permet le positionnement libre par glisser-déposer sur la page choisie et l'incrustation définitive via PDF-Lib.
+   * @function initSignature
+   * @memberof PdfAdvancedTools
+   * @returns {void}
+   */
   initSignature() {
     let pdfBytes = null;
     let pdfDocJs = null;
@@ -1570,6 +1785,14 @@ const PdfAdvancedTools = {
   },
 
   /* ================= 8. FILIGRANE (WATERMARK) ================= */
+  /**
+   * Initialise le générateur de filigranes textuels personnalisés (Watermark Tool).
+   * Applique un texte de marquage (ex: "CONFIDENTIEL", "COPIE", "BROUILLON") centré sur toutes les pages,
+   * avec réglage libre de la couleur, de la transparence (opacité de 5% à 100%) et de l'orientation angulaire (ex: 45°).
+   * @function initWatermark
+   * @memberof PdfAdvancedTools
+   * @returns {void}
+   */
   initWatermark() {
     let pdfBytes = null;
     let fileName = 'document.pdf';
@@ -1634,6 +1857,14 @@ const PdfAdvancedTools = {
   },
 
   /* ================= 9. NUMÉROTATION DE PAGES ================= */
+  /**
+   * Initialise l'outil de numérotation automatique de pages (Bates & Pagination).
+   * Insère des numéros formatés ("1/N", "Page 1 sur N", "- 1 -") à l'emplacement souhaité
+   * (haut/bas de page, centré, aligné à gauche ou à droite), avec possibilité d'exclure la première page de couverture.
+   * @function initPageNumbering
+   * @memberof PdfAdvancedTools
+   * @returns {void}
+   */
   initPageNumbering() {
     let pdfBytes = null;
     let fileName = 'document.pdf';
@@ -1709,6 +1940,16 @@ const PdfAdvancedTools = {
   },
 
   /* ================= 10. URL VERS PDF ================= */
+  /**
+   * Initialise l'outil de conversion d'URL web en document PDF épuré (Mode Lecture et Archivage pérenne).
+   * Récupère le code HTML distant via le point de terminaison proxy PHP local ou relais CORS,
+   * filtre et élimine l'ensemble des éléments parasites (publicités, bannières de cookies, barres de navigation, scripts),
+   * segmente les blocs textuels structurés (titres H2-H4, listes à puces, citations, paragraphes réguliers),
+   * et génère un PDF multi-pages A4 avec calcul précis de césure de texte (word-wrap), en-tête de rappel et pied de page numéroté.
+   * @function initUrlToPdf
+   * @memberof PdfAdvancedTools
+   * @returns {void}
+   */
   initUrlToPdf() {
     const urlInput = document.getElementById('url2pdf-input');
     const generateBtn = document.getElementById('url2pdf-action-btn');
@@ -2155,6 +2396,15 @@ const PdfAdvancedTools = {
   },
 
   /* ================= 11. PDF VERS EXCEL (EXTRACTION TABLEAUX) ================= */
+  /**
+   * Initialise l'extracteur de structures tabulaires depuis les documents PDF.
+   * Regroupe les glyphes de texte par proximité d'ordonnée Y (lignes) avec une tolérance de 8 pixels,
+   * ordonne les cellules par abscisse X (colonnes), normalise le nombre de colonnes par ligne,
+   * présente une prévisualisation tabulaire HTML et permet l'export au format CSV (délimiteur configurable) ou Excel (.xls).
+   * @function initPdfToExcel
+   * @memberof PdfAdvancedTools
+   * @returns {void}
+   */
   initPdfToExcel() {
     let extractedRows = []; // array of array of strings
     const previewContainer = document.getElementById('pdf-table-preview-container');
@@ -2273,6 +2523,15 @@ const PdfAdvancedTools = {
   },
 
   /* ================= 12. IMAGES VERS PDF (MULTI-IMAGES) ================= */
+  /**
+   * Initialise l'assembleur d'images multiples en un document PDF unique.
+   * Accepte le téléversement simultané de photos et graphiques (JPG, PNG, WebP),
+   * propose une interface visuelle pour réorganiser l'ordre séquentiel des clichés ou en retirer,
+   * et offre 3 modes de cadrage (Taille ajustée à l'image, A4 portrait centré, ou A4 paysage) avec gestion de marges.
+   * @function initImagesToPdf
+   * @memberof PdfAdvancedTools
+   * @returns {void}
+   */
   initImagesToPdf() {
     let imageFiles = []; // array of { file, dataUrl, name }
     const grid = document.getElementById('img2pdf-grid');
@@ -2323,6 +2582,14 @@ const PdfAdvancedTools = {
       `).join('');
     };
 
+    /**
+     * Décale une image vers la gauche (-1) ou vers la droite (+1) dans la liste d'assemblage.
+     * @function moveImage
+     * @memberof PdfAdvancedTools
+     * @param {number} index - Index actuel de l'image.
+     * @param {number} dir - Direction relative du déplacement (-1 ou +1).
+     * @returns {void}
+     */
     this.moveImage = (index, dir) => {
       const target = index + dir;
       if (target >= 0 && target < imageFiles.length) {
@@ -2333,6 +2600,13 @@ const PdfAdvancedTools = {
       }
     };
 
+    /**
+     * Retire une image spécifique de la liste d'assemblage PDF.
+     * @function removeImage
+     * @memberof PdfAdvancedTools
+     * @param {number} index - Index de l'image à supprimer.
+     * @returns {void}
+     */
     this.removeImage = (index) => {
       imageFiles.splice(index, 1);
       renderGrid();

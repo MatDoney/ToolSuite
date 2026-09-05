@@ -1,10 +1,29 @@
 /**
- * Wheel of Fortune / Random Picker Tool
- * Roue de tirage au sort physique animée avec Canvas, sons et confettis
- * 100% Client-side Vanilla JS
+ * @file wheel-tool.js
+ * @module WheelTool
+ * @description Roue de la fortune et sélecteur aléatoire physique animé sur Canvas HTML5 (100% côté client).
+ * Propose une simulation physique réaliste avec accélération et décélération par friction,
+ * synthèse sonore dynamique via la Web Audio API (clics d'encoches et fanfare de victoire),
+ * moteur de particules de confettis et historique des tirages.
+ * @author MatDoney
+ * @version 1.1.0
+ * @license MIT
  */
 
+/**
+ * @namespace WheelTool
+ * @description Contrôleur de la roue de tirage au sort aléatoire.
+ */
 const WheelTool = {
+  /**
+   * Initialise l'ensemble du système de la roue : lecture de la liste des participants,
+   * rendu géométrique trigonométrique des secteurs sur canvas Retina/HiDPI,
+   * physique d'inertie de rotation et gestionnaire d'effets visuels/sonores.
+   *
+   * @function init
+   * @memberof WheelTool
+   * @returns {void}
+   */
   init() {
     const canvas = document.getElementById('wheel-canvas');
     const input = document.getElementById('wheel-names-input');
@@ -18,20 +37,28 @@ const WheelTool = {
 
     const ctx = canvas.getContext('2d');
     let items = [];
-    let currentAngle = 0; // in radians
+    let currentAngle = 0; // Angle de rotation en radians
     let isSpinning = false;
     let lastWinner = null;
     let lastTickAngle = 0;
 
-    // Palette for slices
+    /**
+     * Palette chromatique harmonieuse pour les secteurs de la roue.
+     * @type {string[]}
+     */
     const COLORS = [
       '#4f46e5', '#06b6d4', '#10b981', '#f59e0b', 
       '#ec4899', '#8b5cf6', '#3b82f6', '#14b8a6', 
       '#f97316', '#6366f1', '#84cc16', '#d946ef'
     ];
 
-    // Web Audio Click sound
+    /** @type {AudioContext|null} Contexte audio synthétisé Web Audio API */
     let audioCtx = null;
+
+    /**
+     * Joue un son synthétisé de 'clic' mécanique à chaque passage d'un secteur sous l'aiguille.
+     * @function playTickSound
+     */
     const playTickSound = () => {
       try {
         if (!audioCtx) {
@@ -54,6 +81,10 @@ const WheelTool = {
       } catch (e) {}
     };
 
+    /**
+     * Joue un arpège de victoire harmonique lors de l'arrêt de la roue sur le gagnant.
+     * @function playWinSound
+     */
     const playWinSound = () => {
       try {
         if (!audioCtx) {
@@ -75,6 +106,11 @@ const WheelTool = {
       } catch (e) {}
     };
 
+    /**
+     * Parse la liste des participants depuis le champ textarea (une ligne par entrée).
+     * @function getItems
+     * @returns {string[]}
+     */
     const getItems = () => {
       return input.value
         .split('\n')
@@ -82,6 +118,11 @@ const WheelTool = {
         .filter(s => s.length > 0);
     };
 
+    /**
+     * Dessine la roue avec mise à l'échelle HiDPI (devicePixelRatio), découpage en secteurs,
+     * textes orientés par trigonométrie et moyeu central.
+     * @function drawWheel
+     */
     const drawWheel = () => {
       items = getItems();
       const numItems = items.length;
@@ -118,7 +159,7 @@ const WheelTool = {
 
       const arc = (Math.PI * 2) / numItems;
 
-      // Draw slices
+      // Tracé trigonométrique de chaque secteur
       for (let i = 0; i < numItems; i++) {
         const angle = currentAngle + i * arc;
         ctx.fillStyle = COLORS[i % COLORS.length];
@@ -133,7 +174,7 @@ const WheelTool = {
         ctx.lineWidth = 2;
         ctx.stroke();
 
-        // Slice text
+        // Texte orienté le long du rayon du secteur
         ctx.save();
         ctx.translate(center, center);
         ctx.rotate(angle + arc / 2);
@@ -143,21 +184,20 @@ const WheelTool = {
         ctx.shadowColor = 'rgba(0,0,0,0.5)';
         ctx.shadowBlur = 4;
 
-        // Truncate text if long
         let label = items[i];
         if (label.length > 18) label = label.slice(0, 16) + '…';
         ctx.fillText(label, radius - 24, 5);
         ctx.restore();
       }
 
-      // Outer ring
+      // Anneau de contour externe
       ctx.strokeStyle = '#0f172a';
       ctx.lineWidth = 6;
       ctx.beginPath();
       ctx.arc(center, center, radius, 0, Math.PI * 2);
       ctx.stroke();
 
-      // Center Hub
+      // Moyeu central décoratif
       ctx.fillStyle = '#0f172a';
       ctx.beginPath();
       ctx.arc(center, center, 32, 0, Math.PI * 2);
@@ -177,6 +217,11 @@ const WheelTool = {
       ctx.restore();
     };
 
+    /**
+     * Lance l'animation physique de rotation avec décélération exponentielle (courbe de frottement).
+     * Calcule le vainqueur désigné par la flèche située à 12h (270 degrés / 1.5 * PI).
+     * @function spin
+     */
     const spin = () => {
       if (isSpinning) return;
       items = getItems();
@@ -190,18 +235,17 @@ const WheelTool = {
       if (removeWinnerBtn) removeWinnerBtn.style.display = 'none';
       if (resultBox) resultBox.innerHTML = '<span style="color: var(--text-muted);">Tirage en cours...</span>';
 
-      // Random speed and duration (3 to 5 seconds)
       const numItems = items.length;
       const arc = (Math.PI * 2) / numItems;
-      let velocity = 0.35 + Math.random() * 0.25; // initial angular speed
-      const friction = 0.984 + Math.random() * 0.005; // deceleration
+      let velocity = 0.35 + Math.random() * 0.25; // Vitesse angulaire initiale
+      const friction = 0.984 + Math.random() * 0.005; // Facteur de décélération inertielle
       lastTickAngle = currentAngle;
 
       const animate = () => {
         currentAngle += velocity;
         velocity *= friction;
 
-        // Play tick sound when passing slice
+        // Détection de passage de secteur pour déclencher le clic mécanique
         if (Math.abs(currentAngle - lastTickAngle) >= arc) {
           playTickSound();
           lastTickAngle = currentAngle;
@@ -215,8 +259,7 @@ const WheelTool = {
           isSpinning = false;
           spinBtn.disabled = false;
 
-          // Compute winner at top (12 o'clock, which is -PI/2)
-          // Pointer is at 270 deg (1.5 * PI)
+          // Calcul mathématique du vainqueur sous le pointeur fixe (sommet à 270° soit 1.5 * PI)
           const normalized = (currentAngle % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
           const pointerAngle = (Math.PI * 1.5 - normalized + Math.PI * 2) % (Math.PI * 2);
           const winnerIndex = Math.floor(pointerAngle / arc) % numItems;
@@ -235,7 +278,7 @@ const WheelTool = {
 
           if (removeWinnerBtn) removeWinnerBtn.style.display = 'inline-block';
 
-          // Add to history
+          // Ajout à l'historique des tirages
           if (historyList) {
             const time = new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
             const li = document.createElement('li');
@@ -251,7 +294,10 @@ const WheelTool = {
       requestAnimationFrame(animate);
     };
 
-    // Confetti particles
+    /**
+     * Déclenche une projection de confettis multicolores avec gravité et rotation.
+     * @function launchConfetti
+     */
     const launchConfetti = () => {
       const confettiCanvas = document.getElementById('wheel-confetti-canvas');
       if (!confettiCanvas) return;
@@ -280,7 +326,7 @@ const WheelTool = {
         particles.forEach(p => {
           p.x += p.vx;
           p.y += p.vy;
-          p.vy += 0.25; // gravity
+          p.vy += 0.25; // Force de gravité
           p.rotation += p.vrot;
           p.alpha -= 0.012;
 

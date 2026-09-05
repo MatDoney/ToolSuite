@@ -1,9 +1,24 @@
 /**
- * Markdown Converter - Éditeur et Convertisseur en direct
- * Uses Marked.js (loaded via CDN)
+ * @file markdown-tool.js
+ * @module MarkdownTool
+ * @description Éditeur et convertisseur de texte Markdown en direct.
+ * Analyse la syntaxe Markdown en temps réel via la bibliothèque Marked.js, génère un rendu HTML enrichi
+ * avec coloration et styles typographiques, et offre des fonctions d'exportation vers HTML autonome ou impression/PDF.
+ * @author MatDoney
+ * @version 1.1.0
+ * @license MIT
  */
 
+/**
+ * @namespace MarkdownTool
+ * @description Contrôleur de l'éditeur Markdown et du panneau de prévisualisation HTML.
+ */
 const MarkdownTool = {
+  /**
+   * Modèle de contenu Markdown par défaut injecté à l'ouverture si le champ de saisie est vide.
+   * Présente les titres, listes, tableaux, blocs de code et citations.
+   * @type {string}
+   */
   defaultContent: `# 🚀 Bienvenue sur l'Éditeur Markdown
 
 Cet éditeur transforme votre texte Markdown en **HTML propre** en temps réel.
@@ -33,6 +48,15 @@ saluer('Monde');
 2. Imprimez ou exportez directement en **PDF**
 `,
 
+  /**
+   * Initialise l'éditeur Markdown, l'écouteur de frappe pour la prévisualisation réactive,
+   * ainsi que les actions de copie du code HTML, d'export sous forme de fichier HTML complet
+   * et d'impression PDF via la fenêtre d'impression native du navigateur.
+   *
+   * @function init
+   * @memberof MarkdownTool
+   * @returns {void}
+   */
   init() {
     const textarea = document.getElementById('md-editor-textarea');
     const preview = document.getElementById('md-preview-pane');
@@ -42,6 +66,10 @@ saluer('Monde');
         textarea.value = this.defaultContent;
       }
 
+      /**
+       * Met à jour le panneau de prévisualisation en convertissant la chaîne Markdown en HTML via Marked.
+       * @function updatePreview
+       */
       const updatePreview = () => {
         const raw = textarea.value;
         if (typeof marked !== 'undefined') {

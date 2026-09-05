@@ -1,20 +1,71 @@
 /**
- * PDF Tools - Fusion, Séparation & Compression
- * Uses PDF-Lib & JSZip (loaded via CDN)
+ * @file pdf-tools.js
+ * @module PDFTools
+ * @description Suite des outils PDF fondamentaux de ToolSuite (100% côté client).
+ * Gère la fusion ordonnée de documents PDF multiples, l'extraction de pages par plages personnalisées
+ * (avec téléchargement en PDF unifié ou archive ZIP de pages individuelles), et l'optimisation/compression de flux PDF.
+ * @author MatDoney
+ * @version 1.1.0
+ * @license MIT
  */
 
+/**
+ * @typedef {Object} MergeFileItem
+ * @property {string} name - Nom d'origine du fichier PDF.
+ * @property {number} size - Taille en octets du fichier.
+ * @property {Uint8Array} bytes - Données binaires du PDF chargées en mémoire.
+ */
+
+/**
+ * @namespace PDFTools
+ * @description Contrôleur des outils de base de manipulation des documents PDF (PDF-Lib & JSZip).
+ */
 const PDFTools = {
+  /**
+   * File d'attente des fichiers PDF sélectionnés pour la fusion.
+   * @type {MergeFileItem[]}
+   */
   mergeFiles: [],
+
+  /**
+   * Instance du document PDF chargé pour l'outil de découpage et d'extraction.
+   * @type {object|null}
+   */
   currentSplitPdfDoc: null,
+
+  /**
+   * Tableau d'octets du document PDF en cours de découpage.
+   * @type {Uint8Array|null}
+   */
   currentSplitPdfBytes: null,
+
+  /**
+   * Nom du fichier PDF en cours de découpage.
+   * @type {string}
+   */
   currentSplitFileName: 'document.pdf',
 
+  /**
+   * Initialise les 3 outils PDF de base : fusion, séparation et compresseur.
+   *
+   * @function init
+   * @memberof PDFTools
+   * @returns {void}
+   */
   init() {
     this.initMerge();
     this.initSplit();
     this.initCompress();
   },
 
+  /**
+   * Détermine si un fichier sélectionné est un document PDF selon son extension et son type MIME.
+   *
+   * @function isPdfFile
+   * @memberof PDFTools
+   * @param {File} file - Fichier à analyser.
+   * @returns {boolean} `true` si le fichier est un PDF valide.
+   */
   isPdfFile(file) {
     if (!file) return false;
     const nameLower = (file.name || '').toLowerCase();
@@ -23,6 +74,14 @@ const PDFTools = {
   },
 
   /* ================= FUSION DE PDF ================= */
+
+  /**
+   * Initialise la zone de glisser-déposer de fusion, le bouton d'action et le vidage de la liste.
+   *
+   * @function initMerge
+   * @memberof PDFTools
+   * @returns {void}
+   */
   initMerge() {
     UI.setupDropzone('pdf-merge-dropzone', 'pdf-merge-input', (files) => {
       this.handleMergeFiles(files);
@@ -42,6 +101,15 @@ const PDFTools = {
     }
   },
 
+  /**
+   * Lit et stocke en mémoire les fichiers PDF déposés dans la file d'attente de fusion.
+   *
+   * @async
+   * @function handleMergeFiles
+   * @memberof PDFTools
+   * @param {File[]} files - Liste des fichiers déposés par l'utilisateur.
+   * @returns {Promise<void>}
+   */
   async handleMergeFiles(files) {
     for (const file of files) {
       if (this.isPdfFile(file)) {
@@ -58,6 +126,13 @@ const PDFTools = {
     this.renderMergeFileList();
   },
 
+  /**
+   * Rend la liste ordonnable des fichiers PDF prêts à être fusionnés avec contrôles de montée/descente et suppression.
+   *
+   * @function renderMergeFileList
+   * @memberof PDFTools
+   * @returns {void}
+   */
   renderMergeFileList() {
     const listEl = document.getElementById('pdf-merge-list');
     const mergeBtn = document.getElementById('pdf-merge-action-btn');
@@ -88,6 +163,15 @@ const PDFTools = {
     `).join('');
   },
 
+  /**
+   * Déplace un élément dans la file d'attente de fusion pour modifier l'ordre final d'assemblage.
+   *
+   * @function moveMergeFile
+   * @memberof PDFTools
+   * @param {number} index - Position actuelle de l'élément dans le tableau `mergeFiles`.
+   * @param {(-1|1)} direction - Décalage vers le haut (-1) ou vers le bas (+1).
+   * @returns {void}
+   */
   moveMergeFile(index, direction) {
     const target = index + direction;
     if (target >= 0 && target < this.mergeFiles.length) {
@@ -98,17 +182,41 @@ const PDFTools = {
     }
   },
 
+  /**
+   * Retire un document de la liste de fusion.
+   *
+   * @function removeMergeFile
+   * @memberof PDFTools
+   * @param {number} index - Index de l'élément à supprimer.
+   * @returns {void}
+   */
   removeMergeFile(index) {
     this.mergeFiles.splice(index, 1);
     this.renderMergeFileList();
   },
 
+  /**
+   * Récupère l'objet global PDF-Lib si déjà disponible dans la portée.
+   *
+   * @function getPdfLib
+   * @memberof PDFTools
+   * @returns {object|null}
+   */
   getPdfLib() {
     if (typeof PDFLib !== 'undefined') return PDFLib;
     if (typeof window !== 'undefined' && window.PDFLib) return window.PDFLib;
     return null;
   },
 
+  /**
+   * S'assure de la disponibilité de la bibliothèque PDF-Lib en tentant le chargement local puis CDN.
+   *
+   * @async
+   * @function ensurePdfLib
+   * @memberof PDFTools
+   * @returns {Promise<object>} Instance globale de `PDFLib`.
+   * @throws {Error} Si le chargement échoue.
+   */
   async ensurePdfLib() {
     const existing = this.getPdfLib();
     if (existing) return existing;
@@ -136,6 +244,15 @@ const PDFTools = {
     });
   },
 
+  /**
+   * Assemble tous les documents PDF de la file d'attente en un fichier fusionné unique.
+   * Copie l'intégralité des pages de chaque PDF source dans un nouveau document `PDFDocument`.
+   *
+   * @async
+   * @function executeMerge
+   * @memberof PDFTools
+   * @returns {Promise<void>}
+   */
   async executeMerge() {
     if (this.mergeFiles.length < 2) {
       UI.toast('Veuillez ajouter au moins 2 fichiers PDF à fusionner.', 'warning');
@@ -170,6 +287,14 @@ const PDFTools = {
   },
 
   /* ================= SÉPARATION & EXTRACTION DE PDF ================= */
+
+  /**
+   * Initialise les écouteurs de séparation de PDF (dépôt, export PDF unique ou archive ZIP).
+   *
+   * @function initSplit
+   * @memberof PDFTools
+   * @returns {void}
+   */
   initSplit() {
     UI.setupDropzone('pdf-split-dropzone', 'pdf-split-input', async (file) => {
       if (this.isPdfFile(file)) {
@@ -190,6 +315,15 @@ const PDFTools = {
     }
   },
 
+  /**
+   * Charge et analyse le document PDF pour la séparation : lecture du nombre de pages et affichage du panneau d'options.
+   *
+   * @async
+   * @function loadSplitPdf
+   * @memberof PDFTools
+   * @param {File} file - Fichier PDF sélectionné.
+   * @returns {Promise<void>}
+   */
   async loadSplitPdf(file) {
     try {
       const PDFLib = await this.ensurePdfLib();
@@ -230,6 +364,16 @@ const PDFTools = {
     }
   },
 
+  /**
+   * Extrait les pages demandées selon la chaîne de plage (ex: "1-3, 5") et exporte soit un PDF unifié,
+   * soit un fichier ZIP avec une page par fichier PDF.
+   *
+   * @async
+   * @function executeSplit
+   * @memberof PDFTools
+   * @param {boolean} [asZip=false] - Si `true`, produit une archive ZIP contenant chaque page séparée.
+   * @returns {Promise<void>}
+   */
   async executeSplit(asZip = false) {
     if (!this.currentSplitPdfBytes || !this.currentSplitPdfDoc) {
       UI.toast('Veuillez d\'abord charger un fichier PDF.', 'warning');
@@ -278,7 +422,7 @@ const PDFTools = {
         UI.download(zipBlob, `${baseName}_pages_separees.zip`, 'application/zip');
         UI.toast(`Archive ZIP créée (${pagesToExtract.length} fichiers PDF) !`, 'success');
       } else {
-        // Single merged PDF with extracted pages
+        // PDF extrait unique combinant les pages sélectionnées
         const newPdf = await PDFLib.PDFDocument.create();
         const zeroIndexedPages = pagesToExtract.map(p => p - 1);
         const copiedPages = await newPdf.copyPages(sourceDoc, zeroIndexedPages);
@@ -299,6 +443,17 @@ const PDFTools = {
     }
   },
 
+  /**
+   * Parse une chaîne de sélection de pages au format humain (1-indexé) et renvoie un tableau d'entiers uniques triés.
+   *
+   * @function parsePageRanges
+   * @memberof PDFTools
+   * @param {string} rangeStr - Chaîne de plage (ex: "1-4, 7, 9-12").
+   * @param {number} maxPage - Nombre total maximal de pages du document.
+   * @returns {number[]} Tableau ordonné des numéros de pages 1-indexés à extraire.
+   * @example
+   * PDFTools.parsePageRanges("1-3, 5", 10); // [1, 2, 3, 5]
+   */
   parsePageRanges(rangeStr, maxPage) {
     if (!rangeStr) return [];
     const pages = new Set();
@@ -326,6 +481,15 @@ const PDFTools = {
   },
 
   /* ================= COMPRESSEUR DE PDF ================= */
+
+  /**
+   * Initialise le compresseur de PDF : optimise les dictionnaires d'objets, compresse les flux
+   * et élimine les doublons de métadonnées inutilisées via `useObjectStreams: true`.
+   *
+   * @function initCompress
+   * @memberof PDFTools
+   * @returns {void}
+   */
   initCompress() {
     let currentCompressFile = null;
 
@@ -355,7 +519,7 @@ const PDFTools = {
           const arrayBuffer = await currentCompressFile.arrayBuffer();
           const pdfDoc = await PDFLib.PDFDocument.load(new Uint8Array(arrayBuffer), { ignoreEncryption: true });
           
-          // PDF-Lib compression: remove unused objects & stream compression
+          // Compression PDF-Lib : élimination des objets orphelins et flux d'objets
           const compressedBytes = await pdfDoc.save({ useObjectStreams: true });
           
           const finalBytes = compressedBytes;

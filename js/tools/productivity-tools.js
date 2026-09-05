@@ -1,12 +1,31 @@
 /**
- * Productivity & Time Tools
- * 1. Planificateur de fuseaux horaires
- * 2. Calculateur de dates (durée, jours ouvrés, projection)
- * 3. Minuteur Pomodoro minimaliste avec bruits blancs Web Audio API
- * 100% Client-side Vanilla JS
+ * @file productivity-tools.js
+ * @description Suite d'outils de productivité et de gestion temporelle 100% exécutés côté client (Vanilla JS).
+ * Comprend un planificateur visuel de fuseaux horaires mondiaux avec détection des créneaux de travail partagés (overlapping hours),
+ * un calculateur d'écarts de dates avec comptage des jours ouvrés et projection calendaire future/passée,
+ * ainsi qu'un minuteur Pomodoro audio avec générateur de bruits d'ambiance synthétisés (pluie, café, vagues) via la Web Audio API.
+ * @module ProductivityTools
  */
 
+/**
+ * @typedef {Object} CityTimezoneItem
+ * @property {string} id - Identifiant technique unique de la ville.
+ * @property {string} name - Nom usuel de la métropole ou de l'agglomération.
+ * @property {string} tz - Identifiant IANA de fuseau horaire (ex: 'Europe/Paris', 'America/New_York').
+ * @property {string} flag - Émoji représentant le drapeau national correspondant.
+ */
+
+/**
+ * Espace de nom principal regroupant les utilitaires de gestion temporelle et de productivité.
+ * @namespace ProductivityTools
+ */
 const ProductivityTools = {
+  /**
+   * Initialise l'ensemble des sous-modules de productivité au démarrage.
+   * @function init
+   * @memberof ProductivityTools
+   * @returns {void}
+   */
   init() {
     this.initTimezonePlanner();
     this.initDateCalculator();
@@ -14,13 +33,22 @@ const ProductivityTools = {
   },
 
   /* ================= 1. PLANIFICATEUR DE FUSEAUX HORAIRES ================= */
+  /**
+   * Initialise le planificateur matriciel de fuseaux horaires mondiaux.
+   * Affiche une frise de 24 heures par ville sélectionnée, identifie les heures de travail locales (09:00 - 18:00)
+   * et calcule automatiquement les créneaux communs de collaboration simultanée (overlap) entre toutes les villes actives.
+   * @function initTimezonePlanner
+   * @memberof ProductivityTools
+   * @returns {void}
+   */
   initTimezonePlanner() {
     const listContainer = document.getElementById('tz-list');
-    const selectCity = document.getElementById('tz-add-select');
+    const selectCity = /** @type {HTMLSelectElement|null} */ (document.getElementById('tz-add-select'));
     const addBtn = document.getElementById('tz-add-btn');
 
     if (!listContainer) return;
 
+    /** @type {CityTimezoneItem[]} Répertoire prédéfini des métropoles internationales majeures */
     const ALL_CITIES = [
       { id: 'paris', name: 'Paris / Berlin', tz: 'Europe/Paris', flag: '🇫🇷' },
       { id: 'london', name: 'Londres', tz: 'Europe/London', flag: '🇬🇧' },
@@ -32,9 +60,17 @@ const ProductivityTools = {
       { id: 'dubai', name: 'Dubaï', tz: 'Asia/Dubai', flag: '🇦🇪' }
     ];
 
+    /** @type {string[]} Liste des identifiants des villes actuellement affichées */
     let activeCityIds = ['paris', 'london', 'newyork', 'tokyo'];
+    /** @type {number} Heure pivot de référence sélectionnée (0 à 23) */
     let selectedBaseHour = new Date().getHours();
 
+    /**
+     * Calcule le décalage horaire relatif (en heures) entre le fuseau IANA cible et l'heure locale du navigateur.
+     * @inner
+     * @param {string} tz - Identifiant IANA de la zone horaire.
+     * @returns {number} Différence d'heures (positive ou négative).
+     */
     const getCityOffsetHours = (tz) => {
       try {
         const now = new Date();
@@ -50,10 +86,15 @@ const ProductivityTools = {
       }
     };
 
+    /**
+     * Effectue le rendu HTML de l'ensemble des frises temporelles des villes actives.
+     * Détermine les plages communes d'intersection où chaque métropole est dans sa plage d'activité (9h-18h).
+     * @inner
+     */
     const render = () => {
       listContainer.innerHTML = '';
 
-      // Populate select
+      // Mise à jour de la liste déroulante des villes pouvant être ajoutées
       if (selectCity) {
         selectCity.innerHTML = ALL_CITIES
           .filter(c => !activeCityIds.includes(c.id))
@@ -61,9 +102,11 @@ const ProductivityTools = {
           .join('');
       }
 
-      const activeCities = activeCityIds.map(id => ALL_CITIES.find(c => c.id === id)).filter(Boolean);
+      const activeCities = activeCityIds
+        .map(id => ALL_CITIES.find(c => c.id === id))
+        .filter(/** @type {(c: CityTimezoneItem|undefined) => c is CityTimezoneItem} */ (Boolean));
 
-      // Determine overlap: which base hours (0..23) result in 9..18 in ALL active cities?
+      // Identification des heures de chevauchement parfait (9h-18h dans toutes les villes)
       const overlappingBaseHours = new Set();
       for (let h = 0; h < 24; h++) {
         const allWorking = activeCities.every(city => {
@@ -122,15 +165,15 @@ const ProductivityTools = {
         listContainer.appendChild(row);
       });
 
-      // Hour click event delegation
+      // Gestion du clic sur une colonne horaire pour aligner l'indicateur vertical
       listContainer.querySelectorAll('.tz-hour-cell').forEach(cell => {
         cell.addEventListener('click', () => {
-          selectedBaseHour = parseInt(cell.getAttribute('data-base-h'), 10);
+          selectedBaseHour = parseInt(cell.getAttribute('data-base-h') || '0', 10);
           render();
         });
       });
 
-      // Remove city handlers
+      // Gestion de la suppression d'une ville de la matrice
       listContainer.querySelectorAll('.tz-remove-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
           e.stopPropagation();
@@ -141,6 +184,7 @@ const ProductivityTools = {
       });
     };
 
+    // Ajout d'une nouvelle métropole depuis la liste déroulante
     if (addBtn && selectCity) {
       addBtn.addEventListener('click', () => {
         const val = selectCity.value;
@@ -155,31 +199,48 @@ const ProductivityTools = {
   },
 
   /* ================= 2. CALCULATEUR DE DATES ================= */
+  /**
+   * Initialise le calculateur d'intervalles calendaires et de projections temporelles.
+   * Mode 1 : Mesure précise de la durée entre deux dates (jours réels, semaines résiduelles, jours ouvrés du lundi au vendredi, total d'heures).
+   * Mode 2 : Projection de date par addition ou soustraction de jours, semaines, mois ou années.
+   * @function initDateCalculator
+   * @memberof ProductivityTools
+   * @returns {void}
+   */
   initDateCalculator() {
-    const startInput = document.getElementById('date-calc-start');
-    const endInput = document.getElementById('date-calc-end');
+    const startInput = /** @type {HTMLInputElement|null} */ (document.getElementById('date-calc-start'));
+    const endInput = /** @type {HTMLInputElement|null} */ (document.getElementById('date-calc-end'));
     const diffBtn = document.getElementById('date-calc-diff-btn');
 
-    const projDateInput = document.getElementById('date-proj-date');
-    const projNumInput = document.getElementById('date-proj-num');
-    const projUnitSelect = document.getElementById('date-proj-unit');
-    const projOpSelect = document.getElementById('date-proj-op');
+    const projDateInput = /** @type {HTMLInputElement|null} */ (document.getElementById('date-proj-date'));
+    const projNumInput = /** @type {HTMLInputElement|null} */ (document.getElementById('date-proj-num'));
+    const projUnitSelect = /** @type {HTMLSelectElement|null} */ (document.getElementById('date-proj-unit'));
+    const projOpSelect = /** @type {HTMLSelectElement|null} */ (document.getElementById('date-proj-op'));
     const projBtn = document.getElementById('date-proj-btn');
 
     if (!diffBtn) return;
 
-    // Default dates to today and +30 days
+    // Initialisation des champs par défaut (aujourd'hui et aujourd'hui + 30 jours)
     const today = new Date();
     const future = new Date();
     future.setDate(today.getDate() + 30);
 
+    /**
+     * Formate un objet Date au standard ISO 'YYYY-MM-DD'.
+     * @param {Date} d - Date à formater.
+     * @returns {string} Chaîne au format ISO YYYY-MM-DD.
+     */
     const toYMD = (d) => d.toISOString().split('T')[0];
     if (startInput) startInput.value = toYMD(today);
     if (endInput) endInput.value = toYMD(future);
     if (projDateInput) projDateInput.value = toYMD(today);
 
-    // Mode 1 : Diff between dates
+    /**
+     * Calcule l'intervalle entre les deux dates saisies et dénombre les jours ouvrés.
+     * @inner
+     */
     const calculateDiff = () => {
+      if (!startInput || !endInput) return;
       const d1 = new Date(startInput.value);
       const d2 = new Date(endInput.value);
 
@@ -191,12 +252,12 @@ const ProductivityTools = {
       const minDate = d1 < d2 ? d1 : d2;
       const maxDate = d1 < d2 ? d2 : d1;
 
-      const diffMs = maxDate - minDate;
+      const diffMs = maxDate.getTime() - minDate.getTime();
       const totalDays = Math.round(diffMs / (1000 * 60 * 60 * 24));
       const weeks = Math.floor(totalDays / 7);
       const remDays = totalDays % 7;
 
-      // Count business days (Mon-Fri)
+      // Comptage itératif des jours ouvrés (du lundi au vendredi, exclusion de 0=Dimanche et 6=Samedi)
       let businessDays = 0;
       const cur = new Date(minDate);
       while (cur < maxDate) {
@@ -205,6 +266,11 @@ const ProductivityTools = {
         if (day !== 0 && day !== 6) businessDays++;
       }
 
+      /**
+       * Assigne le texte formaté à un élément HTML.
+       * @param {string} id - Identifiant de l'élément.
+       * @param {string} val - Valeur textuelle.
+       */
       const setVal = (id, val) => {
         const el = document.getElementById(id);
         if (el) el.textContent = val;
@@ -219,13 +285,14 @@ const ProductivityTools = {
     diffBtn.addEventListener('click', calculateDiff);
     calculateDiff();
 
-    // Mode 2 : Date Projection
+    // Mode 2 : Projection de date future ou passée
     if (projBtn) {
       projBtn.addEventListener('click', () => {
+        if (!projDateInput || !projNumInput || !projUnitSelect || !projOpSelect) return;
         const base = new Date(projDateInput.value);
         const num = parseInt(projNumInput.value, 10) || 0;
         const unit = projUnitSelect.value;
-        const op = projOpSelect.value; // 'add' or 'sub'
+        const op = projOpSelect.value; // 'add' ou 'sub'
         const factor = op === 'add' ? 1 : -1;
 
         if (isNaN(base.getTime())) {
@@ -239,6 +306,7 @@ const ProductivityTools = {
         else if (unit === 'months') res.setMonth(res.getMonth() + (num * factor));
         else if (unit === 'years') res.setFullYear(res.getFullYear() + (num * factor));
 
+        /** @type {Intl.DateTimeFormatOptions} */
         const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
         const formatted = res.toLocaleDateString('fr-FR', options);
 
@@ -251,37 +319,58 @@ const ProductivityTools = {
   },
 
   /* ================= 3. MINUTEUR POMODORO + BRUITS BLANCS ================= */
+  /**
+   * Initialise le minuteur de concentration selon la méthode Pomodoro.
+   * Gère trois modes temporels (Focus 25 min, Pause courte 5 min, Pause longue 15 min),
+   * une synthèse audio procédurale en temps réel de bruits d'ambiance relaxants (pluie rose filtrée, café brun, vagues modulées par LFO),
+   * et un gestionnaire de liste de tâches rapides intégrée à la session.
+   * @function initPomodoro
+   * @memberof ProductivityTools
+   * @returns {void}
+   */
   initPomodoro() {
     const timerDisplay = document.getElementById('pomo-display');
     const startBtn = document.getElementById('pomo-start-btn');
     const resetBtn = document.getElementById('pomo-reset-btn');
     const modeBtns = document.querySelectorAll('.pomodoro-mode-btn');
-    const noiseSelect = document.getElementById('pomo-noise-select');
-    const volumeSlider = document.getElementById('pomo-volume');
+    const noiseSelect = /** @type {HTMLSelectElement|null} */ (document.getElementById('pomo-noise-select'));
+    const volumeSlider = /** @type {HTMLInputElement|null} */ (document.getElementById('pomo-volume'));
 
-    const taskInput = document.getElementById('pomo-task-input');
+    const taskInput = /** @type {HTMLInputElement|null} */ (document.getElementById('pomo-task-input'));
     const taskAddBtn = document.getElementById('pomo-task-add-btn');
     const taskList = document.getElementById('pomo-task-list');
 
     if (!timerDisplay || !startBtn) return;
 
-    let durations = { focus: 25 * 60, short: 5 * 60, long: 15 * 60 };
+    /** @type {Record<string, number>} Durée en secondes pour chaque mode de concentration */
+    const durations = { focus: 25 * 60, short: 5 * 60, long: 15 * 60 };
+    /** @type {string} Mode actif sélectionné ('focus', 'short' ou 'long') */
     let currentMode = 'focus';
+    /** @type {number} Secondes restantes sur le décompte en cours */
     let timeLeft = durations.focus;
+    /** @type {any} Référence de l'intervalle d'horloge window.setInterval */
     let timerInterval = null;
+    /** @type {boolean} État d'exécution du décompte */
     let isRunning = false;
 
-    // Web Audio Noise Generator
+    // Synthétiseur audio Web Audio API
+    /** @type {AudioContext|null} Contexte audio principal */
     let audioCtx = null;
+    /** @type {AudioBufferSourceNode|null} Nœud source de génération de bruit blanc */
     let noiseNode = null;
+    /** @type {GainNode|null} Nœud de contrôle de volume */
     let gainNode = null;
 
+    /**
+     * Initialise le contexte audio et le nœud de gain de sortie s'ils ne sont pas encore instanciés.
+     * @inner
+     */
     const initAudio = () => {
       if (!audioCtx) {
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        audioCtx = new AudioContext();
+        const AudioCtxClass = window.AudioContext || /** @type {any} */ (window).webkitAudioContext;
+        audioCtx = new AudioCtxClass();
         gainNode = audioCtx.createGain();
-        gainNode.gain.value = (parseFloat(volumeSlider?.value || 50) / 100) * 0.15;
+        gainNode.gain.value = (parseFloat(volumeSlider?.value || '50') / 100) * 0.15;
         gainNode.connect(audioCtx.destination);
       }
       if (audioCtx.state === 'suspended') {
@@ -289,6 +378,10 @@ const ProductivityTools = {
       }
     };
 
+    /**
+     * Interrompt la lecture en boucle du bruit d'ambiance en cours.
+     * @inner
+     */
     const stopNoise = () => {
       if (noiseNode) {
         try {
@@ -299,17 +392,23 @@ const ProductivityTools = {
       }
     };
 
+    /**
+     * Génère dynamiquement en mémoire un tampon audio de bruit procédural (Rain, Cafe ou Waves).
+     * @inner
+     * @param {string} type - Type d'ambiance ('rain', 'cafe', 'waves' ou 'none').
+     */
     const playNoise = (type) => {
       stopNoise();
       if (type === 'none') return;
       initAudio();
+      if (!audioCtx || !gainNode) return;
 
       const bufferSize = audioCtx.sampleRate * 2;
       const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
       const data = buffer.getChannelData(0);
 
       if (type === 'rain') {
-        // Pink noise simulation with filter
+        // Modélisation d'un bruit rose filtré (Pink Noise via filtre Paul Kellet) simulant la pluie fine
         let b0 = 0, b1 = 0, b2 = 0;
         for (let i = 0; i < bufferSize; i++) {
           const white = Math.random() * 2 - 1;
@@ -319,7 +418,7 @@ const ProductivityTools = {
           data[i] = (b0 + b1 + b2) * 0.12;
         }
       } else if (type === 'cafe') {
-        // Brown noise simulation
+        // Modélisation d'un bruit brun (Brown/Red Noise par intégration) évoquant un brouhaha feutré
         let lastOut = 0.0;
         for (let i = 0; i < bufferSize; i++) {
           const white = Math.random() * 2 - 1;
@@ -328,7 +427,7 @@ const ProductivityTools = {
           data[i] *= 0.5;
         }
       } else if (type === 'waves') {
-        // Modulated ambient noise
+        // Bruit modulé par un oscillateur basse fréquence (LFO à 0.2 Hz) simulant le ressac régulier des vagues
         for (let i = 0; i < bufferSize; i++) {
           const t = i / audioCtx.sampleRate;
           const lfo = (Math.sin(2 * Math.PI * 0.2 * t) + 1) * 0.5;
@@ -357,6 +456,10 @@ const ProductivityTools = {
       });
     }
 
+    /**
+     * Formate et rafraîchit l'affichage numérique du chronomètre dans l'interface et dans le titre de l'onglet.
+     * @inner
+     */
     const renderTime = () => {
       const m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
       const s = (timeLeft % 60).toString().padStart(2, '0');
@@ -366,6 +469,10 @@ const ProductivityTools = {
       }
     };
 
+    /**
+     * Interrompt le minuteur et réinitialise l'état des commandes.
+     * @inner
+     */
     const stopTimer = () => {
       clearInterval(timerInterval);
       timerInterval = null;
@@ -377,6 +484,10 @@ const ProductivityTools = {
       document.title = 'ToolSuite - 100% Local Web Tools';
     };
 
+    /**
+     * Démarre ou reprend l'écoulement du décompte Pomodoro.
+     * @inner
+     */
     const startTimer = () => {
       isRunning = true;
       startBtn.textContent = 'Pause';
@@ -394,14 +505,16 @@ const ProductivityTools = {
         } else {
           stopTimer();
           UI.toast('Temps écoulé ! Faites une pause.', 'success');
-          // Beep
+          // Émission d'un bip sonore de notification de fin de cycle (Note Ré5 / D5 à 587.33 Hz)
           try {
             initAudio();
-            const osc = audioCtx.createOscillator();
-            osc.frequency.value = 587.33; // D5
-            osc.connect(audioCtx.destination);
-            osc.start();
-            osc.stop(audioCtx.currentTime + 0.4);
+            if (audioCtx) {
+              const osc = audioCtx.createOscillator();
+              osc.frequency.value = 587.33;
+              osc.connect(audioCtx.destination);
+              osc.start();
+              osc.stop(audioCtx.currentTime + 0.4);
+            }
           } catch (e) {}
         }
       }, 1000);
@@ -412,24 +525,28 @@ const ProductivityTools = {
       else startTimer();
     });
 
-    resetBtn.addEventListener('click', () => {
+    resetBtn?.addEventListener('click', () => {
       stopTimer();
       timeLeft = durations[currentMode];
       renderTime();
     });
 
+    // Basculement entre les modes Focus (25m), Pause courte (5m) et Pause longue (15m)
     modeBtns.forEach(btn => {
       btn.addEventListener('click', () => {
         modeBtns.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        currentMode = btn.getAttribute('data-mode');
+        currentMode = btn.getAttribute('data-mode') || 'focus';
         stopTimer();
         timeLeft = durations[currentMode];
         renderTime();
       });
     });
 
-    // Session Tasks
+    /**
+     * Ajoute une nouvelle tâche interactive à la liste de contrôle de la session de travail.
+     * @inner
+     */
     const addTask = () => {
       const text = taskInput?.value.trim();
       if (!text || !taskList) return;
@@ -444,12 +561,17 @@ const ProductivityTools = {
         <button class="action-icon-btn" style="width: 24px; height: 24px; font-size: 0.75rem;">✕</button>
       `;
 
-      li.querySelector('input').addEventListener('change', (e) => {
-        li.querySelector('span').style.textDecoration = e.target.checked ? 'line-through' : 'none';
-        li.querySelector('span').style.opacity = e.target.checked ? '0.5' : '1';
+      const chk = li.querySelector('input');
+      const span = li.querySelector('span');
+      chk?.addEventListener('change', (e) => {
+        const target = /** @type {HTMLInputElement} */ (e.target);
+        if (span) {
+          span.style.textDecoration = target.checked ? 'line-through' : 'none';
+          span.style.opacity = target.checked ? '0.5' : '1';
+        }
       });
 
-      li.querySelector('button').addEventListener('click', () => li.remove());
+      li.querySelector('button')?.addEventListener('click', () => li.remove());
 
       taskList.appendChild(li);
       taskInput.value = '';

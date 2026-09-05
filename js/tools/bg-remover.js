@@ -1,17 +1,69 @@
 /**
- * Background Remover - Suppresseur d'arrière-plan interactif
- * Pure Client-side Canvas Magic Wand, Color-Keying & Alpha Feathering
+ * @file bg-remover.js
+ * @module BgRemover
+ * @description Outil de suppression d'arrière-plan interactif et détourage d'images (100% côté client).
+ * Implémente un algorithme de baguette magique (color-keying par distance euclidienne RGB avec lissage alpha),
+ * un outil gomme circulaire (destination-out) et un pinceau de restauration depuis les données brutes d'origine.
+ * @author MatDoney
+ * @version 1.1.0
+ * @license MIT
  */
 
+/**
+ * @namespace BgRemover
+ * @description Contrôleur de l'espace de travail de détourage d'images sur Canvas HTML5.
+ */
 const BgRemover = {
+  /**
+   * Élément canvas HTML principal affichant l'image en cours d'édition.
+   * @type {HTMLCanvasElement|null}
+   */
   canvas: null,
+
+  /**
+   * Contexte 2D du canvas optimisé pour les lectures fréquentes (`willReadFrequently: true`).
+   * @type {CanvasRenderingContext2D|null}
+   */
   ctx: null,
+
+  /**
+   * Copie originale des données de pixels (ImageData) pour permettre la réinitialisation et la restauration locale.
+   * @type {ImageData|null}
+   */
   originalImageData: null,
+
+  /**
+   * Historique d'états ImageData (tampon circulaire d'annulation).
+   * @type {ImageData[]}
+   */
   history: [],
-  currentMode: 'wand', // 'wand' or 'eraser' or 'restore'
+
+  /**
+   * Mode d'édition actif : baguette magique ('wand'), gomme manuelle ('eraser') ou restauration ('restore').
+   * @type {('wand'|'eraser'|'restore')}
+   */
+  currentMode: 'wand',
+
+  /**
+   * Diamètre en pixels du pinceau de gommage ou de restauration.
+   * @type {number}
+   */
   brushSize: 25,
+
+  /**
+   * Tolérance de couleur de la baguette magique exprimée en pourcentage (0 à 100%).
+   * @type {number}
+   */
   tolerance: 30,
 
+  /**
+   * Initialise les éléments de l'interface, les curseurs de réglage (tolérance, taille du pinceau),
+   * les boutons de mode, la zone de dépôt et les écouteurs de souris sur le canvas.
+   *
+   * @function init
+   * @memberof BgRemover
+   * @returns {void}
+   */
   init() {
     this.canvas = document.getElementById('bg-remover-canvas');
     if (!this.canvas) return;
@@ -25,7 +77,7 @@ const BgRemover = {
       }
     });
 
-    // Tolerance slider
+    // Curseur de tolérance de sélection de couleur
     const tolSlider = document.getElementById('bg-tolerance-slider');
     const tolVal = document.getElementById('bg-tolerance-val');
     if (tolSlider && tolVal) {
@@ -35,7 +87,7 @@ const BgRemover = {
       });
     }
 
-    // Brush size slider
+    // Curseur de taille du pinceau / gomme
     const brushSlider = document.getElementById('bg-brush-size-slider');
     const brushVal = document.getElementById('bg-brush-size-val');
     if (brushSlider && brushVal) {
@@ -45,7 +97,7 @@ const BgRemover = {
       });
     }
 
-    // Mode buttons
+    // Boutons de sélection du mode d'édition
     const wandBtn = document.getElementById('bg-mode-wand-btn');
     const eraserBtn = document.getElementById('bg-mode-eraser-btn');
     const restoreBtn = document.getElementById('bg-mode-restore-btn');
@@ -54,19 +106,19 @@ const BgRemover = {
     if (eraserBtn) eraserBtn.onclick = () => this.setMode('eraser');
     if (restoreBtn) restoreBtn.onclick = () => this.setMode('restore');
 
-    // Auto remove corners button (detects background from 4 corners)
+    // Détection et suppression automatique de l'arrière-plan à partir des 4 coins
     const autoCornersBtn = document.getElementById('bg-auto-remove-btn');
     if (autoCornersBtn) {
       autoCornersBtn.onclick = () => this.autoDetectAndRemove();
     }
 
-    // Reset button
+    // Bouton de réinitialisation à l'image source d'origine
     const resetBtn = document.getElementById('bg-reset-btn');
     if (resetBtn) {
       resetBtn.onclick = () => this.resetCanvas();
     }
 
-    // Download PNG
+    // Export en image PNG avec transparence
     const downloadBtn = document.getElementById('bg-download-btn');
     if (downloadBtn) {
       downloadBtn.onclick = () => {
@@ -83,6 +135,14 @@ const BgRemover = {
     this.setupCanvasEvents();
   },
 
+  /**
+   * Définit le mode d'interaction actif et adapte la visibilité des contrôles de pinceau.
+   *
+   * @function setMode
+   * @memberof BgRemover
+   * @param {('wand'|'eraser'|'restore')} mode - Nouveau mode d'édition à activer.
+   * @returns {void}
+   */
   setMode(mode) {
     this.currentMode = mode;
     ['wand', 'eraser', 'restore'].forEach(m => {
@@ -104,12 +164,21 @@ const BgRemover = {
     }
   },
 
+  /**
+   * Charge une image locale, la redimensionne proportionnellement si elle dépasse la limite
+   * de performance de 1200px, et stocke son calque brut d'origine.
+   *
+   * @function loadImage
+   * @memberof BgRemover
+   * @param {File} file - Fichier image déposé par l'utilisateur.
+   * @returns {void}
+   */
   loadImage(file) {
     const reader = new FileReader();
     reader.onload = (e) => {
       const img = new Image();
       img.onload = () => {
-        // Constrain max canvas size for smooth performance while keeping crisp detail
+        // Redimensionnement de confort pour garantir un calcul 60 FPS sur ImageData
         const maxDim = 1200;
         let width = img.naturalWidth || img.width;
         let height = img.naturalHeight || img.height;
@@ -140,6 +209,13 @@ const BgRemover = {
     reader.readAsDataURL(file);
   },
 
+  /**
+   * Enregistre l'état actuel du canvas dans l'historique d'annulation (maximum 8 étapes).
+   *
+   * @function saveHistory
+   * @memberof BgRemover
+   * @returns {void}
+   */
   saveHistory() {
     if (!this.canvas) return;
     const data = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
@@ -147,6 +223,13 @@ const BgRemover = {
     if (this.history.length > 8) this.history.shift();
   },
 
+  /**
+   * Restaure l'état initial de l'image en rechargeant la copie `originalImageData`.
+   *
+   * @function resetCanvas
+   * @memberof BgRemover
+   * @returns {void}
+   */
   resetCanvas() {
     if (!this.originalImageData) return;
     this.ctx.putImageData(this.originalImageData, 0, 0);
@@ -154,6 +237,13 @@ const BgRemover = {
     UI.toast('Image réinitialisée.', 'info');
   },
 
+  /**
+   * Attache les écouteurs d'événements souris (clic baguette magique, tracé continu à la gomme ou au pinceau).
+   *
+   * @function setupCanvasEvents
+   * @memberof BgRemover
+   * @returns {void}
+   */
   setupCanvasEvents() {
     let isDrawing = false;
 
@@ -195,6 +285,18 @@ const BgRemover = {
     });
   },
 
+  /**
+   * Supprime l'arrière-plan par échantillonnage de couleur au point `(startX, startY)`.
+   * Calcule la distance euclidienne tridimensionnelle dans l'espace RGB :
+   *   `dist = sqrt((r - r0)^2 + (g - g0)^2 + (b - b0)^2)`
+   * et applique un fondu alpha progressif (alpha feathering) sur la bordure de tolérance pour éviter les crénelages.
+   *
+   * @function magicWandRemove
+   * @memberof BgRemover
+   * @param {number} startX - Coordonnée X du pixel cliqué sur le canvas.
+   * @param {number} startY - Coordonnée Y du pixel cliqué sur le canvas.
+   * @returns {void}
+   */
   magicWandRemove(startX, startY) {
     const width = this.canvas.width;
     const height = this.canvas.height;
@@ -207,12 +309,12 @@ const BgRemover = {
     const targetB = data[startIdx + 2];
     const targetA = data[startIdx + 3];
 
-    if (targetA === 0) return; // already transparent
+    if (targetA === 0) return; // Pixel déjà transparent
 
-    // Tolerance range 0..255
+    // Échelle de tolérance 0..255
     const tol = (this.tolerance / 100) * 255;
 
-    // Color distance function
+    // Calcul de distance euclidienne de couleur
     const colorDist = (r, g, b) => {
       return Math.sqrt(
         Math.pow(r - targetR, 2) +
@@ -221,14 +323,14 @@ const BgRemover = {
       );
     };
 
-    // Global color keying with soft alpha feathering
+    // Parcours des pixels avec lissage alpha sur la transition de bordure
     for (let i = 0; i < data.length; i += 4) {
       if (data[i + 3] === 0) continue;
       const d = colorDist(data[i], data[i + 1], data[i + 2]);
       if (d <= tol) {
-        data[i + 3] = 0; // complete transparency
+        data[i + 3] = 0; // Transparence totale
       } else if (d <= tol + 15) {
-        // Soft feather border
+        // Fondu progressif (anti-crénelage)
         const alphaFactor = (d - tol) / 15;
         data[i + 3] = Math.round(data[i + 3] * alphaFactor);
       }
@@ -239,17 +341,35 @@ const BgRemover = {
     UI.toast('Arrière-plan retiré.', 'success');
   },
 
+  /**
+   * Échantillonne automatiquement les couleurs des 4 coins de l'image (zones typiques d'arrière-plan)
+   * et applique successivement la suppression de couleur.
+   *
+   * @function autoDetectAndRemove
+   * @memberof BgRemover
+   * @returns {void}
+   */
   autoDetectAndRemove() {
     if (!this.canvas) return;
     const w = this.canvas.width;
     const h = this.canvas.height;
-    // Samples 4 corners
+    // Échantillonnage des 4 coins
     this.magicWandRemove(2, 2);
     this.magicWandRemove(w - 3, 2);
     this.magicWandRemove(2, h - 3);
     this.magicWandRemove(w - 3, h - 3);
   },
 
+  /**
+   * Applique le pinceau circulaire à la position indiquée selon le mode actif :
+   * - `eraser` : découpe transparente avec `destination-out`.
+   * - `restore` : réinjecte les canaux RGBA de `originalImageData` pour tous les pixels dans le rayon.
+   *
+   * @function paintAt
+   * @memberof BgRemover
+   * @param {{x: number, y: number}} pos - Coordonnées du centre du pinceau.
+   * @returns {void}
+   */
   paintAt(pos) {
     this.ctx.save();
     if (this.currentMode === 'eraser') {
@@ -258,7 +378,7 @@ const BgRemover = {
       this.ctx.arc(pos.x, pos.y, this.brushSize / 2, 0, Math.PI * 2);
       this.ctx.fill();
     } else if (this.currentMode === 'restore' && this.originalImageData) {
-      // Restore from original image data in that circle
+      // Restauration circulaire à partir des données sources d'origine
       const r = Math.round(this.brushSize / 2);
       const minX = Math.max(0, pos.x - r);
       const minY = Math.max(0, pos.y - r);

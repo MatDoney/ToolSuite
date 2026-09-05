@@ -1,13 +1,32 @@
 /**
- * Text & Redaction Tools
- * 1. Comparateur de texte (Diff Tool)
- * 2. Compteur de mots avancé & densité
- * 3. Convertisseur de casse (9 formats)
- * 4. Nettoyeur de texte multi-options
- * 100% Client-side Vanilla JS
+ * @file text-tools.js
+ * @description Suite d'outils d'analyse et de transformation textuelle 100% exécutés côté client (Vanilla JS).
+ * Comprend un comparateur différentiel de texte ligne par ligne basé sur l'algorithme LCS (Longest Common Subsequence),
+ * un compteur statistique de mots avec extraction de densité lexicale (mots-clés filtrés sans mots vides),
+ * un convertisseur de casse multi-formats (9 formats standardisés : camelCase, PascalCase, snake_case, etc.),
+ * et un nettoyeur typographique configurable (suppression HTML, espaces superflus, normalisation des guillemets).
+ * @module TextTools
  */
 
+/**
+ * @typedef {Object} DiffEntry
+ * @property {'same'|'add'|'del'} type - Nature de la ligne différentielle ('same' = inchangée, 'add' = ajoutée dans B, 'del' = supprimée de A).
+ * @property {string} text - Contenu brut de la ligne de texte.
+ * @property {number|string} lineA - Numéro de ligne dans le document d'origine A (ou chaîne vide si ajoutée).
+ * @property {number|string} lineB - Numéro de ligne dans le document révisé B (ou chaîne vide si supprimée).
+ */
+
+/**
+ * Espace de nom principal regroupant les utilitaires de traitement textuel.
+ * @namespace TextTools
+ */
 const TextTools = {
+  /**
+   * Initialise l'ensemble des modules d'outils textuels au démarrage.
+   * @function init
+   * @memberof TextTools
+   * @returns {void}
+   */
   init() {
     this.initDiffTool();
     this.initWordCounter();
@@ -16,9 +35,17 @@ const TextTools = {
   },
 
   /* ================= 1. COMPARATEUR DE TEXTE (DIFF) ================= */
+  /**
+   * Initialise le comparateur visuel de différences textuelles (Diff Tool).
+   * Implémente la programmation dynamique de la Plus Longue Sous-Séquence Commune (LCS)
+   * pour produire une vue unifiée avec numérotation de lignes et coloration syntaxique des ajouts/suppressions.
+   * @function initDiffTool
+   * @memberof TextTools
+   * @returns {void}
+   */
   initDiffTool() {
-    const inputA = document.getElementById('diff-input-a');
-    const inputB = document.getElementById('diff-input-b');
+    const inputA = /** @type {HTMLTextAreaElement|null} */ (document.getElementById('diff-input-a'));
+    const inputB = /** @type {HTMLTextAreaElement|null} */ (document.getElementById('diff-input-b'));
     const compareBtn = document.getElementById('diff-compare-btn');
     const sampleBtn = document.getElementById('diff-sample-btn');
     const clearBtn = document.getElementById('diff-clear-btn');
@@ -27,6 +54,13 @@ const TextTools = {
 
     if (!compareBtn || !output) return;
 
+    /**
+     * Construit la matrice de programmation dynamique pour l'algorithme LCS (Longest Common Subsequence).
+     * @inner
+     * @param {string[]} a - Tableau des lignes du document A.
+     * @param {string[]} b - Tableau des lignes du document B.
+     * @returns {Int32Array[]} Matrice 2D (m+1) x (n+1) contenant les longueurs des sous-séquences communes.
+     */
     const computeLCS = (a, b) => {
       const m = a.length;
       const n = b.length;
@@ -43,10 +77,18 @@ const TextTools = {
       return dp;
     };
 
+    /**
+     * Remonte la matrice LCS pour générer la liste séquentielle des lignes avec leur statut différentiel.
+     * @inner
+     * @param {string[]} a - Lignes du document original.
+     * @param {string[]} b - Lignes du document comparé.
+     * @returns {DiffEntry[]} Liste chronologique ordonnée des lignes avec métadonnées.
+     */
     const buildDiff = (a, b) => {
       const dp = computeLCS(a, b);
       let i = a.length;
       let j = b.length;
+      /** @type {DiffEntry[]} */
       const result = [];
 
       while (i > 0 || j > 0) {
@@ -65,7 +107,12 @@ const TextTools = {
       return result.reverse();
     };
 
+    /**
+     * Récupère les textes des deux volets, calcule les écarts et formate l'affichage HTML.
+     * @inner
+     */
     const runDiff = () => {
+      if (!inputA || !inputB) return;
       const textA = inputA.value;
       const textB = inputB.value;
 
@@ -98,6 +145,11 @@ const TextTools = {
           sameCount++;
         }
 
+        /**
+         * Échappe les caractères HTML dangereux pour prévenir les injections XSS.
+         * @param {string} str - Chaîne brute.
+         * @returns {string} Chaîne sécurisée avec entités HTML.
+         */
         const escapeHtml = (str) => str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
         const safeText = escapeHtml(item.text) || '&nbsp;';
 
@@ -127,6 +179,7 @@ const TextTools = {
 
     if (sampleBtn) {
       sampleBtn.addEventListener('click', () => {
+        if (!inputA || !inputB) return;
         inputA.value = `// Configuration v1.0\nconst appConfig = {\n  env: 'production',\n  apiUrl: 'https://api.v1.domain.com',\n  timeout: 5000,\n  retries: 3,\n  enableCache: false\n};`;
         inputB.value = `// Configuration v2.0 - Optimisée\nconst appConfig = {\n  env: 'production',\n  apiUrl: 'https://api.v2.domain.com',\n  timeout: 8000,\n  retries: 3,\n  enableCache: true,\n  compression: 'gzip'\n};`;
         runDiff();
@@ -135,8 +188,8 @@ const TextTools = {
 
     if (clearBtn) {
       clearBtn.addEventListener('click', () => {
-        inputA.value = '';
-        inputB.value = '';
+        if (inputA) inputA.value = '';
+        if (inputB) inputB.value = '';
         output.innerHTML = '<div style="padding: 2.5rem; text-align: center; color: var(--text-muted);">Les différences apparaîtront ici après comparaison.</div>';
         if (statsContainer) statsContainer.innerHTML = '';
       });
@@ -144,41 +197,59 @@ const TextTools = {
   },
 
   /* ================= 2. COMPTEUR DE MOTS AVANCÉ ================= */
+  /**
+   * Initialise le compteur de mots, de caractères, de phrases et de paragraphes en temps réel.
+   * Fournit une estimation du temps de lecture (200 mots/min) et de prise de parole (130 mots/min),
+   * ainsi qu'un tableau de densité lexicale extrayant les mots-clés les plus fréquents après élimination des mots vides (stop-words).
+   * @function initWordCounter
+   * @memberof TextTools
+   * @returns {void}
+   */
   initWordCounter() {
-    const input = document.getElementById('wc-input');
+    const input = /** @type {HTMLTextAreaElement|null} */ (document.getElementById('wc-input'));
     const sampleBtn = document.getElementById('wc-sample-btn');
     const clearBtn = document.getElementById('wc-clear-btn');
 
     if (!input) return;
 
+    /** @type {Set<string>} Dictionnaire de mots vides français et anglais ignorés dans le calcul de densité */
     const stopWords = new Set([
       'le','la','les','de','des','du','un','une','et','en','à','dans','pour','par','sur','avec','au','aux','ce','ces','cette',
       'que','qui','est','sont','a','ont','il','elle','ils','elles','nous','vous','je','tu','on','ne','pas','plus','mais','ou','donc',
       'the','a','an','and','or','but','in','on','at','to','for','of','with','is','are','was','were','it','this','that'
     ]);
 
+    /**
+     * Analyse le texte saisi et met à jour les indicateurs métriques et la table de fréquence lexicale.
+     * @inner
+     */
     const updateStats = () => {
       const text = input.value;
       const trimmed = text.trim();
 
-      // Words
+      // Détection Unicode des mots (lettres, chiffres, apostrophes, tirets)
       const words = trimmed ? trimmed.match(/[\p{L}\p{N}'’_-]+/gu) || [] : [];
       const wordCount = words.length;
 
-      // Characters
+      // Caractères avec et sans espaces
       const charCount = text.length;
       const charNoSpaces = text.replace(/\s/g, '').length;
 
-      // Sentences
+      // Détection des phrases par ponctuation terminale
       const sentences = trimmed ? (trimmed.match(/[^.!?]+[.!?]+(\s|$)/g) || [trimmed]).length : 0;
 
-      // Paragraphs
+      // Découpage des paragraphes non vides
       const paragraphs = trimmed ? trimmed.split(/\n+/).filter(p => p.trim().length > 0).length : 0;
 
-      // Reading and Speaking Time
+      // Temps moyen de lecture silencieuse (200 wpm) et de diction orale (130 wpm)
       const readMin = Math.ceil(wordCount / 200);
       const speakMin = Math.ceil(wordCount / 130);
 
+      /**
+       * Assigne la valeur textuelle formatée à l'élément cible.
+       * @param {string} id - Identifiant DOM.
+       * @param {string} val - Chaîne de caractères.
+       */
       const setText = (id, val) => {
         const el = document.getElementById(id);
         if (el) el.textContent = val;
@@ -192,7 +263,8 @@ const TextTools = {
       setText('wc-read-time', `${readMin} min`);
       setText('wc-speak-time', `${speakMin} min`);
 
-      // Keyword Density (exclude stop words and short words <= 2 letters)
+      // Analyse de la densité des mots-clés significatifs (> 2 lettres, hors stop-words)
+      /** @type {Record<string, number>} */
       const freq = {};
       words.forEach(w => {
         const clean = w.toLowerCase().replace(/['’]/g, '');
@@ -250,14 +322,26 @@ Cette suite d'outils web regroupe tout le nécessaire pour manipuler des documen
   },
 
   /* ================= 3. CONVERTISSEUR DE CASSE ================= */
+  /**
+   * Initialise le convertisseur de casse prenant en charge 9 notations courantes :
+   * camelCase, PascalCase, snake_case, kebab-case, CONSTANT_CASE, Title Case, UPPERCASE, lowercase, Sentence case.
+   * @function initCaseConverter
+   * @memberof TextTools
+   * @returns {void}
+   */
   initCaseConverter() {
-    const input = document.getElementById('case-input');
+    const input = /** @type {HTMLTextAreaElement|null} */ (document.getElementById('case-input'));
     const sampleBtn = document.getElementById('case-sample-btn');
     const clearBtn = document.getElementById('case-clear-btn');
 
     if (!input) return;
 
-    // Split text into words regardless of initial case
+    /**
+     * Découpe une chaîne en liste de mots élémentaires indépendamment du format d'entrée (camelCase, snake_case, etc.).
+     * @inner
+     * @param {string} str - Texte d'entrée brut.
+     * @returns {string[]} Liste des mots identifiés.
+     */
     const getWords = (str) => {
       if (!str) return [];
       return str
@@ -267,6 +351,7 @@ Cette suite d'outils web regroupe tout le nécessaire pour manipuler des documen
         .split(/\s+/);
     };
 
+    /** @type {Record<string, (words: string[], raw: string) => string>} Fonctions de formatage pour chaque casse */
     const converters = {
       'case-camel': (words) => words.map((w, i) => i === 0 ? w.toLowerCase() : w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(''),
       'case-snake': (words) => words.map(w => w.toLowerCase()).join('_'),
@@ -282,6 +367,10 @@ Cette suite d'outils web regroupe tout le nécessaire pour manipuler des documen
       }
     };
 
+    /**
+     * Met à jour l'ensemble des 9 cartes de prévisualisation de cas.
+     * @inner
+     */
     const updateCases = () => {
       const raw = input.value;
       const words = getWords(raw);
@@ -296,11 +385,11 @@ Cette suite d'outils web regroupe tout le nécessaire pour manipuler des documen
 
     input.addEventListener('input', updateCases);
 
-    // Setup Copy buttons for each case
+    // Configuration des boutons individuels de copie de chaque format
     document.querySelectorAll('.case-copy-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         const targetId = btn.getAttribute('data-target');
-        const targetEl = document.getElementById(targetId);
+        const targetEl = document.getElementById(targetId || '');
         if (targetEl && targetEl.textContent && targetEl.textContent !== '—') {
           UI.copy(targetEl.textContent, btn, 'Texte copié !');
         } else {
@@ -327,9 +416,17 @@ Cette suite d'outils web regroupe tout le nécessaire pour manipuler des documen
   },
 
   /* ================= 4. NETTOYEUR DE TEXTE ================= */
+  /**
+   * Initialise l'outil de nettoyage et d'assainissement de texte typographique.
+   * Propose différentes options configurables : suppression des balises HTML, conversion des tabulations en espaces,
+   * suppression des espaces multiples, élimination des lignes vides consécutives et normalisation des guillemets.
+   * @function initTextCleaner
+   * @memberof TextTools
+   * @returns {void}
+   */
   initTextCleaner() {
-    const input = document.getElementById('cleaner-input');
-    const output = document.getElementById('cleaner-output');
+    const input = /** @type {HTMLTextAreaElement|null} */ (document.getElementById('cleaner-input'));
+    const output = /** @type {HTMLTextAreaElement|null} */ (document.getElementById('cleaner-output'));
     const cleanBtn = document.getElementById('cleaner-clean-btn');
     const copyBtn = document.getElementById('cleaner-copy-btn');
     const sampleBtn = document.getElementById('cleaner-sample-btn');
@@ -338,6 +435,10 @@ Cette suite d'outils web regroupe tout le nécessaire pour manipuler des documen
 
     if (!cleanBtn || !input || !output) return;
 
+    /**
+     * Applique les filtres de nettoyage sélectionnés sur le texte saisi.
+     * @inner
+     */
     const runCleaner = () => {
       let text = input.value;
       if (!text) {
@@ -347,39 +448,39 @@ Cette suite d'outils web regroupe tout le nécessaire pour manipuler des documen
 
       const initialLen = text.length;
 
-      const optSpaces = document.getElementById('clean-spaces')?.checked;
-      const optLines = document.getElementById('clean-lines')?.checked;
-      const optHtml = document.getElementById('clean-html')?.checked;
-      const optTrim = document.getElementById('clean-trim')?.checked;
-      const optTabs = document.getElementById('clean-tabs')?.checked;
-      const optQuotes = document.getElementById('clean-quotes')?.checked;
+      const optSpaces = /** @type {HTMLInputElement|null} */ (document.getElementById('clean-spaces'))?.checked;
+      const optLines = /** @type {HTMLInputElement|null} */ (document.getElementById('clean-lines'))?.checked;
+      const optHtml = /** @type {HTMLInputElement|null} */ (document.getElementById('clean-html'))?.checked;
+      const optTrim = /** @type {HTMLInputElement|null} */ (document.getElementById('clean-trim'))?.checked;
+      const optTabs = /** @type {HTMLInputElement|null} */ (document.getElementById('clean-tabs'))?.checked;
+      const optQuotes = /** @type {HTMLInputElement|null} */ (document.getElementById('clean-quotes'))?.checked;
 
-      // 1. Strip HTML tags
+      // 1. Suppression des balises HTML
       if (optHtml) {
         text = text.replace(/<\/?[^>]+(>|$)/g, '');
       }
 
-      // 2. Replace tabs with spaces
+      // 2. Remplacement des tabulations par un espace simple
       if (optTabs) {
         text = text.replace(/\t/g, ' ');
       }
 
-      // 3. Trim each line
+      // 3. Suppression des espaces de début et fin de chaque ligne
       if (optTrim) {
         text = text.split('\n').map(l => l.trim()).join('\n');
       }
 
-      // 4. Collapse extra spaces
+      // 4. Fusion des espaces contigus en un seul espace
       if (optSpaces) {
         text = text.replace(/[^\S\r\n]+/g, ' ');
       }
 
-      // 5. Remove multiple consecutive blank lines
+      // 5. Réduction des sauts de ligne multiples consécutifs
       if (optLines) {
         text = text.replace(/\n\s*\n\s*\n+/g, '\n\n');
       }
 
-      // 6. Normalize quotes and apostrophes
+      // 6. Normalisation des guillemets typographiques (« », “ ”, ‘ ’, `) en guillemets droits (" et ')
       if (optQuotes) {
         text = text
           .replace(/[“”«»]/g, '"')
