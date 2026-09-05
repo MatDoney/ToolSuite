@@ -1,0 +1,24 @@
+{
+  "name": "toolsuite",
+  "version": "1.0.0",
+  "description": "Suite complète d'outils web tout-en-un 100% côté client",
+  "main": "js/app.js",
+  "scripts": {
+    "docs": "jsdoc -c jsdoc.json",
+    "docs:generate": "py scripts/generate_docs.py"
+  },
+  "keywords": [
+    "tools",
+    "pdf",
+    "ocr",
+    "canvas",
+    "markdown",
+    "utilities",
+    "client-side"
+  ],
+  "author": "Matthis Doney",
+  "license": "MIT",
+  "devDependencies": {
+    "jsdoc": "^4.0.4"
+  }
+}

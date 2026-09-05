@@ -127,9 +127,36 @@ L'ensemble des calculs, conversions et traitements s'effectue **directement et l
 │       ├── finance-tools.js    # Pourcentages, Split Bill, Intérêts composés avec graphique
 │       ├── marketing-tools.js  # Balises Meta SEO, Liens UTM, Découpe Grille Instagram
 │       └── wheel-tool.js       # Roue de tirage au sort physique avec Web Audio & Confettis
+├── docs/
+│   ├── index.html              # Portail web interactif de la documentation technique
+│   └── API.md                  # Manuel technique complet au format Markdown (2400+ lignes)
+├── scripts/
+│   └── generate_docs.py        # Générateur automatisé de documentation (JSDoc 3 & PHPDoc)
+├── jsdoc.json                  # Configuration officielle standard JSDoc 3
+├── package.json                # Métadonnées et scripts npm (docs, docs:generate)
 ├── LICENSE                     # Licence open-source MIT
 └── README.md                   # Documentation complète du projet
 ```
+
+---
+
+## 📚 Documentation Technique & Génération d'API
+
+L'intégralité du code source propriétaire JavaScript (15 modules) et PHP (proxy REST) est rigoureusement commentée selon les spécifications formelles **JSDoc 3** et **PHPDoc** (PSR-5 / PSR-19) avec typage précis de tous les paramètres, retours, exceptions et exemples d'appels.
+
+### Consulter la documentation
+- **Portail Web Interactif** : Ouvrez directement `docs/index.html` dans votre navigateur pour une exploration visuelle complète avec recherche en direct, filtrage par module, typages et détails des fonctions.
+- **Manuel Markdown** : Consultez [`docs/API.md`](docs/API.md) pour la référence textuelle complète et navigable.
+
+### Régénérer la documentation
+1. **Via Python 3 (autonome, sans dépendance)** :
+   ```bash
+   py scripts/generate_docs.py
+   ```
+2. **Via npm et JSDoc (standard Node.js)** :
+   ```bash
+   npm run docs
+   ```
 
 ---
 
