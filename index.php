@@ -28,7 +28,7 @@ $upload_max = ini_get('upload_max_filesize');
 
   <!-- Libraries (Local with CDN Fallback) -->
   <script src="js/vendor/pdf-lib.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="js/vendor/pdf.min.js"></script>
   <script src="js/vendor/jszip.min.js"></script>
   <script src="js/vendor/marked.min.js"></script>
   <script src="js/vendor/qrcode.min.js"></script>
@@ -36,6 +36,11 @@ $upload_max = ini_get('upload_max_filesize');
   <script>
     if (typeof PDFLib === 'undefined') {
       document.write('<script src="https://cdn.jsdelivr.net/npm/pdf-lib/dist/pdf-lib.min.js"><\/script>');
+    }
+    if (typeof pdfjsLib === 'undefined') {
+      document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"><\/script>');
+    } else {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'js/vendor/pdf.worker.min.js';
     }
   </script>
 </head>
@@ -2270,8 +2275,9 @@ $upload_max = ini_get('upload_max_filesize');
             </div>
 
             <div style="text-align: center; overflow-x: auto; padding: 1rem 0;">
-              <div class="redact-canvas-wrapper">
+              <div class="redact-canvas-wrapper" id="redact-canvas-wrapper">
                 <canvas id="redact-canvas" class="redact-canvas"></canvas>
+                <canvas id="redact-overlay-canvas" class="redact-overlay-canvas"></canvas>
               </div>
             </div>
           </div>
@@ -2777,8 +2783,16 @@ $upload_max = ini_get('upload_max_filesize');
                 </button>
               </div>
               <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.4rem;">
-                Le contenu est extrait en mode lecture (titre, texte, paragraphes), sans bannières publicitaires ni menus superflus.
+                Le contenu intégral de l'article est extrait en mode lecture (titres, paragraphes, citations, listes) avec pagination multi-pages A4 propre.
               </div>
+            </div>
+
+            <div id="url2pdf-status-card" style="display: none; margin-top: 1.25rem; padding: 1rem; border-radius: var(--radius-sm); background: var(--bg-surface); border: 1px solid var(--border-color);">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
+                <h4 id="url2pdf-status-title" style="margin: 0; font-size: 1rem; color: var(--text-primary);"></h4>
+                <span id="url2pdf-status-badge" class="badge" style="background: var(--accent-color); color: #fff; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;"></span>
+              </div>
+              <div id="url2pdf-status-stats" style="display: flex; gap: 1.5rem; font-size: 0.85rem; color: var(--text-secondary); flex-wrap: wrap;"></div>
             </div>
           </div>
         </section>
